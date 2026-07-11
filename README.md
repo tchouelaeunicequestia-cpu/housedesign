@@ -1,2 +1,2 @@
 # housedesign
-Official website and project portfolio for HOUSEDESIGN
+Official website and project portfolio for HOUSEDESIGN.
