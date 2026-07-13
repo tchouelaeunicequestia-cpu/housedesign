@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProjectModule } from './project/project.module';
-import { Project } from './project/project.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(), 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: process.env.DATABASE_URL,
-      entities: [Project],
-      synchronize: true,
+      url: process.env.DATABASE_URL, 
+      autoLoadEntities: true,
+      synchronize: true, 
+      ssl: {
+        rejectUnauthorized: false, 
+      },
     }),
-    ProjectModule,
   ],
 })
 export class AppModule {}
