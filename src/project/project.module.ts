@@ -9,4 +9,5 @@ import { ProjectController } from './project.controller';
   controllers: [ProjectController],
   providers: [ProjectService],
 })
-export class ProjectModule {}
+export class ProjectModule {
+}
