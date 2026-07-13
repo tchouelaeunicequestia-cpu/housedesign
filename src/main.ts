@@ -6,14 +6,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Enable global validation for DTOs
+  // Enable global validation for incoming request DTOs
   app.useGlobalPipes(new ValidationPipe());
 
-  // Swagger setup
+  // Swagger setup with JWT support
   const config = new DocumentBuilder()
     .setTitle('HouseDesign API')
     .setDescription('API for architectural project management and material services in Yaoundé')
     .setVersion('1.0')
+    .addBearerAuth() // Enables token input field in the interactive UI
     .build();
   
   const document = SwaggerModule.createDocument(app, config);
