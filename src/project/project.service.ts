@@ -2,25 +2,21 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from './project.entity';
-import { CreateProjectDto } from './dto/create-project.dto';
+import { ProjectDto } from './dto/project.dto';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
-    private projectRepository: Repository<Project>,
+    private readonly projectRepository: Repository<Project>,
   ) {}
 
-  create(createProjectDto: CreateProjectDto) {
-    const newProject = this.projectRepository.create(createProjectDto);
-    return this.projectRepository.save(newProject);
+  async create(projectDto: ProjectDto): Promise<Project> {
+    const project = this.projectRepository.create(projectDto);
+    return await this.projectRepository.save(project);
   }
 
-  findAll() {
-    return this.projectRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.projectRepository.findOneBy({ id });
+  async findAll(): Promise<Project[]> {
+    return await this.projectRepository.find();
   }
 }
