@@ -1,18 +1,17 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProjectModule } from './project/project.module';
 import { Project } from './project/project.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
-      synchronize: true, // Use only for development
       entities: [Project],
+      synchronize: true,
     }),
+    ProjectModule,
   ],
 })
 export class AppModule {}
