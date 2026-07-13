@@ -1,4 +1,5 @@
-import { CollectionConfig } from 'payload';
+import { CollectionConfig } from 'payload'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -6,7 +7,11 @@ export const Projects: CollectionConfig = {
   fields: [
     { name: 'title', type: 'text', required: true },
     { name: 'status', type: 'select', options: ['Completed', 'In-Progress'] },
-    { name: 'description', type: 'richText' },
+    {
+      name: 'description',
+      type: 'richText',
+      editor: lexicalEditor(),
+    },
     { name: 'softwareUsed', type: 'text' },
   ],
-};
+}

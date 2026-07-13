@@ -1,5 +1,5 @@
 import { buildConfig } from 'payload';
-import { mongooseAdapter } from '@payloadcms/db-mongodb'; // Or change to postgresAdapter if using Postgres
+import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,9 +24,12 @@ export default buildConfig({
     Projects,
   ],
   editor: lexicalEditor(),
-  db: mongooseAdapter({
-    url: process.env.DATABASE_URI || 'mongodb://127.0.0.1/housedesign',
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI,
+    },
   }),
+  secret: process.env.PAYLOAD_SECRET || 'YOUR_SECRET_HERE',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

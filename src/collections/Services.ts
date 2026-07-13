@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload';
+import { CollectionConfig } from 'payload'
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -7,4 +7,4 @@ export const Services: CollectionConfig = {
     { name: 'name', type: 'text', required: true },
     { name: 'description', type: 'textarea' },
   ],
-};
+}

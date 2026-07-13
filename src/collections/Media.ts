@@ -1,4 +1,4 @@
-import { CollectionConfig } from 'payload';
+import { CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -8,4 +8,4 @@ export const Media: CollectionConfig = {
   fields: [
     { name: 'alt', type: 'text', required: true },
   ],
-};
+}
