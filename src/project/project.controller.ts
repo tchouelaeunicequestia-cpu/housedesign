@@ -5,13 +5,13 @@ import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagg
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('projects')
-@ApiBearerAuth() // Adds the Authorize padlock icon to this controller in Swagger
+@ApiBearerAuth()
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt')) // Restricts project creation to logged-in admins
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new project (Admin Only)' })
   @ApiResponse({ status: 201, description: 'The project has been successfully created.' })
   @ApiResponse({ status: 401, description: 'Missing or invalid token.' })
