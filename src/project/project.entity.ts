@@ -1,5 +1,13 @@
 // src/project/project.entity.ts
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Asset } from '../asset/entities/asset.entity';
 
 @Entity()
 export class Project {
@@ -14,6 +22,9 @@ export class Project {
 
   @Column({ nullable: true })
   imageUrl: string;
+
+  @OneToMany(() => Asset, (asset) => asset.project)
+  assets: Asset[];
 
   @CreateDateColumn()
   createdAt: Date;

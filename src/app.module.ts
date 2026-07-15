@@ -4,6 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProjectModule } from './project/project.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { buildTypeOrmOptions } from './config/typeorm.config';
+import { AssetModule } from './asset/asset.module';
 
 @Module({
   imports: [
@@ -11,19 +13,12 @@ import { UserModule } from './user/user.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: true,
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }),
+      useFactory: (configService: ConfigService) => buildTypeOrmOptions(configService),
     }),
     ProjectModule,
     AuthModule,
     UserModule,
+    AssetModule,
   ],
 })
 export class AppModule {}

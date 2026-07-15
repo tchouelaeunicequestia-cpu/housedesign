@@ -1,25 +1,37 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// src/main.ts
+import { NestFactory } from '@nestjs/core';
+import {
+  DocumentBuilder,
+  SwaggerModule,
+} from '@nestjs/swagger';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
-  // Enable global validation for incoming request DTOs
+
+  // Enable CORS so your future frontend can talk to this backend
+  app.enableCors();
+
+  // Global validation pipe for your DTOs
   app.useGlobalPipes(new ValidationPipe());
 
-  // Swagger setup with JWT support
+  // 1. Build the Swagger Document configuration
   const config = new DocumentBuilder()
-    .setTitle('HouseDesign API')
-    .setDescription('API for architectural project management and material services in Yaoundé')
+    .setTitle('Civil Engineer Platform API')
+    .setDescription('The interactive API portal for projects, assets, and user management.')
     .setVersion('1.0')
-    .addBearerAuth() // Enables token input field in the interactive UI
+    .addBearerAuth() // Allows you to test protected routes with JWT tokens later!
     .build();
-  
+
+  // 2. Create the document and set up the /api route
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Use Railway's dynamic PORT or fallback to 3000 locally
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on: http://localhost:${port}/api`);
 }
 bootstrap();
