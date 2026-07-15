@@ -1,6 +1,9 @@
+import * as fs from 'fs';
+import { join } from 'path';
+
 import { ValidationPipe } from '@nestjs/common';
-// src/main.ts
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import {
   DocumentBuilder,
   SwaggerModule,
@@ -9,27 +12,39 @@ import {
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 1. Force the instantiation of NestJS using the Express platform adapter
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable CORS so your future frontend can talk to this backend
+  // 2. Ensure the local uploads directory exists on local startup to prevent crashes
+  const uploadDir = join(__dirname, '..', 'uploads');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  // 3. Serve physical static files under the root-relative '/uploads' route prefix
+  app.useStaticAssets(uploadDir, {
+    prefix: '/uploads/',
+  });
+
+  // Enable CORS cross-origin configuration
   app.enableCors();
 
-  // Global validation pipe for your DTOs
+  // Route incoming request structural validation
   app.useGlobalPipes(new ValidationPipe());
 
-  // 1. Build the Swagger Document configuration
+  // Build the Swagger interactive configuration settings
   const config = new DocumentBuilder()
     .setTitle('Civil Engineer Platform API')
-    .setDescription('The interactive API portal for projects, assets, and user management.')
+    .setDescription('Interactive API portal to manage users, projects, media, and assets.')
     .setVersion('1.0')
-    .addBearerAuth() // Allows you to test protected routes with JWT tokens later!
+    .addBearerAuth()
     .build();
 
-  // 2. Create the document and set up the /api route
+  // Generate mapping document
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Use Railway's dynamic PORT or fallback to 3000 locally
+  // Listen on environment port or dynamic host fallback
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);

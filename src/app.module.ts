@@ -1,24 +1,43 @@
 import { Module } from '@nestjs/common';
+import {
+  ConfigModule,
+  ConfigService,
+} from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ProjectModule } from './project/project.module';
-import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
-import { buildTypeOrmOptions } from './config/typeorm.config';
+
 import { AssetModule } from './asset/asset.module';
+import { AuthModule } from './auth/auth.module';
+import { MediaModule } from './media/media.module';
+import { ProjectModule } from './project/project.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => buildTypeOrmOptions(configService),
+      useFactory: (configService: ConfigService) => {
+        const dbUrl = configService.get<string>('DATABASE_URL');
+        
+        return {
+          type: 'postgres',
+          url: dbUrl,
+          autoLoadEntities: true,
+          synchronize: true, // Auto sync schema updates with Neon database
+          ssl: {
+            rejectUnauthorized: false, // Required for secure cloud database instances
+          },
+        };
+      },
     }),
-    ProjectModule,
     AuthModule,
     UserModule,
     AssetModule,
+    ProjectModule,
+    MediaModule, // 👈 Registering our brand new MediaModule
   ],
 })
 export class AppModule {}
