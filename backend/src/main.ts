@@ -27,7 +27,10 @@ async function bootstrap() {
   });
 
   // Enable CORS cross-origin configuration
-  app.enableCors();
+  app.enableCors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+});
 
   // Route incoming request structural validation
   app.useGlobalPipes(new ValidationPipe());
