@@ -1,11 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { NestExpressApplication } from '@nestjs/platform-express'; // Required
+import { join } from 'path'; // Required
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 1. Cast the app to NestExpressApplication
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // This makes your base path /api/
   app.setGlobalPrefix('api');
+
+  // 2. Serve static files from the 'uploads' folder
+  // Files will be accessible at: /uploads/your-file.png
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads',
+  });
 
   app.enableCors({
     origin: [
