@@ -18,12 +18,12 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      'https://housedesign-production.up.railway.app', // Your Vercel frontend domain
+      'https://housedesign-production.up.railway.app', // Frontend Vercel production domain
       'https://housedesign-sepia.vercel.app'
     ],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
+
 
   // 2. Set Global Prefix so all routes automatically start with /api
   app.setGlobalPrefix('api');

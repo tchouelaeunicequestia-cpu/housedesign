@@ -13,8 +13,14 @@ const api = axios.create({
 
 // Add a request interceptor to handle the /api prefix automatically
 api.interceptors.request.use((config) => {
-  // If the path doesn't already start with /api, add it
-  if (config.url && !config.url.startsWith('/api')) {
+  // If the path is not absolute and doesn't already start with /api, add it
+  if (
+    config.url &&
+    !config.url.startsWith('http://') &&
+    !config.url.startsWith('https://') &&
+    !config.url.startsWith('//') &&
+    !config.url.startsWith('/api')
+  ) {
     config.url = `/api${config.url}`;
   }
   return config;
