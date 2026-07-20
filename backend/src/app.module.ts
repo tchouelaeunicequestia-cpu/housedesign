@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import {
-  ConfigModule,
-  ConfigService,
-} from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+// 1. Import the controller and service
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 import { AssetModule } from './asset/asset.module';
 import { AuthModule } from './auth/auth.module';
@@ -21,14 +22,14 @@ import { UserModule } from './user/user.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const dbUrl = configService.get<string>('DATABASE_URL');
-        
+
         return {
           type: 'postgres',
           url: dbUrl,
           autoLoadEntities: true,
-          synchronize: true, // Auto sync schema updates with Neon database
+          synchronize: true,
           ssl: {
-            rejectUnauthorized: false, // Required for secure cloud database instances
+            rejectUnauthorized: false,
           },
         };
       },
@@ -37,7 +38,10 @@ import { UserModule } from './user/user.module';
     UserModule,
     AssetModule,
     ProjectModule,
-    MediaModule, // 👈 Registering our brand new MediaModule
+    MediaModule,
   ],
+  // 2. Register them here so NestJS can see them
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

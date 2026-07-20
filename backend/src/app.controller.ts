@@ -1,15 +1,10 @@
-import {
-  Controller,
-  Get,
-} from '@nestjs/common';
-
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller()
+@Controller('health') // Explicitly add a path here
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
-  // This handles the GET /api/ route
   @Get()
   getHello() {
     return { status: 'ok', message: 'Backend is online and working!' };
