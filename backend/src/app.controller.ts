@@ -1,4 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+} from '@nestjs/common';
+
 import { AppService } from './app.service';
 
 @Controller()
@@ -8,5 +12,10 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+  // Add this to your main app controller
+  @Get()
+  getHealth() {
+    return { status: 'ok', message: 'Backend is reachable' };
   }
 }
