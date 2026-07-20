@@ -1,16 +1,21 @@
 import axios from 'axios';
 
+// Get the base URL from environment
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://housedesign-production-f3bd.up.railway.app',
+  baseURL: baseURL, // This sets the root domain
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
+// Add a request interceptor to handle the /api prefix automatically
 api.interceptors.request.use((config) => {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  // If the path doesn't already start with /api, add it
+  if (config.url && !config.url.startsWith('/api')) {
+    config.url = `/api${config.url}`;
   }
   return config;
 });
