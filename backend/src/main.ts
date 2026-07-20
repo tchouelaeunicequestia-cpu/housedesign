@@ -12,42 +12,45 @@ import {
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  // 1. Force the instantiation of NestJS using the Express platform adapter
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // 2. Ensure the local uploads directory exists on local startup to prevent crashes
+  // 1. Enable CORS for both Development and Production
+  app.enableCors({
+    origin: [
+      'http://localhost:3000', 
+      'https://housedesign-sepia.vercel.app' // Your Vercel frontend domain
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
+
+  // 2. Set Global Prefix so all routes automatically start with /api
+  app.setGlobalPrefix('api');
+
+  // 3. Static Assets (kept from your original code)
   const uploadDir = join(__dirname, '..', 'uploads');
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
-
-  // 3. Serve physical static files under the root-relative '/uploads' route prefix
   app.useStaticAssets(uploadDir, {
     prefix: '/uploads/',
   });
 
-  // Enable CORS cross-origin configuration
-  app.enableCors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-});
-
-  // Route incoming request structural validation
+  // 4. Pipes
   app.useGlobalPipes(new ValidationPipe());
 
-  // Build the Swagger interactive configuration settings
+  // 5. Swagger Configuration (Changed route to /api-docs to avoid prefix conflict)
   const config = new DocumentBuilder()
     .setTitle('Civil Engineer Platform API')
-    .setDescription('Interactive API portal to manage users, projects, media, and assets.')
+    .setDescription('Interactive API portal')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
 
-  // Generate mapping document
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api-docs', app, document);
 
-  // Listen on environment port or dynamic host fallback
+  // 6. Start Server
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}/api`);
