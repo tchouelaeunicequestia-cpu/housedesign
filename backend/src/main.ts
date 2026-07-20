@@ -18,7 +18,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000', 
-      'https://housedesign-sepia.vercel.app' // Your Vercel frontend domain
+      'https://housedesign-production.up.railway.app' // Your Vercel frontend domain
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
