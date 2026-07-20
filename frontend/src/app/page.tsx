@@ -7,7 +7,10 @@ export default function Home() {
 
   useEffect(() => {
     api.get('/')
-      .then(res => setMessage('Connected! Backend says: ' + res.data))
+      .then(res => {
+        const backendMessage = typeof res.data === 'string' ? res.data : (res.data.message || JSON.stringify(res.data));
+        setMessage('Connected! Backend says: ' + backendMessage);
+      })
       .catch(err => setMessage('Backend not reachable: ' + err.message));
   }, []);
 

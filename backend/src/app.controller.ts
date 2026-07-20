@@ -9,13 +9,9 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  // This handles the GET /api/ route
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
-  }
-  // Add this to your main app controller
-  @Get()
-  getHealth() {
-    return { status: 'ok', message: 'Backend is reachable' };
+  getHello() {
+    return { status: 'ok', message: 'Backend is online and working!' };
   }
 }
