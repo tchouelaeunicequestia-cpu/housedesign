@@ -65,6 +65,7 @@ If you are looking for a cloud-based platform to deploy your NestJS application,
 
 ```bash
 $ npm install -g @nestjs/mau
+$npx tree-node-cli -L 3 -I "node_modules|.git|.next|dist"
 $ mau deploy
 ```
 

@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
+  reactStrictMode: true,
+  
+  // Forces Next.js to ignore slow Google Font downloads that cause AbortErrors
+  optimizeFonts: false,
+
+  experimental: {
+    reactCompiler: true,
+  },
 };
 
 export default nextConfig;
