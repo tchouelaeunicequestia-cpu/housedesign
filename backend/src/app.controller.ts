@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller('health') // Explicitly add a path here
+@Controller() // Empty decorator means this handles the base path
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello() {
-    return { status: 'ok', message: 'Backend is online and working!' };
+  @Get() // Empty decorator means this handles the GET request to the base path
+  getRoot() {
+    return { status: 'ok', message: 'Backend is online' };
   }
 }

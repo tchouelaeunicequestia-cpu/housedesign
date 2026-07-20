@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// 1. Import the controller and service
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -14,25 +13,17 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const dbUrl = configService.get<string>('DATABASE_URL');
-
-        return {
-          type: 'postgres',
-          url: dbUrl,
-          autoLoadEntities: true,
-          synchronize: true,
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        url: configService.get<string>('DATABASE_URL'),
+        autoLoadEntities: true,
+        synchronize: true,
+        ssl: { rejectUnauthorized: false },
+      }),
     }),
     AuthModule,
     UserModule,
@@ -40,8 +31,7 @@ import { UserModule } from './user/user.module';
     ProjectModule,
     MediaModule,
   ],
-  // 2. Register them here so NestJS can see them
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController], // IMPORTANT: Must be here
+  providers: [AppService],       // IMPORTANT: Must be here
 })
-export class AppModule { }
+export class AppModule {}
