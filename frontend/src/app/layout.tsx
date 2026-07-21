@@ -1,6 +1,6 @@
 import './globals.css';
-
 import type { Metadata } from 'next';
+import Providers from '@/app/providers';
 
 export const metadata: Metadata = {
   title: "House Design Platform",
@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
