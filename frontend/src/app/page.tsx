@@ -1,3 +1,4 @@
+'html/tsx'
 'use client';
 
 import { useState } from 'react';
@@ -10,22 +11,26 @@ export default function Home() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description) return;
 
-    createProjectMutation.mutate(
-      { title, description, imageUrl },
-      {
-        onSuccess: () => {
-          setTitle('');
-          setDescription('');
-          setImageUrl('');
-        },
-      }
-    );
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    if (imageFile) {
+      formData.append('image', imageFile); // Matches your backend file upload interceptor field name
+    }
+
+    createProjectMutation.mutate(formData, {
+      onSuccess: () => {
+        setTitle('');
+        setDescription('');
+        setImageFile(null);
+      },
+    });
   };
 
   return (
@@ -60,13 +65,12 @@ export default function Home() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Image URL (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Project Image</label>
             <input
-              type="url"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="https://example.com/image.jpg"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+              className="w-full border rounded-md px-3 py-2 text-sm focus:outline-none bg-gray-50 text-gray-700"
             />
           </div>
           <button
@@ -74,7 +78,7 @@ export default function Home() {
             disabled={createProjectMutation.isPending}
             className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
           >
-            {createProjectMutation.isPending ? 'Creating...' : 'Create Project'}
+            {createProjectMutation.isPending ? 'Uploading & Creating...' : 'Create Project'}
           </button>
         </form>
       </section>

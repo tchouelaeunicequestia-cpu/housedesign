@@ -5,12 +5,15 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (newProject: { title: string; description: string; imageUrl?: string }) => {
-      const response = await api.post('/project', newProject);
+    mutationFn: async (formData: FormData) => {
+      const response = await api.post('/project', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     },
     onSuccess: () => {
-      // Automatically refetch the projects list when a new project is created successfully
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
   });
