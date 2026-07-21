@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
 
-export default function Home() {
-  const { data: projects, isLoading, isError } = useProjects();
+export default function PublicPortfolioPage() {
+  const { data: projects, isLoading, isError, error } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
@@ -43,7 +43,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <Link
-                href="/"
+                href="/portfolio"
                 className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
               >
                 Portfolio
@@ -104,7 +104,7 @@ export default function Home() {
 
           {isError && (
             <div className="p-4 bg-red-950/60 text-red-300 rounded-lg border border-red-800/50">
-              Unable to load projects at the moment. Please ensure the backend server is running.
+              Unable to load projects at the moment. Please ensure the backend server is running on port 3000.
             </div>
           )}
 
