@@ -1,34 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Calendar, Globe, ArrowRight, Building2, Wrench, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const { data: projects, isLoading, isError } = useProjects();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
-
-  const filteredProjects = projects?.filter((project: any) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'All' || project.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const getStatusBadgeColor = (st: string) => {
-    switch (st) {
-      case 'Completed':
-        return 'bg-emerald-950 text-emerald-400 border-emerald-800/50';
-      case 'In-Progress':
-        return 'bg-amber-950 text-amber-400 border-amber-800/50';
-      default:
-        return 'bg-cyan-950 text-cyan-400 border-cyan-800/50';
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
       <div>
@@ -133,93 +108,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Portfolio Section */}
-        <section className="max-w-7xl mx-auto px-6 py-16">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-              <h3 className="text-3xl font-bold text-white">Featured Projects</h3>
-              <p className="text-slate-400 text-sm mt-1">Explore our latest engineering accomplishments.</p>
-            </div>
-
-            <div className="flex flex-wrap gap-3 w-full md:w-auto">
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600 flex-grow md:w-64"
-              />
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
-              >
-                <option value="All">All Categories</option>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Industrial">Industrial</option>
-              </select>
-            </div>
-          </div>
-
-          {isLoading && (
-            <div className="text-cyan-400 font-medium py-12 text-center">Loading engineering portfolio...</div>
-          )}
-
-          {isError && (
-            <div className="p-4 bg-red-950/60 text-red-300 rounded-lg border border-red-800/50">
-              Unable to load projects at the moment. Please verify backend connectivity.
-            </div>
-          )}
-
-          {filteredProjects && filteredProjects.length === 0 && (
-            <div className="text-center py-16 bg-slate-900 rounded-xl border border-slate-800 shadow-sm">
-              <p className="text-slate-400 text-lg">No projects found matching your criteria.</p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects?.map((project: any) => (
-              <div
-                key={project.id}
-                className="bg-slate-900 rounded-xl border border-slate-800 shadow-sm overflow-hidden flex flex-col hover:border-slate-700 transition-all"
-              >
-                {project.imageUrl && (
-                  <img
-                    src={
-                      project.imageUrl.startsWith('http')
-                        ? project.imageUrl
-                        : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${project.imageUrl}`
-                    }
-                    alt={project.title}
-                    className="w-full h-52 object-cover"
-                  />
-                )}
-                <div className="p-5 flex flex-col flex-grow justify-between">
-                  <div>
-                    <h4 className="text-lg font-bold text-white mb-2">{project.title}</h4>
-                    <div className="flex gap-2 mb-3">
-                      <span className="bg-slate-950 text-cyan-400 border border-cyan-900/50 text-xs px-2.5 py-0.5 rounded-full font-medium">
-                        {project.category || 'Residential'}
-                      </span>
-                      <span
-                        className={`border text-xs px-2.5 py-0.5 rounded-full font-medium ${getStatusBadgeColor(
-                          project.status
-                        )}`}
-                      >
-                        {project.status || 'Planning'}
-                      </span>
-                    </div>
-                    <p className="text-slate-400 text-sm leading-relaxed mb-4">{project.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
         {/* Rendezvous / Appointment Section */}
-        <section id="rendezvous" className="bg-slate-900 border-t border-b border-slate-800 py-16 px-6">
+        <section id="rendezvous" className="bg-slate-900 border-b border-slate-800 py-16 px-6">
           <div className="max-w-4xl mx-auto bg-slate-950 border border-slate-800 rounded-2xl p-8 md:p-12 shadow-xl">
             <div className="text-center max-w-xl mx-auto mb-8">
               <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3.5 py-1.5 rounded-full inline-block mb-3">
@@ -316,7 +206,7 @@ export default function Home() {
             <div className="bg-slate-950 border border-slate-800 p-8 rounded-xl">
               <h4 className="text-lg font-bold text-white mb-4">Connect Socially</h4>
               <p className="text-slate-400 text-sm mb-6">Follow our professional networks and online portals for daily updates and structural showcases.</p>
-              
+
               <div className="flex flex-col gap-3">
                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
                   <span className="font-medium">LinkedIn Network</span>
