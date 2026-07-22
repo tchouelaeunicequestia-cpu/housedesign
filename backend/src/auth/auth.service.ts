@@ -10,8 +10,13 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async login(credentials: any) {
-    const user = await this.userService.findByUsername(credentials.username);
+  async login(credentials: { email?: string; username?: string; password: string }) {
+    const identifier = credentials.email || credentials.username;
+    if (!identifier) {
+      throw new UnauthorizedException('Email or username is required');
+    }
+
+    const user = await this.userService.findByIdentifier(identifier);
     if (!user) {
       throw new UnauthorizedException('Invalid system user credentials');
     }
@@ -21,9 +26,14 @@ export class AuthService {
       throw new UnauthorizedException('Invalid system user credentials');
     }
 
-    const payload = { username: user.username, sub: user.id };
+    const payload = { username: user.username, sub: user.id, email: user.email };
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
     };
   }
 }
