@@ -8,6 +8,7 @@ import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag } from 'lucide-rea
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
 import StatsBanner from '@/components/StatsBanner';
+import AdminProfileEditor from '@/components/AdminProfileEditor';
 
 interface Project {
   id: string;
@@ -99,13 +100,14 @@ export default function AdminDashboard() {
         {/* Statistics Banner */}
         <StatsBanner projects={projects} />
 
-        {/* Main Content Layout: Form + Records Grid */}
+        {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column: Project Form */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-6">
+          {/* Left Column: Project Form & Profile Editor */}
+          <div className="lg:col-span-1 space-y-8">
+            <div className="space-y-8">
               <ProjectForm />
+              <AdminProfileEditor />
             </div>
           </div>
 
