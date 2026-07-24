@@ -7,6 +7,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Redirect root URL (/) directly to Swagger UI (/api/docs)
+  app.use((req, res, next) => {
+    if (req.url === '/') {
+      return res.redirect('/api/docs');
+    }
+    next();
+  });
+
   // Global API Prefix
   app.setGlobalPrefix('api');
 
@@ -15,7 +23,7 @@ async function bootstrap() {
     prefix: '/uploads',
   });
 
-  // Enable CORS for all allowed client domains
+  // Enable CORS for allowed client domains
   app.enableCors({
     origin: [
       'https://housedesign-production.up.railway.app',
@@ -35,11 +43,9 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  // Mounts Swagger UI at: https://housedesign-production-f3bd.up.railway.app/api/docs
   SwaggerModule.setup('api/docs', app, document);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`Application is running on: await app.getUrl()`);
 }
 bootstrap();
