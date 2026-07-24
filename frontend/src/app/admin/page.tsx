@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag } from 'lucide-react';
+import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User } from 'lucide-react';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
 import StatsBanner from '@/components/StatsBanner';
-import AdminProfileEditor from '@/components/AdminProfileEditor';
 
 interface Project {
   id: string;
@@ -65,7 +64,7 @@ export default function AdminDashboard() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
-      <div className="max-w-7xl mx-auto space-y-12">
+      <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Bar */}
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -79,7 +78,14 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
+            <Link
+              href="/admin/profile"
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+            >
+              <User className="w-4 h-4 text-cyan-400" />
+              <span>Manage Profile</span>
+            </Link>
             <Link
               href="/admin/marketplace"
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
@@ -158,14 +164,6 @@ export default function AdminDashboard() {
           </div>
 
         </div>
-
-        {/* Bottom Section: Engineer Profile Editor */}
-        <div className="pt-8 border-t border-slate-800">
-          <div className="max-w-3xl mx-auto">
-            <AdminProfileEditor />
-          </div>
-        </div>
-
       </div>
     </main>
   );
