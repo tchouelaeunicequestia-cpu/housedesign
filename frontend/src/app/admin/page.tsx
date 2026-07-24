@@ -65,7 +65,7 @@ export default function AdminDashboard() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Header Bar */}
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
@@ -103,12 +103,9 @@ export default function AdminDashboard() {
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left Column: Project Form & Profile Editor */}
-          <div className="lg:col-span-1 space-y-8">
-            <div className="space-y-8">
-              <ProjectForm />
-              <AdminProfileEditor />
-            </div>
+          {/* Left Column: Project Creation Form */}
+          <div className="lg:col-span-1">
+            <ProjectForm />
           </div>
 
           {/* Right Column: Project Records List & Filters */}
@@ -161,6 +158,14 @@ export default function AdminDashboard() {
           </div>
 
         </div>
+
+        {/* Bottom Section: Engineer Profile Editor */}
+        <div className="pt-8 border-t border-slate-800">
+          <div className="max-w-3xl mx-auto">
+            <AdminProfileEditor />
+          </div>
+        </div>
+
       </div>
     </main>
   );
