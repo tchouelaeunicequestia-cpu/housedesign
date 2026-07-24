@@ -1,43 +1,45 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { NestExpressApplication } from '@nestjs/platform-express'; // Required
-import { join } from 'path'; // Required
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'; // Added for Swagger
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  // 1. Cast the app to NestExpressApplication
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Global API Prefix
   app.setGlobalPrefix('api');
 
-  // 2. Serve static files from the 'uploads' folder
-  // Files will be accessible at: /uploads/your-file.png
+  // Serve static assets from the 'uploads' folder
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads',
   });
 
+  // Enable CORS for all allowed client domains
   app.enableCors({
     origin: [
       'https://housedesign-production.up.railway.app',
       'https://housedesign-production-f3bd.up.railway.app',
       'http://localhost:3000',
-      'http://localhost:3001'
+      'http://localhost:3001',
     ],
     credentials: true,
   });
 
-  // 3. Configure Swagger Documentation
+  // Swagger API Documentation Setup
   const config = new DocumentBuilder()
     .setTitle('House Design API')
-    .setDescription('API documentation for the backend services')
+    .setDescription('Backend API documentation for House Design & Engineer Profile')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  // Because of the global prefix 'api', this will be hosted at /api/docs
-  SwaggerModule.setup('docs', app, document);
+  // Mounts Swagger UI at: https://housedesign-production-f3bd.up.railway.app/api/docs
+  SwaggerModule.setup('api/docs', app, document);
 
-  await app.listen(process.env.PORT || 3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on: await app.getUrl()`);
 }
 bootstrap();
