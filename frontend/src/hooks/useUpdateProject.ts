@@ -6,15 +6,35 @@ export const useUpdateProject = () => {
 
   return useMutation({
     mutationFn: async ({ id, formData }: { id: string | number; formData: FormData }) => {
-      const response = await api.put(`/project/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      let imageUrl = '';
+      const imageFile = formData.get('image') as File | null;
+
+      if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+        const uploadData = new FormData();
+        uploadData.append('file', imageFile);
+
+        const uploadRes = await api.post('/media/upload-single', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        imageUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path || '';
+      }
+
+      const payload: Record<string, any> = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        category: formData.get('category') as string,
+        status: formData.get('status') as string,
+      };
+
+      if (imageUrl) {
+        payload.imageUrl = imageUrl;
+      }
+
+      const response = await api.put(`/project/${id}`, payload);
       return response.data;
     },
     onSuccess: () => {
-      // Automatically refresh the project list after a successful update
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
   });

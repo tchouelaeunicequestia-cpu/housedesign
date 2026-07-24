@@ -132,7 +132,7 @@ export default function PortfolioPage() {
                     src={
                       project.imageUrl.startsWith('http')
                         ? project.imageUrl
-                        : `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}${project.imageUrl}`
+                        : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '')}${project.imageUrl.startsWith('/') ? project.imageUrl : `/${project.imageUrl}`}`
                     }
                     alt={project.title}
                     className="w-full h-52 object-cover"

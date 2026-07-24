@@ -6,11 +6,29 @@ export const useCreateProject = () => {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.post('/project', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      let imageUrl = '';
+      const imageFile = formData.get('image') as File | null;
+
+      if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+        const uploadData = new FormData();
+        uploadData.append('file', imageFile);
+
+        const uploadRes = await api.post('/media/upload-single', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        imageUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path || '';
+      }
+
+      const payload = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        category: formData.get('category') as string,
+        status: formData.get('status') as string,
+        ...(imageUrl ? { imageUrl } : {}),
+      };
+
+      const response = await api.post('/project', payload);
       return response.data;
     },
     onSuccess: () => {

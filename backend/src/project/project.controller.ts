@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { ProjectDto } from './dto/project.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
@@ -24,5 +34,28 @@ export class ProjectController {
   @ApiResponse({ status: 200, description: 'Return all architectural projects.' })
   findAll() {
     return this.projectService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a single project by ID' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.projectService.findOne(id);
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Update an existing project (Admin Only)' })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() projectDto: Partial<ProjectDto>,
+  ) {
+    return this.projectService.update(id, projectDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOperation({ summary: 'Delete a project (Admin Only)' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.projectService.remove(id);
   }
 }

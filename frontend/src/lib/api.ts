@@ -1,19 +1,27 @@
 import axios from 'axios';
 
-// Get the base URL from environment
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+let baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+if (baseURL.endsWith('/api')) {
+  baseURL = baseURL.slice(0, -4);
+}
 
 const api = axios.create({
-  baseURL: baseURL, // This sets the root domain
+  baseURL: baseURL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add a request interceptor to handle the /api prefix automatically
+// Add a request interceptor to attach JWT token and format API prefix
 api.interceptors.request.use((config) => {
-  // If the path is not absolute and doesn't already start with /api, add it
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+
   if (
     config.url &&
     !config.url.startsWith('http://') &&
@@ -21,8 +29,9 @@ api.interceptors.request.use((config) => {
     !config.url.startsWith('//') &&
     !config.url.startsWith('/api')
   ) {
-    config.url = `/api${config.url}`;
+    config.url = `/api${config.url.startsWith('/') ? config.url : `/${config.url}`}`;
   }
+
   return config;
 });
 

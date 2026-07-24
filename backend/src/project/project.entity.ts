@@ -21,6 +21,12 @@ export class Project {
   description: string;
 
   @Column({ nullable: true })
+  category: string;
+
+  @Column({ nullable: true })
+  status: string;
+
+  @Column({ nullable: true })
   imageUrl: string;
 
   @OneToMany(() => Asset, (asset) => asset.project)

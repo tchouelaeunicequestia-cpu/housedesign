@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { MapPin, Phone, Mail, Calendar, Globe, ArrowRight, Building2, Wrench, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
@@ -121,7 +122,14 @@ export default function Home() {
               </p>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); alert('Rendezvous request submitted successfully!'); }} className="space-y-4 max-w-lg mx-auto">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                toast.success('Rendezvous request submitted! Our lead specialist will contact you shortly.');
+                (e.target as HTMLFormElement).reset();
+              }}
+              className="space-y-4 max-w-lg mx-auto"
+            >
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">Your Full Name</label>
                 <input

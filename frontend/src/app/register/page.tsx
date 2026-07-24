@@ -6,40 +6,32 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/login', {
-        email: email,
-        username: email,
-        password: password,
+      await api.post('/user/register', {
+        username,
+        email,
+        password,
       });
 
-      const { access_token, user } = response.data;
-      if (access_token) {
-        localStorage.setItem('access_token', access_token);
-        if (user) {
-          localStorage.setItem('user_info', JSON.stringify(user));
-        }
-        toast.success('Successfully authenticated as Engineer.');
-        router.push('/admin');
-      } else {
-        toast.error('Authentication succeeded, but no access token was returned.');
-      }
+      toast.success('System admin account registered! Please sign in.');
+      router.push('/login');
     } catch (err: any) {
-      console.error('Login error:', err);
+      console.error('Registration error:', err);
       const apiMessage = err.response?.data?.message;
       const message = Array.isArray(apiMessage)
         ? apiMessage.join(', ')
-        : apiMessage || 'Invalid credentials or server unavailable.';
+        : apiMessage || 'Failed to register account. User or email may already exist.';
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -63,17 +55,29 @@ export default function LoginPage() {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-6 py-16 w-full flex-grow flex items-center">
+      <main className="max-w-md mx-auto px-6 py-12 w-full flex-grow flex items-center">
         <div className="w-full bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-lg">
           <div className="text-center mb-8">
-            <span className="text-red-500 text-xs uppercase tracking-widest font-bold bg-red-950/60 border border-red-800/50 px-3 py-1 rounded-full">
-              Restricted Area
+            <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 rounded-full">
+              System Admin Setup
             </span>
-            <h2 className="text-2xl font-bold text-white mt-4">Engineer Portal</h2>
-            <p className="text-slate-400 text-sm mt-1">Sign in to manage structural records and layouts.</p>
+            <h2 className="text-2xl font-bold text-white mt-4">Register Account</h2>
+            <p className="text-slate-400 text-sm mt-1">Create an engineer / administrator account for portal access.</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Username</label>
+              <input
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="engineer_username"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-slate-300 mb-1">Engineer Email</label>
               <input
@@ -103,14 +107,14 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full mt-2 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm cursor-pointer"
             >
-              {isLoading ? 'Verifying Credentials...' : 'Sign In'}
+              {isLoading ? 'Registering Account...' : 'Create Admin Account'}
             </button>
           </form>
 
           <div className="mt-6 text-center text-xs text-slate-400">
-            Need an admin account?{' '}
-            <Link href="/register" className="text-cyan-400 hover:underline font-medium">
-              Register Here
+            Already have an account?{' '}
+            <Link href="/login" className="text-cyan-400 hover:underline font-medium">
+              Sign In Here
             </Link>
           </div>
         </div>

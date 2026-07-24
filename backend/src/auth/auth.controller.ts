@@ -29,8 +29,8 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad Request. Missing or invalid body.' })
   @ApiResponse({ status: 401, description: 'Invalid credentials.' })
   async login(@Body() body: LoginDto) {
-    if (!body || !body.username) {
-      throw new BadRequestException('Request body must contain a username');
+    if (!body || (!body.username && !body.email)) {
+      throw new BadRequestException('Request body must contain an email or username');
     }
 
     return this.authService.login(body);

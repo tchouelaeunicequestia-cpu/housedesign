@@ -1,17 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useProjects } from '@/hooks/useProjects';
 import StatsBanner from '@/components/StatsBanner';
 import ProjectForm from '@/components/ProjectForm';
+import AssetForm from '@/components/AssetForm';
 import ProjectCard from '@/components/ProjectCard';
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { LogOut } from 'lucide-react';
 
 export default function AdminPage() {
+  const router = useRouter();
   const { data: projects, isLoading, isError, error } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
+
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      toast.error('Please sign in to access the Engineer Portal.');
+      router.push('/login');
+    }
+  }, [router]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user_info');
+    toast.success('Signed out successfully.');
+    router.push('/login');
+  };
 
   const filteredProjects = projects?.filter((project: any) => {
     const matchesSearch =
@@ -51,6 +71,12 @@ export default function AdminPage() {
               >
                 View Public Portfolio
               </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 text-xs font-medium text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-950/80 border border-red-800/40 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              >
+                <LogOut className="w-3.5 h-3.5" /> Sign Out
+              </button>
             </div>
           </div>
         </header>
@@ -71,8 +97,9 @@ export default function AdminPage() {
             completed={completedCount}
           />
 
-          <div className="my-8">
+          <div className="my-8 space-y-8">
             <ProjectForm />
+            <AssetForm />
           </div>
 
           <section className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">

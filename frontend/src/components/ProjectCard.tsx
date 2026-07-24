@@ -164,7 +164,7 @@ export default function ProjectCard({ project }: { project: any }) {
               src={
                 project.imageUrl.startsWith('http')
                   ? project.imageUrl
-                  : `${process.env.NEXT_PUBLIC_API_URL}${project.imageUrl}`
+                  : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '')}${project.imageUrl.startsWith('/') ? project.imageUrl : `/${project.imageUrl}`}`
               }
               alt={project.title}
               className="w-full h-52 object-cover rounded-xl mb-5 border border-slate-800"
