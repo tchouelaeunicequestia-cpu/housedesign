@@ -14,11 +14,18 @@ export interface Asset {
 }
 
 export const useAssets = () => {
-  return useQuery<Asset[]>({
+  const { data, isLoading, error, refetch } = useQuery<Asset[]>({
     queryKey: ['assets'],
     queryFn: async () => {
       const response = await api.get('/asset');
       return response.data;
     },
   });
+
+  return {
+    data,
+    isLoading,
+    isError: error,
+    mutate: refetch, // Aliased to match the admin dashboard's mutate() call
+  };
 };
