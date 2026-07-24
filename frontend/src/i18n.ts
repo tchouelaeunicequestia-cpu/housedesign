@@ -8,8 +8,21 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = routing.defaultLocale;
   }
 
+  // Explicit mapping prevents Webpack dynamic import bundling crashes
+  let messages;
+  switch (locale) {
+    fn:
+    case 'fr':
+      messages = (await import('../messages/fr.json')).default;
+      break;
+    case 'en':
+    default:
+      messages = (await import('../messages/en.json')).default;
+      break;
+  }
+
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages,
   };
 });
