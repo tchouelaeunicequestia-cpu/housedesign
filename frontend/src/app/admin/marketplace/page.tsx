@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAssets } from '@/hooks/useAssets';
-import { Plus, Trash2, Upload, Building, Wrench, MapPin, FileText, CheckCircle2, ArrowLeft, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash2, Upload, Building, Wrench, MapPin, FileText, CheckCircle2, ArrowLeft, Image as ImageIcon, Home, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AdminMarketplacePage() {
@@ -13,7 +13,7 @@ export default function AdminMarketplacePage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('object');
+  const [category, setCategory] = useState('design');
   const [status, setStatus] = useState('available');
 
   // File Upload State
@@ -47,17 +47,14 @@ export default function AdminMarketplacePage() {
       let mediaUrls: string[] = [];
       let documentUrls: string[] = [];
 
-      // 1. Batch upload images if selected
       if (imageFiles && imageFiles.length > 0) {
         mediaUrls = await handleUploadFiles(imageFiles);
       }
 
-      // 2. Batch upload document/spec files if selected
       if (docFiles && docFiles.length > 0) {
         documentUrls = await handleUploadFiles(docFiles);
       }
 
-      // 3. Create the asset record in the backend
       const token = localStorage.getItem('access_token');
       const response = await fetch('http://localhost:3000/api/asset', {
         method: 'POST',
@@ -80,16 +77,14 @@ export default function AdminMarketplacePage() {
 
       toast.success('Marketplace asset published successfully!');
       
-      // Reset Form
       setTitle('');
       setDescription('');
       setPrice('');
-      setCategory('object');
+      setCategory('design');
       setStatus('available');
       setImageFiles(null);
       setDocFiles(null);
 
-      // Refresh SWR cache
       mutate();
     } catch (error: any) {
       toast.error(error.message || 'Error creating asset listing');
@@ -121,12 +116,16 @@ export default function AdminMarketplacePage() {
 
   const getCategoryIcon = (cat: string) => {
     switch (cat) {
+      case 'design':
+        return <Home className="w-4 h-4 text-cyan-400" />;
       case 'land':
         return <MapPin className="w-4 h-4 text-emerald-400" />;
+      case 'material':
+        return <Package className="w-4 h-4 text-amber-400" />;
       case 'tool':
-        return <Wrench className="w-4 h-4 text-cyan-400" />;
+        return <Wrench className="w-4 h-4 text-purple-400" />;
       default:
-        return <Building className="w-4 h-4 text-amber-400" />;
+        return <Building className="w-4 h-4 text-blue-400" />;
     }
   };
 
@@ -145,7 +144,7 @@ export default function AdminMarketplacePage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-white">Marketplace Asset Management</h1>
-              <p className="text-xs text-slate-400 mt-0.5">Add structural assets, land plots, machinery, and specs.</p>
+              <p className="text-xs text-slate-400 mt-0.5">Manage house designs, blueprints, land plots, materials, and machinery.</p>
             </div>
           </div>
           <Link
@@ -157,7 +156,7 @@ export default function AdminMarketplacePage() {
           </Link>
         </div>
 
-        {/* Main Grid Layout: Creation Form + Active Inventory */}
+        {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Form Column */}
@@ -175,7 +174,7 @@ export default function AdminMarketplacePage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Commercial Plot Sector 4B"
+                  placeholder="e.g. Modern 4-Bedroom Duplex Blueprint"
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
@@ -187,7 +186,7 @@ export default function AdminMarketplacePage() {
                   required
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Detailed asset summary, dimensions, specs..."
+                  placeholder="Architectural specs, floor plans, dimensions, materials..."
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                 />
               </div>
@@ -200,7 +199,7 @@ export default function AdminMarketplacePage() {
                     required
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    placeholder="45000"
+                    placeholder="12000"
                     className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   />
                 </div>
@@ -211,9 +210,11 @@ export default function AdminMarketplacePage() {
                     onChange={(e) => setCategory(e.target.value)}
                     className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   >
+                    <option value="design">House Design / Plan</option>
                     <option value="land">Land Plot</option>
+                    <option value="material">Building Materials</option>
                     <option value="tool">Tool / Machinery</option>
-                    <option value="object">Architectural Object</option>
+                    <option value="object">3D Object / Component</option>
                   </select>
                 </div>
               </div>
@@ -235,7 +236,7 @@ export default function AdminMarketplacePage() {
               <div className="pt-2 border-t border-slate-800 space-y-3">
                 <div>
                   <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5 text-cyan-400" /> Listing Images (Batch)
+                    <ImageIcon className="w-3.5 h-3.5 text-cyan-400" /> Listing Images / Renders (Batch)
                   </label>
                   <input
                     type="file"
@@ -248,7 +249,7 @@ export default function AdminMarketplacePage() {
 
                 <div>
                   <label className="block text-xs font-medium text-slate-300 mb-1 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5 text-emerald-400" /> Documents / Specs (PDF/DOC)
+                    <FileText className="w-3.5 h-3.5 text-emerald-400" /> Blueprints / Specs (PDF/DOC)
                   </label>
                   <input
                     type="file"
@@ -326,8 +327,8 @@ export default function AdminMarketplacePage() {
                   {/* Attached Media Counter & Actions */}
                   <div className="pt-3 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
                     <div className="flex items-center gap-3">
-                      <span>🖼️ {asset.mediaUrls?.length || 0} Images</span>
-                      <span>📄 {asset.documentUrls?.length || 0} Docs</span>
+                      <span>🖼️ {asset.mediaUrls?.length || 0} Renders</span>
+                      <span>📄 {asset.documentUrls?.length || 0} Specs</span>
                     </div>
 
                     <button
