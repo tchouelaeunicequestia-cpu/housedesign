@@ -1,7 +1,14 @@
-﻿import { useTranslations } from 'next-intl';
+﻿import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export default function LocaleHomePage() {
-  const t = useTranslations('Index');
+export default async function LocaleHomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  
+  const t = await getTranslations('Index');
 
   return (
     <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-8">
