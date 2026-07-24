@@ -81,7 +81,7 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
             <Link
               href="/admin/profile"
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
               <User className="w-4 h-4 text-cyan-400" />
               <span>Manage Profile</span>
