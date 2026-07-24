@@ -1,8 +1,8 @@
 import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { EngineerProfileService } from './engineer-profile.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Assuming you have an auth guard
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-@Controller('api/engineer-profile')
+@Controller('engineer-profile')
 export class EngineerProfileController {
   constructor(private readonly profileService: EngineerProfileService) {}
 

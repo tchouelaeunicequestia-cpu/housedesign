@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { MediaModule } from './media/media.module';
 import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
+import { EngineerProfileModule } from './engineer-profile/engineer-profile.module';
 
 @Module({
   imports: [
@@ -30,8 +31,9 @@ import { UserModule } from './user/user.module';
     AssetModule,
     ProjectModule,
     MediaModule,
+    EngineerProfileModule,
   ],
-  controllers: [AppController], // IMPORTANT: Must be here
-  providers: [AppService],       // IMPORTANT: Must be here
+  controllers: [AppController], 
+  providers: [AppService],       
 })
 export class AppModule {}
