@@ -29,6 +29,14 @@ export class AssetController {
     return this.assetService.findOne(id);
   }
 
+  @Post(':id/offer')
+  async submitOffer(
+    @Param('id') id: string,
+    @Body() body: { offerAmount: number; message: string },
+  ) {
+    return this.assetService.handleOffer(id, body);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.assetService.remove(id);

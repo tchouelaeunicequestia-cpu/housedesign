@@ -40,6 +40,15 @@ export class AssetService {
     return asset;
   }
 
+  async handleOffer(assetId: string, data: { offerAmount: number; message: string }) {
+    const asset = await this.findOne(assetId);
+    
+    return {
+      success: true,
+      message: `Offer of $${data.offerAmount} successfully registered for asset: ${asset.title}`,
+    };
+  }
+
   async remove(id: string): Promise<void> {
     const result = await this.assetRepository.delete(id);
 
