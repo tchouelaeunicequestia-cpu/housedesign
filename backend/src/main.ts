@@ -18,6 +18,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://housedesign-production.up.railway.app',
+      'https://housedesign-production-f3bd.up.railway.app',
       'http://localhost:3000',
       'http://localhost:3001'
     ],
