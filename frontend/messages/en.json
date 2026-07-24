@@ -1,1 +1,6 @@
-﻿{"Nav":{"home":"Home","projects":"Projects","services":"Services","about":"About","contact":"Contact"},"Hero":{"title":"Excellence in Architectural Design & Engineering","subtitle":"Bringing structural visions to life with precision and innovation."}}
+﻿{
+  "Index": {
+    "title": "Welcome to HouseDesign",
+    "description": "Your translation system is working perfectly!"
+  }
+}

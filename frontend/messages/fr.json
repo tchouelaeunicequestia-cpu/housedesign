@@ -1,1 +1,6 @@
-﻿{"Nav":{"home":"Accueil","projects":"Projets","services":"Services","about":"À propos","contact":"Contact"},"Hero":{"title":"Ingénierie et Conception Architecturale d'Excellence","subtitle":"Transformons vos visions structurelles en réalité avec précision et innovation."}}
+﻿{
+  "Index": {
+    "title": "Bienvenue chez HouseDesign",
+    "description": "Votre système de traduction fonctionne parfaitement !"
+  }
+}
