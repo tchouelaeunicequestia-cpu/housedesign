@@ -20,12 +20,27 @@ export const useCreateProject = () => {
         imageUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path || '';
       }
 
+      let videoUrl = '';
+      const videoFile = formData.get('video') as File | null;
+
+      if (videoFile && videoFile instanceof File && videoFile.size > 0) {
+        const uploadData = new FormData();
+        uploadData.append('file', videoFile);
+
+        const uploadRes = await api.post('/media/upload-single', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        videoUrl = uploadRes.data?.url || uploadRes.data?.fileUrl || uploadRes.data?.path || '';
+      }
+
       const payload = {
         title: formData.get('title') as string,
         description: formData.get('description') as string,
         category: formData.get('category') as string,
         status: formData.get('status') as string,
         ...(imageUrl ? { imageUrl } : {}),
+        ...(videoUrl ? { videoUrl } : {}),
       };
 
       const response = await api.post('/project', payload);

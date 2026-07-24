@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
+import { Search, PlayCircle } from 'lucide-react';
 
 export default function PortfolioPage() {
   const { data: projects, isLoading, isError } = useProjects();
@@ -10,10 +11,12 @@ export default function PortfolioPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
 
+  const categories = ['All', 'Structural', 'Commercial', 'Residential', 'Industrial', 'Infrastructure'];
+
   const filteredProjects = projects?.filter((project: any) => {
     const matchesSearch =
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase());
+      project.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'All' || project.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
@@ -29,13 +32,20 @@ export default function PortfolioPage() {
     }
   };
 
+  const getMediaUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '');
+    return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
       <div>
         {/* Navigation Header */}
-        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10 shadow-md">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-3">
+        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-3">
               <img
                 src="/logo.png"
                 alt="House Design Logo"
@@ -47,17 +57,19 @@ export default function PortfolioPage() {
                   — la maison c'est nous —
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-              >
-                Home
-              </Link>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+              <Link href="/" className="hover:text-white transition-colors">Home</Link>
+              <Link href="/portfolio" className="text-white font-semibold transition-colors">Portfolio</Link>
+              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+              <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
+            </nav>
+
+            <div className="flex items-center gap-3">
               <Link
                 href="/login"
-                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-3.5 py-2 rounded-lg transition-colors shadow-sm"
+                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
               >
                 Engineer Login
               </Link>
@@ -65,98 +77,133 @@ export default function PortfolioPage() {
           </div>
         </header>
 
-        {/* Hero Section */}
-        <section className="bg-slate-900 text-white py-16 px-6 text-center border-b border-slate-800">
+        {/* Portfolio Hero Header */}
+        <section className="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-16 px-6 text-center border-b border-slate-800">
           <div className="max-w-3xl mx-auto">
-            <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 rounded-full">
-              Complete Works
+            <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3.5 py-1.5 rounded-full inline-block mb-4">
+              Executed Projects Portfolio
             </span>
-            <h2 className="text-4xl font-extrabold mt-4 mb-3 text-white">Engineering Archive</h2>
-            <p className="text-slate-400 text-base">
-              Explore our comprehensive gallery of architectural blueprints and structural implementations.
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white">
+              Engineering Marvels & Architectural Blueprints
+            </h2>
+            <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+              Explore our verified portfolio featuring 25+ years of experience across 15+ premier structural executions with a 98% completion standard.
             </p>
           </div>
         </section>
 
-        {/* Main Content & Filter Section */}
-        <main className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <h3 className="text-2xl font-bold text-white">All Projects</h3>
-
-            <div className="flex flex-wrap gap-3 w-full md:w-auto">
+        {/* Search & Filter Controls */}
+        <section className="max-w-7xl mx-auto px-6 py-8">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+            {/* Search Input */}
+            <div className="relative w-full md:w-96">
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search archive..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600 flex-grow md:w-64"
+                placeholder="Search projects by title or keyword..."
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
-              >
-                <option value="All">All Categories</option>
-                <option value="Residential">Residential</option>
-                <option value="Commercial">Commercial</option>
-                <option value="Industrial">Industrial</option>
-              </select>
+            </div>
+
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors border ${
+                    filterCategory === cat
+                      ? 'bg-cyan-600 text-white border-cyan-500 shadow-sm'
+                      : 'bg-slate-950 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
+        </section>
 
+        {/* Project Grid */}
+        <main className="max-w-7xl mx-auto px-6 py-6">
           {isLoading && (
-            <div className="text-cyan-400 font-medium py-12 text-center">Loading portfolio archive...</div>
+            <div className="text-center py-20 text-slate-400 text-sm">
+              Loading projects and architectural records...
+            </div>
           )}
 
           {isError && (
-            <div className="p-4 bg-red-950/60 text-red-300 rounded-lg border border-red-800/50">
-              Unable to load portfolio items at this time.
+            <div className="text-center py-20 text-red-400 text-sm bg-red-950/20 border border-red-900/50 rounded-xl">
+              Failed to load project records from backend server. Please verify connection.
             </div>
           )}
 
-          {filteredProjects && filteredProjects.length === 0 && (
-            <div className="text-center py-16 bg-slate-900 rounded-xl border border-slate-800 shadow-sm">
-              <p className="text-slate-400 text-lg">No matching records found.</p>
+          {!isLoading && !isError && filteredProjects?.length === 0 && (
+            <div className="text-center py-20 text-slate-400 text-sm bg-slate-900 border border-slate-800 rounded-xl">
+              No projects found matching your search or category filter.
             </div>
           )}
 
-          {/* Grid Showcase */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects?.map((project: any) => (
               <div
                 key={project.id}
-                className="bg-slate-900 rounded-xl border border-slate-800 shadow-sm overflow-hidden flex flex-col hover:border-slate-700 transition-all"
+                className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-slate-700 transition-all flex flex-col justify-between"
               >
-                {project.imageUrl && (
-                  <img
-                    src={
-                      project.imageUrl.startsWith('http')
-                        ? project.imageUrl
-                        : `${(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '')}${project.imageUrl.startsWith('/') ? project.imageUrl : `/${project.imageUrl}`}`
-                    }
-                    alt={project.title}
-                    className="w-full h-52 object-cover"
-                  />
-                )}
-                <div className="p-5 flex flex-col flex-grow justify-between">
-                  <div>
-                    <div className="flex justify-between items-start mb-3 gap-2">
-                      <h4 className="text-lg font-bold text-white">{project.title}</h4>
-                    </div>
-                    <div className="flex gap-2 mb-3">
-                      <span className="bg-slate-950 text-cyan-400 border border-cyan-900/50 text-xs px-2.5 py-0.5 rounded-full font-medium">
-                        {project.category || 'Residential'}
-                      </span>
-                      <span
-                        className={`border text-xs px-2.5 py-0.5 rounded-full font-medium ${getStatusBadgeColor(
-                          project.status
-                        )}`}
-                      >
-                        {project.status || 'Planning'}
-                      </span>
-                    </div>
-                    <p className="text-slate-400 text-sm leading-relaxed mb-4">{project.description}</p>
+                {/* 1. Project Name & Description First */}
+                <div className="p-6 flex flex-col flex-grow">
+                  <h4 className="text-xl font-bold text-white mb-2">{project.title}</h4>
+
+                  <div className="flex gap-2 mb-4">
+                    <span className="bg-slate-950 text-cyan-400 border border-cyan-900/50 text-xs px-2.5 py-0.5 rounded-full font-medium">
+                      {project.category || 'Structural'}
+                    </span>
+                    <span
+                      className={`border text-xs px-2.5 py-0.5 rounded-full font-medium ${getStatusBadgeColor(
+                        project.status
+                      )}`}
+                    >
+                      {project.status || 'Planning'}
+                    </span>
                   </div>
+
+                  <p className="text-slate-400 text-sm leading-relaxed">{project.description}</p>
+                </div>
+
+                <div>
+                  {/* 2. Image */}
+                  {project.imageUrl && (
+                    <div className="relative h-48 w-full bg-slate-950 overflow-hidden border-t border-slate-800">
+                      <img
+                        src={getMediaUrl(project.imageUrl)}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  {/* 3. Video */}
+                  {project.videoUrl && (
+                    <div className="p-4 bg-slate-950/90 border-t border-slate-800">
+                      <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+                        <PlayCircle className="w-4 h-4" /> Project Video Walkthrough
+                      </div>
+                      <video
+                        controls
+                        className="w-full h-40 rounded-lg bg-black object-cover border border-slate-800"
+                        src={getMediaUrl(project.videoUrl)}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  )}
+                </div>
+
+                <div className="px-6 py-3 border-t border-slate-800/50 flex justify-between items-center text-xs text-slate-500 bg-slate-900">
+                  <span>ID: #{project.id}</span>
+                  <span className="text-cyan-400 font-medium">Verified Execution</span>
                 </div>
               </div>
             ))}

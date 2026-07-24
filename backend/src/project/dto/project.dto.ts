@@ -31,4 +31,9 @@ export class ProjectDto {
   @IsString()
   @IsOptional()
   imageUrl?: string;
+
+  @ApiPropertyOptional({ description: 'Project video URL', example: '/uploads/walkthrough.mp4' })
+  @IsString()
+  @IsOptional()
+  videoUrl?: string;
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { toast } from 'sonner';
 import { MapPin, Phone, Mail, Calendar, Globe, ArrowRight, Building2, Wrench, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
@@ -72,6 +71,24 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Stats Bar Section */}
+        <section className="bg-slate-900 border-b border-slate-800 py-8 px-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div className="bg-slate-950/60 border border-slate-800 p-6 rounded-xl shadow-sm">
+              <p className="text-3xl font-extrabold text-cyan-400">25+</p>
+              <p className="text-xs uppercase tracking-widest text-slate-400 mt-1 font-semibold">Years of Experience</p>
+            </div>
+            <div className="bg-slate-950/60 border border-slate-800 p-6 rounded-xl shadow-sm">
+              <p className="text-3xl font-extrabold text-white">15+</p>
+              <p className="text-xs uppercase tracking-widest text-slate-400 mt-1 font-semibold">Projects Executed</p>
+            </div>
+            <div className="bg-slate-950/60 border border-slate-800 p-6 rounded-xl shadow-sm">
+              <p className="text-3xl font-extrabold text-emerald-400">98%</p>
+              <p className="text-xs uppercase tracking-widest text-slate-400 mt-1 font-semibold">Completion Rate</p>
+            </div>
+          </div>
+        </section>
+
         {/* Services Section */}
         <section id="services" className="max-w-7xl mx-auto px-6 py-16 border-b border-slate-900">
           <div className="text-center mb-12">
@@ -122,14 +139,7 @@ export default function Home() {
               </p>
             </div>
 
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                toast.success('Rendezvous request submitted! Our lead specialist will contact you shortly.');
-                (e.target as HTMLFormElement).reset();
-              }}
-              className="space-y-4 max-w-lg mx-auto"
-            >
+            <form onSubmit={(e) => { e.preventDefault(); alert('Rendezvous request submitted successfully!'); }} className="space-y-4 max-w-lg mx-auto">
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">Your Full Name</label>
                 <input
@@ -214,7 +224,7 @@ export default function Home() {
             <div className="bg-slate-950 border border-slate-800 p-8 rounded-xl">
               <h4 className="text-lg font-bold text-white mb-4">Connect Socially</h4>
               <p className="text-slate-400 text-sm mb-6">Follow our professional networks and online portals for daily updates and structural showcases.</p>
-
+              
               <div className="flex flex-col gap-3">
                 <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
                   <span className="font-medium">LinkedIn Network</span>

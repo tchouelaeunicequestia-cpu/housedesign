@@ -29,6 +29,9 @@ export class Project {
   @Column({ nullable: true })
   imageUrl: string;
 
+  @Column({ nullable: true })
+  videoUrl: string;
+
   @OneToMany(() => Asset, (asset) => asset.project)
   assets: Asset[];
 

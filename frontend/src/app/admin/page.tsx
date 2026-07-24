@@ -2,155 +2,153 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useProjects } from '@/hooks/useProjects';
-import StatsBanner from '@/components/StatsBanner';
-import ProjectForm from '@/components/ProjectForm';
-import AssetForm from '@/components/AssetForm';
-import ProjectCard from '@/components/ProjectCard';
-import Link from 'next/link';
 import { toast } from 'sonner';
-import { LogOut } from 'lucide-react';
+import { LogOut, LayoutDashboard, Search, Filter } from 'lucide-react';
+import ProjectForm from '@/components/ProjectForm';
+import ProjectCard from '@/components/ProjectCard';
+import StatsBanner from '@/components/StatsBanner';
 
-export default function AdminPage() {
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  status: 'Planning' | 'In-Progress' | 'Completed';
+  imageUrl?: string;
+  videoUrl?: string;
+  createdAt: string;
+}
+
+export default function AdminDashboard() {
   const router = useRouter();
-  const { data: projects, isLoading, isError, error } = useProjects();
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-      toast.error('Please sign in to access the Engineer Portal.');
       router.push('/login');
+      return;
     }
+    fetchProjects();
   }, [router]);
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/project');
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      const data = await response.json();
+      setProjects(data);
+    } catch (error) {
+      toast.error('Could not load project records.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
-    localStorage.removeItem('user_info');
-    toast.success('Signed out successfully.');
+    toast.success('Logged out successfully');
     router.push('/login');
   };
 
-  const filteredProjects = projects?.filter((project: any) => {
-    const matchesSearch =
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'All' || project.category === filterCategory;
+  const filteredProjects = projects.filter((project) => {
+    const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          project.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || project.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const totalCount = projects?.length || 0;
-  const planningCount = projects?.filter((p: any) => (p.status || 'Planning') === 'Planning').length || 0;
-  const inProgressCount = projects?.filter((p: any) => p.status === 'In-Progress').length || 0;
-  const completedCount = projects?.filter((p: any) => p.status === 'Completed').length || 0;
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
-      <div>
-        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10 shadow-md">
-          <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <img
-                src="/logo.png"
-                alt="House Design Logo"
-                className="h-10 w-auto object-contain"
-              />
-              <div>
-                <h1 className="text-xl font-bold tracking-tight text-white">House Design</h1>
-                <p className="text-[10px] text-cyan-400 font-semibold tracking-widest uppercase">
-                  — la maison c'est nous —
-                </p>
-              </div>
+    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Header Bar */}
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-red-600/10 border border-red-600/20 rounded-xl text-red-500">
+              <LayoutDashboard className="w-6 h-6" />
             </div>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-              >
-                View Public Portfolio
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 text-xs font-medium text-red-400 hover:text-red-300 bg-red-950/50 hover:bg-red-950/80 border border-red-800/40 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-              >
-                <LogOut className="w-3.5 h-3.5" /> Sign Out
-              </button>
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-white">Admin Control Hub</h1>
+              <p className="text-sm text-slate-400">Manage engineering records, infrastructure specs, and media assets.</p>
             </div>
           </div>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors cursor-pointer"
+          >
+            <LogOut className="w-4 h-4 text-red-400" />
+            <span>Sign Out</span>
+          </button>
         </header>
 
-        <main className="max-w-6xl mx-auto px-6 py-10">
-          <div className="mb-8">
-            <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3 py-1 rounded-full">
-              Admin Control Panel
-            </span>
-            <h2 className="text-3xl font-extrabold text-white mt-3">Civil Engineering Dashboard</h2>
-            <p className="text-slate-400 text-sm mt-1">Manage architectural records, project statuses, and structural deployments.</p>
+        {/* Statistics Banner */}
+        <StatsBanner projects={projects} />
+
+        {/* Main Content Layout: Form + Records Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Left Column: Project Form */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-6">
+              <ProjectForm />
+            </div>
           </div>
 
-          <StatsBanner
-            total={totalCount}
-            planning={planningCount}
-            inProgress={inProgressCount}
-            completed={completedCount}
-          />
-
-          <div className="my-8 space-y-8">
-            <ProjectForm />
-            <AssetForm />
-          </div>
-
-          <section className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-              <h3 className="text-2xl font-bold text-white">Existing Projects</h3>
-
-              <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          {/* Right Column: Project Records List & Filters */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
+              
+              {/* Search input */}
+              <div className="relative w-full sm:w-72">
+                <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
                 <input
                   type="text"
                   placeholder="Search projects..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-600 flex-grow md:w-64"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                 />
+              </div>
+
+              {/* Category Filter */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <Filter className="w-4 h-4 text-slate-400" />
                 <select
-                  value={filterCategory}
-                  onChange={(e) => setFilterCategory(e.target.value)}
-                  className="bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full sm:w-auto bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
                 >
                   <option value="All">All Categories</option>
                   <option value="Residential">Residential</option>
                   <option value="Commercial">Commercial</option>
                   <option value="Industrial">Industrial</option>
+                  <option value="Infrastructure">Infrastructure</option>
                 </select>
               </div>
             </div>
 
-            {isLoading && <div className="text-cyan-400 font-medium py-8 text-center">Loading blueprints...</div>}
-
-            {isError && (
-              <div className="p-4 bg-red-950/60 text-red-300 rounded-lg border border-red-800/50">
-                Error loading projects: {error?.message}
+            {/* Grid of Projects */}
+            {isLoading ? (
+              <div className="text-center py-20 text-slate-500">Loading project records...</div>
+            ) : filteredProjects.length === 0 ? (
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-400">
+                No matching project records found.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredProjects.map((project) => (
+                  <ProjectCard key={project.id} project={project} onUpdate={fetchProjects} />
+                ))}
               </div>
             )}
+          </div>
 
-            {filteredProjects && filteredProjects.length === 0 && (
-              <p className="text-slate-400 text-center py-12">No projects found matching your criteria.</p>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-              {filteredProjects?.map((project: any) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
-          </section>
-        </main>
+        </div>
       </div>
-
-      <footer className="bg-slate-900 border-t border-slate-800 mt-20 py-8 text-center text-xs text-slate-500">
-        <p>© {new Date().getFullYear()} House Design. — la maison c'est nous —. All rights reserved.</p>
-      </footer>
-    </div>
+    </main>
   );
 }

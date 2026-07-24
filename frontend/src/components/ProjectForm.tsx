@@ -1,115 +1,214 @@
 'use client';
 
 import { useState } from 'react';
-import { useCreateProject } from '@/hooks/useCreateProject';
 import { toast } from 'sonner';
+import { Upload, Video, Image as ImageIcon, PlusCircle } from 'lucide-react';
 
 export default function ProjectForm() {
-  const createProjectMutation = useCreateProject();
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'Residential',
+    status: 'Planning',
+    imageUrl: '',
+    videoUrl: '',
+  });
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Residential');
-  const [status, setStatus] = useState('Planning');
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isUploadingVideo, setIsUploadingVideo] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title || !description) return;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('category', category);
-    formData.append('status', status);
-    if (imageFile) {
-      formData.append('image', imageFile);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append('file', file);
+
+    const token = localStorage.getItem('access_token');
+    const setter = type === 'image' ? setIsUploadingImage : setIsUploadingVideo;
+
+    setter(true);
+    try {
+      const response = await fetch('http://localhost:3000/api/media/upload-single', {
+        method: 'POST',
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: uploadData,
+      });
+
+      if (!response.ok) throw new Error('Failed to upload file');
+
+      const data = await response.json();
+      const fileUrl = data.url || data.filePath || data.path;
+
+      setFormData((prev) => ({
+        ...prev,
+        [type === 'image' ? 'imageUrl' : 'videoUrl']: fileUrl,
+      }));
+
+      toast.success(`${type === 'image' ? 'Image' : 'Video'} uploaded successfully!`);
+    } catch (error) {
+      toast.error(`Failed to upload ${type}. Please try again.`);
+    } finally {
+      setter(false);
     }
+  };
 
-    createProjectMutation.mutate(formData, {
-      onSuccess: () => {
-        setTitle('');
-        setDescription('');
-        setCategory('Residential');
-        setStatus('Planning');
-        setImageFile(null);
-        toast.success('Project created successfully!');
-      },
-      onError: (err: any) => {
-        toast.error(`Failed to create project: ${err.message}`);
-      },
-    });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    const token = localStorage.getItem('access_token');
+
+    try {
+      const response = await fetch('http://localhost:3000/api/project', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) throw new Error('Failed to create project record');
+
+      toast.success('Project created successfully!');
+      setFormData({
+        title: '',
+        description: '',
+        category: 'Residential',
+        status: 'Planning',
+        imageUrl: '',
+        videoUrl: '',
+      });
+      window.location.reload();
+    } catch (error) {
+      toast.error('Error creating project. Check your inputs or authentication.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <section className="bg-slate-900 p-6 md:p-8 rounded-2xl shadow-xl border border-slate-800">
-      <h3 className="text-2xl font-bold text-white mb-6">Add New Project Blueprint</h3>
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">Project Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
-            placeholder="e.g. Modern Villa Phase II..."
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-lg">
+      <div className="flex items-center gap-2 mb-6">
+        <PlusCircle className="w-5 h-5 text-cyan-400" />
+        <h3 className="text-xl font-bold text-white">Add New Project Record</h3>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-2">Category</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Project Title</label>
+            <input
+              type="text"
+              name="title"
+              required
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="e.g. Modern Villa Yaoundé"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Category</label>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
             >
               <option value="Residential">Residential</option>
               <option value="Commercial">Commercial</option>
               <option value="Industrial">Industrial</option>
+              <option value="Infrastructure">Infrastructure</option>
             </select>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-2">Status</label>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Execution Status</label>
             <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
             >
               <option value="Planning">Planning</option>
               <option value="In-Progress">In-Progress</option>
               <option value="Completed">Completed</option>
             </select>
           </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Project Image URL or Upload</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                name="imageUrl"
+                value={formData.imageUrl}
+                onChange={handleChange}
+                placeholder="/uploads/image.jpg"
+                className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+              />
+              <label className="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1 text-cyan-400 transition-colors">
+                <Upload className="w-3.5 h-3.5" />
+                <span>{isUploadingImage ? '...' : 'File'}</span>
+                <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, 'image')} className="hidden" />
+              </label>
+            </div>
+          </div>
         </div>
+
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">Project Image File</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-cyan-950 file:text-cyan-300 hover:file:bg-cyan-900 shadow-inner"
-          />
+          <label className="block text-xs font-medium text-slate-300 mb-1">Project Video Walkthrough URL or Upload</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              name="videoUrl"
+              value={formData.videoUrl}
+              onChange={handleChange}
+              placeholder="/uploads/walkthrough.mp4 or external link"
+              className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+            />
+            <label className="cursor-pointer bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-2 rounded-lg text-xs font-medium flex items-center gap-1 text-cyan-400 transition-colors">
+              <Video className="w-3.5 h-3.5" />
+              <span>{isUploadingVideo ? '...' : 'Video'}</span>
+              <input type="file" accept="video/*" onChange={(e) => handleFileUpload(e, 'video')} className="hidden" />
+            </label>
+          </div>
         </div>
+
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">Detailed Description</label>
+          <label className="block text-xs font-medium text-slate-300 mb-1">Project Description</label>
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            name="description"
             required
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
-            placeholder="Enter structural specs, floor counts, and client requirements..."
-            rows={4}
+            rows={3}
+            value={formData.description}
+            onChange={handleChange}
+            placeholder="Detailed overview of structural specifications and architectural layout..."
+            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600 resize-none"
           />
         </div>
+
         <button
           type="submit"
-          disabled={createProjectMutation.isPending}
-          className="w-full md:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 rounded-xl text-base font-bold transition-colors shadow-lg shadow-red-950/50 disabled:opacity-50"
+          disabled={isSubmitting}
+          className="w-full py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm cursor-pointer"
         >
-          {createProjectMutation.isPending ? 'Uploading & Creating...' : 'Create Project'}
+          {isSubmitting ? 'Saving Project Record...' : 'Publish Project'}
         </button>
       </form>
-    </section>
+    </div>
   );
 }
