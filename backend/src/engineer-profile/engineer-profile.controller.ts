@@ -1,6 +1,6 @@
 import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { EngineerProfileService } from './engineer-profile.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('engineer-profile')
 export class EngineerProfileController {
@@ -11,7 +11,7 @@ export class EngineerProfileController {
     return this.profileService.getProfile();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Put()
   async updateProfile(@Body() body: any) {
     return this.profileService.updateProfile(body);
