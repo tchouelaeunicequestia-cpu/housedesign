@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from '../routing';
 import { useTransition } from 'react';
 
 export default function LanguageSwitcher() {
@@ -12,13 +12,7 @@ export default function LanguageSwitcher() {
 
   const handleLanguageChange = (newLocale: string) => {
     startTransition(() => {
-      let newPath = pathname;
-      if (locale === 'fr' && newLocale === 'en') {
-        newPath = \/en\\;
-      } else if (locale === 'en' && newLocale === 'fr') {
-        newPath = pathname.replace('/en', '') || '/';
-      }
-      router.push(newPath);
+      router.replace(pathname, { locale: newLocale });
     });
   };
 
@@ -27,14 +21,18 @@ export default function LanguageSwitcher() {
       <button
         onClick={() => handleLanguageChange('fr')}
         disabled={isPending}
-        className={\px-3 py-1 rounded text-xs font-bold transition-all \\}
+        className={`px-3 py-1 rounded text-xs font-bold transition-all ${
+          locale === 'fr' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+        }`}
       >
         FR
       </button>
       <button
         onClick={() => handleLanguageChange('en')}
         disabled={isPending}
-        className={\px-3 py-1 rounded text-xs font-bold transition-all \\}
+        className={`px-3 py-1 rounded text-xs font-bold transition-all ${
+          locale === 'en' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
+        }`}
       >
         EN
       </button>

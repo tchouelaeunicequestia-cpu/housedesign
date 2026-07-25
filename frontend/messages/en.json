@@ -1,6 +1,342 @@
 ﻿{
-  "Index": {
-    "title": "Welcome to HouseDesign",
-    "description": "Your translation system is working perfectly!"
+  "HomePage": {
+    "title": "HouseDesign Dashboard",
+    "projectsTitle": "Your Architectural Projects",
+    "tagline": "— la maison c'est nous —",
+    "nav": {
+      "home": "Home",
+      "portfolio": "Portfolio",
+      "about": "About Us",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Engineer Login"
+    },
+    "hero": {
+      "eyebrow": "Structural Engineering & Architectural Excellence",
+      "title": "Building Your Vision With Precision",
+      "description": "Professional residential, commercial, and industrial engineering solutions. Explore our comprehensive services, book a rendezvous, and discover our premier work portfolio.",
+      "bookButton": "Book a Rendezvous",
+      "servicesButton": "Our Services"
+    },
+    "services": {
+      "title": "Services Offered",
+      "subtitle": "Comprehensive engineering expertise tailored to modern construction demands.",
+      "structural": {
+        "title": "Structural Architecture",
+        "description": "Complete structural layout designs, blueprints, and load calculations for residential and commercial constructions."
+      },
+      "supervision": {
+        "title": "Site Supervision & Execution",
+        "description": "On-site engineering oversight, quality assessment, and project management from foundation to final finish."
+      },
+      "consultation": {
+        "title": "Consultation & Audits",
+        "description": "Structural integrity audits, technical evaluations, material consultation, and regulatory compliance advice."
+      }
+    },
+    "rendezvous": {
+      "eyebrow": "Schedule a Meeting",
+      "title": "Book a Rendezvous",
+      "description": "Discuss your architectural plans and engineering requirements directly with our lead specialist.",
+      "nameLabel": "Your Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "john@example.com",
+      "dateLabel": "Preferred Date & Time",
+      "submitButton": "Confirm Rendezvous Request",
+      "successAlert": "Rendezvous request submitted successfully!"
+    },
+    "contact": {
+      "eyebrow": "Lead Engineer Contact",
+      "title": "Eng. Lead Specialist",
+      "description": "Reach out directly via phone or email for immediate structural inquiries, consultations, or direct site visits.",
+      "locationLabel": "Location",
+      "phoneLabel": "Phone Number",
+      "emailLabel": "Email Address"
+    },
+    "social": {
+      "title": "Connect Socially",
+      "description": "Follow our professional networks and online portals for daily updates and structural showcases."
+    },
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
+  },
+  "Marketplace": {
+    "title": "Architectural Marketplace",
+    "subtitle": "Browse and manage your marketplace assets."
+  },
+  "AboutPage": {
+    "nav": {
+      "home": "Home",
+      "portfolio": "Portfolio",
+      "about": "About Us",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Engineer Login"
+    },
+    "hero": {
+      "eyebrow": "About House Design",
+      "title": "Engineering Excellence & Structural Innovation",
+      "description": "Dedicated to designing durable, eco-friendly, and modern residential and commercial architectures in Cameroon and beyond."
+    },
+    "defaults": {
+      "engineerName": "Lead Engineer",
+      "engineerTitle": "Principal Structural Engineer",
+      "bio": "At House Design, we believe every structure should harmonize strength, safety, and modern aesthetic elegance. From initial blueprint layout to foundation pouring and final finishing, every project is managed with extreme technical rigor.",
+      "history": "With years of rigorous practice in structural calculations, building code compliance, and site execution, our practice leads the standard for dependable architectural delivery across the region."
+    },
+    "background": {
+      "eyebrow": "Professional Background"
+    },
+    "stats": {
+      "completedProjects": "Completed Projects",
+      "yearsExperience": "Years Experience",
+      "codeCompliance": "Code Compliance",
+      "structuralGrade": "Structural Grade"
+    },
+    "pillars": {
+      "title": "Our Core Engineering Pillars",
+      "subtitle": "The technical standards and methodologies driving every blueprint.",
+      "precision": {
+        "title": "Precision Architecture",
+        "description": "Advanced spatial layout and load simulation ensuring zero discrepancies during construction."
+      },
+      "safety": {
+        "title": "Safety & Compliance",
+        "description": "Rigorous adherence to structural safety codes, soil metrics, and regional environmental standards."
+      },
+      "marketplace": {
+        "title": "Digital Marketplace",
+        "description": "Seamless procurement of verified land plots, building materials, and pre-engineered blueprints."
+      }
+    },
+    "cta": {
+      "title": "Ready to start your construction project?",
+      "description": "Explore our blueprint inventory or check out completed developments in our portfolio.",
+      "viewPortfolio": "View Portfolio",
+      "exploreMarketplace": "Explore Marketplace"
+    },
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
+  },
+  "AdminPage": {
+    "title": "Admin Control Hub",
+    "subtitle": "Manage engineering records, infrastructure specs, and media assets.",
+    "actions": {
+      "manageProfile": "Manage Profile",
+      "manageMarketplace": "Manage Marketplace",
+      "signOut": "Sign Out"
+    },
+    "searchPlaceholder": "Search projects...",
+    "categories": {
+      "all": "All Categories",
+      "residential": "Residential",
+      "commercial": "Commercial",
+      "industrial": "Industrial",
+      "infrastructure": "Infrastructure"
+    },
+    "loading": "Loading project records...",
+    "noResults": "No matching project records found.",
+    "logoutSuccess": "Logged out successfully",
+    "errors": {
+      "loadFailed": "Could not load project records."
+    }
+  },
+  "AdminProfilePage": {
+    "title": "Manage Engineer Profile",
+    "subtitle": "Update your public biography, professional history, and credentials.",
+    "backToDashboard": "Back to Dashboard",
+    "loading": "Loading profile...",
+    "fields": {
+      "profilePhoto": "Profile Photo",
+      "photoHint": "Recommended: Square high-resolution headshot.",
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "e.g. John Doe",
+      "professionalTitle": "Professional Title",
+      "professionalTitlePlaceholder": "e.g. Principal Structural Engineer",
+      "shortBio": "Short Bio",
+      "history": "Company History & Background",
+      "experienceYears": "Years of Experience",
+      "completedProjectsCount": "Completed Projects Count"
+    },
+    "saving": "Saving Changes...",
+    "saveButton": "Save Profile Changes",
+    "saveSuccess": "Engineer profile updated successfully!",
+    "photoUploadSuccess": "Photo uploaded successfully!",
+    "errors": {
+      "loadFailed": "Failed to load engineer profile",
+      "photoUploadFailed": "Error uploading engineer photo",
+      "saveFailed": "Error saving profile"
+    }
+  },
+  "AdminMarketplacePage": {
+    "title": "Marketplace Asset Management",
+    "subtitle": "Manage house designs, blueprints, land plots, materials, and machinery.",
+    "liveMarketplaceLink": "Live Marketplace View ↗",
+    "createSuccess": "Marketplace asset published successfully!",
+    "createError": "Error creating asset listing",
+    "confirmDelete": "Are you sure you want to delete \"{title}\"?",
+    "deleteSuccess": "Asset listing removed",
+    "deleteError": "Error removing asset listing",
+    "form": {
+      "heading": "Create New Listing",
+      "assetTitle": "Asset Title",
+      "assetTitlePlaceholder": "e.g. Modern 4-Bedroom Duplex Blueprint",
+      "description": "Description",
+      "descriptionPlaceholder": "Architectural specs, floor plans, dimensions, materials...",
+      "price": "Price ($)",
+      "category": "Category",
+      "status": "Listing Status",
+      "images": "Listing Images / Renders (Batch)",
+      "documents": "Blueprints / Specs (PDF/DOC)",
+      "submitting": "Uploading & Creating...",
+      "submitButton": "Publish Asset"
+    },
+    "categories": {
+      "design": "House Design / Plan",
+      "land": "Land Plot",
+      "material": "Building Materials",
+      "tool": "Tool / Machinery",
+      "object": "3D Object / Component"
+    },
+    "statuses": {
+      "available": "Available",
+      "pending": "Pending",
+      "sold": "Sold"
+    },
+    "inventory": {
+      "heading": "Active Database Listings ({count})",
+      "loading": "Loading marketplace items...",
+      "loadError": "Failed to load database records.",
+      "empty": "No marketplace assets found. Create one using the form on the left!",
+      "rendersCount": "{count} Renders",
+      "specsCount": "{count} Specs",
+      "deleteTitle": "Delete Asset"
+    }
+  },
+  "LoginPage": {
+    "backToHome": "Back to Home",
+    "restrictedArea": "Restricted Area",
+    "portalTitle": "Engineer Portal",
+    "portalSubtitle": "Sign in to manage structural records and layouts.",
+    "emailLabel": "Engineer Email",
+    "passwordLabel": "Access Passcode",
+    "verifying": "Verifying Credentials...",
+    "signIn": "Sign In",
+    "needAccount": "Need an admin account?",
+    "registerHere": "Register Here",
+    "loginSuccess": "Successfully authenticated as Engineer.",
+    "noTokenError": "Authentication succeeded, but no access token was returned.",
+    "genericError": "Invalid credentials or server unavailable.",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
+  },
+  "MarketplacePage": {
+    "nav": {
+      "home": "Home",
+      "portfolio": "Portfolio",
+      "about": "About Us",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Engineer Login"
+    },
+    "hero": {
+      "eyebrow": "Engineering Marketplace",
+      "title": "Structural Assets & Land Listings",
+      "description": "Browse approved development plots, specialized construction machinery, and architectural objects."
+    },
+    "availableAssets": "Available Assets",
+    "gridView": "Grid View",
+    "mapView": "Map View",
+    "searchPlaceholder": "Search marketplace...",
+    "categories": {
+      "all": "All Asset Types",
+      "land": "Land Plots",
+      "tool": "Tools & Machinery",
+      "object": "Architectural Objects"
+    },
+    "loading": "Loading marketplace items...",
+    "loadError": "Unable to load marketplace assets from backend server.",
+    "noResults": "No assets found in the marketplace database.",
+    "map": {
+      "title": "Interactive Regional Spatial Map",
+      "description": "Displaying geographic coordinates and survey sectors for {count} active land plots and structural sites."
+    },
+    "askingPrice": "Asking Price",
+    "viewDocs": "View Docs",
+    "makeOffer": "Make an Offer / Schedule Visit",
+    "offerSuccess": "Offer submitted successfully! Our engineering team will review it.",
+    "offerError": "Failed to submit offer. Please try again.",
+    "docsModal": {
+      "title": "Verified Documentation Vault",
+      "description": "Secure online viewer for {title}. For security compliance, direct file downloads are disabled; review document references below.",
+      "verifiedSecure": "Verified Secure",
+      "noDocuments": "No secondary documents attached to this listing record.",
+      "closeButton": "Close Viewer"
+    },
+    "offerModal": {
+      "title": "Make an Offer: {title}",
+      "priceLabel": "Your Proposed Price ($)",
+      "pricePlaceholder": "Asking: ${price}",
+      "messageLabel": "Message / Site Visit Request Details",
+      "messagePlaceholder": "Specify inspection schedule preferences or offer terms...",
+      "submitting": "Submitting Proposal...",
+      "submitButton": "Send Offer to Admin"
+    },
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
+  },
+  "PortfolioPage": {
+    "nav": {
+      "home": "Home",
+      "portfolio": "Portfolio",
+      "about": "About Us",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Engineer Login"
+    },
+    "hero": {
+      "eyebrow": "Executed Projects Portfolio",
+      "title": "Engineering Marvels & Architectural Blueprints",
+      "description": "Explore our verified portfolio featuring 25+ years of experience across 15+ premier structural executions with a 98% completion standard."
+    },
+    "searchPlaceholder": "Search projects by title or keyword...",
+    "categories": {
+      "all": "All",
+      "structural": "Structural",
+      "commercial": "Commercial",
+      "residential": "Residential",
+      "industrial": "Industrial",
+      "infrastructure": "Infrastructure"
+    },
+    "loading": "Loading projects and architectural records...",
+    "loadError": "Failed to load project records from backend server. Please verify connection.",
+    "noResults": "No projects found matching your search or category filter.",
+    "videoWalkthrough": "Project Video Walkthrough",
+    "videoUnsupported": "Your browser does not support the video tag.",
+    "idLabel": "ID: #{id}",
+    "verifiedExecution": "Verified Execution",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
+  },
+  "RegisterPage": {
+    "backToHome": "Back to Home",
+    "setupBadge": "System Admin Setup",
+    "title": "Register Account",
+    "subtitle": "Create an engineer / administrator account for portal access.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "engineer_username",
+    "emailLabel": "Engineer Email",
+    "passwordLabel": "Access Passcode",
+    "registering": "Registering Account...",
+    "createButton": "Create Admin Account",
+    "haveAccount": "Already have an account?",
+    "signInHere": "Sign In Here",
+    "registerSuccess": "System admin account registered! Please sign in.",
+    "genericError": "Failed to register account. User or email may already exist.",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. All rights reserved."
+    }
   }
 }

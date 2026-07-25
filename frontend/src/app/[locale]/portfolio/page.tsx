@@ -3,15 +3,26 @@
 import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Search, PlayCircle } from 'lucide-react';
 
 export default function PortfolioPage() {
+  const t = useTranslations('PortfolioPage');
   const { data: projects, isLoading, isError } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
 
+  // Keep values in English to match backend `project.category` — only labels are translated
   const categories = ['All', 'Structural', 'Commercial', 'Residential', 'Industrial', 'Infrastructure'];
+  const categoryLabelKeys: Record<string, string> = {
+    All: 'categories.all',
+    Structural: 'categories.structural',
+    Commercial: 'categories.commercial',
+    Residential: 'categories.residential',
+    Industrial: 'categories.industrial',
+    Infrastructure: 'categories.infrastructure',
+  };
 
   const filteredProjects = projects?.filter((project: any) => {
     const matchesSearch =
@@ -60,10 +71,10 @@ export default function PortfolioPage() {
             </Link>
 
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <Link href="/portfolio" className="text-white font-semibold transition-colors">Portfolio</Link>
-              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
-              <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
+              <Link href="/" className="hover:text-white transition-colors">{t('nav.home')}</Link>
+              <Link href="/portfolio" className="text-white font-semibold transition-colors">{t('nav.portfolio')}</Link>
+              <Link href="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link>
+              <Link href="/marketplace" className="hover:text-white transition-colors">{t('nav.marketplace')}</Link>
             </nav>
 
             <div className="flex items-center gap-3">
@@ -71,7 +82,7 @@ export default function PortfolioPage() {
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
               >
-                Engineer Login
+                {t('nav.engineerLogin')}
               </Link>
             </div>
           </div>
@@ -81,13 +92,13 @@ export default function PortfolioPage() {
         <section className="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-16 px-6 text-center border-b border-slate-800">
           <div className="max-w-3xl mx-auto">
             <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3.5 py-1.5 rounded-full inline-block mb-4">
-              Executed Projects Portfolio
+              {t('hero.eyebrow')}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white">
-              Engineering Marvels & Architectural Blueprints
+              {t('hero.title')}
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed">
-              Explore our verified portfolio featuring 25+ years of experience across 15+ premier structural executions with a 98% completion standard.
+              {t('hero.description')}
             </p>
           </div>
         </section>
@@ -102,7 +113,7 @@ export default function PortfolioPage() {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search projects by title or keyword..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               />
             </div>
@@ -119,7 +130,7 @@ export default function PortfolioPage() {
                       : 'bg-slate-950 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  {cat}
+                  {t(categoryLabelKeys[cat])}
                 </button>
               ))}
             </div>
@@ -130,19 +141,19 @@ export default function PortfolioPage() {
         <main className="max-w-7xl mx-auto px-6 py-6">
           {isLoading && (
             <div className="text-center py-20 text-slate-400 text-sm">
-              Loading projects and architectural records...
+              {t('loading')}
             </div>
           )}
 
           {isError && (
             <div className="text-center py-20 text-red-400 text-sm bg-red-950/20 border border-red-900/50 rounded-xl">
-              Failed to load project records from backend server. Please verify connection.
+              {t('loadError')}
             </div>
           )}
 
           {!isLoading && !isError && filteredProjects?.length === 0 && (
             <div className="text-center py-20 text-slate-400 text-sm bg-slate-900 border border-slate-800 rounded-xl">
-              No projects found matching your search or category filter.
+              {t('noResults')}
             </div>
           )}
 
@@ -188,22 +199,22 @@ export default function PortfolioPage() {
                   {project.videoUrl && (
                     <div className="p-4 bg-slate-950/90 border-t border-slate-800">
                       <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider">
-                        <PlayCircle className="w-4 h-4" /> Project Video Walkthrough
+                        <PlayCircle className="w-4 h-4" /> {t('videoWalkthrough')}
                       </div>
                       <video
                         controls
                         className="w-full h-40 rounded-lg bg-black object-cover border border-slate-800"
                         src={getMediaUrl(project.videoUrl)}
                       >
-                        Your browser does not support the video tag.
+                        {t('videoUnsupported')}
                       </video>
                     </div>
                   )}
                 </div>
 
                 <div className="px-6 py-3 border-t border-slate-800/50 flex justify-between items-center text-xs text-slate-500 bg-slate-900">
-                  <span>ID: #{project.id}</span>
-                  <span className="text-cyan-400 font-medium">Verified Execution</span>
+                  <span>{t('idLabel', { id: project.id })}</span>
+                  <span className="text-cyan-400 font-medium">{t('verifiedExecution')}</span>
                 </div>
               </div>
             ))}
@@ -213,7 +224,7 @@ export default function PortfolioPage() {
 
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-800 mt-20 py-8 text-center text-xs text-slate-500">
-        <p>© {new Date().getFullYear()} House Design. — la maison c'est nous —. All rights reserved.</p>
+        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
       </footer>
     </div>
   );

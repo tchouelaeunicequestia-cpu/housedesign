@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
+  const t = useTranslations('LoginPage');
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,17 +31,17 @@ export default function LoginPage() {
         if (user) {
           localStorage.setItem('user_info', JSON.stringify(user));
         }
-        toast.success('Successfully authenticated as Engineer.');
+        toast.success(t('loginSuccess'));
         router.push('/admin');
       } else {
-        toast.error('Authentication succeeded, but no access token was returned.');
+        toast.error(t('noTokenError'));
       }
     } catch (err: any) {
       console.error('Login error:', err);
       const apiMessage = err.response?.data?.message;
       const message = Array.isArray(apiMessage)
         ? apiMessage.join(', ')
-        : apiMessage || 'Invalid credentials or server unavailable.';
+        : apiMessage || t('genericError');
       toast.error(message);
     } finally {
       setIsLoading(false);
@@ -58,7 +60,7 @@ export default function LoginPage() {
             </div>
           </Link>
           <Link className="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="/">
-            Back to Home
+            {t('backToHome')}
           </Link>
         </div>
       </header>
@@ -67,15 +69,15 @@ export default function LoginPage() {
         <div className="w-full bg-slate-900 border border-slate-800 rounded-xl p-8 shadow-lg">
           <div className="text-center mb-8">
             <span className="text-red-500 text-xs uppercase tracking-widest font-bold bg-red-950/60 border border-red-800/50 px-3 py-1 rounded-full">
-              Restricted Area
+              {t('restrictedArea')}
             </span>
-            <h2 className="text-2xl font-bold text-white mt-4">Engineer Portal</h2>
-            <p className="text-slate-400 text-sm mt-1">Sign in to manage structural records and layouts.</p>
+            <h2 className="text-2xl font-bold text-white mt-4">{t('portalTitle')}</h2>
+            <p className="text-slate-400 text-sm mt-1">{t('portalSubtitle')}</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Engineer Email</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">{t('emailLabel')}</label>
               <input
                 type="email"
                 required
@@ -87,7 +89,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Access Passcode</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">{t('passwordLabel')}</label>
               <input
                 type="password"
                 required
@@ -103,21 +105,21 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full mt-2 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm cursor-pointer"
             >
-              {isLoading ? 'Verifying Credentials...' : 'Sign In'}
+              {isLoading ? t('verifying') : t('signIn')}
             </button>
           </form>
 
           <div className="mt-6 text-center text-xs text-slate-400">
-            Need an admin account?{' '}
+            {t('needAccount')}{' '}
             <Link href="/register" className="text-cyan-400 hover:underline font-medium">
-              Register Here
+              {t('registerHere')}
             </Link>
           </div>
         </div>
       </main>
 
       <footer className="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
-        <p>© {new Date().getFullYear()} House Design. — la maison c'est nous —. All rights reserved.</p>
+        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
       </footer>
     </div>
   );

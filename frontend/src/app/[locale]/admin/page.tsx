@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { useTranslations } from 'next-intl';
 import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User } from 'lucide-react';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
@@ -21,6 +22,7 @@ interface Project {
 }
 
 export default function AdminDashboard() {
+  const t = useTranslations('AdminPage');
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +45,7 @@ export default function AdminDashboard() {
       const data = await response.json();
       setProjects(data);
     } catch (error) {
-      toast.error('Could not load project records.');
+      toast.error(t('errors.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +53,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
-    toast.success('Logged out successfully');
+    toast.success(t('logoutSuccess'));
     router.push('/login');
   };
 
@@ -65,7 +67,7 @@ export default function AdminDashboard() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header Bar */}
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
           <div className="flex items-center gap-3">
@@ -73,8 +75,8 @@ export default function AdminDashboard() {
               <LayoutDashboard className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white">Admin Control Hub</h1>
-              <p className="text-sm text-slate-400">Manage engineering records, infrastructure specs, and media assets.</p>
+              <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
+              <p className="text-sm text-slate-400">{t('subtitle')}</p>
             </div>
           </div>
 
@@ -84,21 +86,21 @@ export default function AdminDashboard() {
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
               <User className="w-4 h-4 text-cyan-400" />
-              <span>Manage Profile</span>
+              <span>{t('actions.manageProfile')}</span>
             </Link>
             <Link
               href="/admin/marketplace"
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>Manage Marketplace</span>
+              <span>{t('actions.manageMarketplace')}</span>
             </Link>
             <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4 text-red-400" />
-              <span>Sign Out</span>
+              <span>{t('actions.signOut')}</span>
             </button>
           </div>
         </header>
@@ -108,7 +110,7 @@ export default function AdminDashboard() {
 
         {/* Main Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Left Column: Project Creation Form */}
           <div className="lg:col-span-1">
             <ProjectForm />
@@ -117,13 +119,13 @@ export default function AdminDashboard() {
           {/* Right Column: Project Records List & Filters */}
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
-              
+
               {/* Search input */}
               <div className="relative w-full sm:w-72">
                 <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
                 <input
                   type="text"
-                  placeholder="Search projects..."
+                  placeholder={t('searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
@@ -138,21 +140,21 @@ export default function AdminDashboard() {
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full sm:w-auto bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
                 >
-                  <option value="All">All Categories</option>
-                  <option value="Residential">Residential</option>
-                  <option value="Commercial">Commercial</option>
-                  <option value="Industrial">Industrial</option>
-                  <option value="Infrastructure">Infrastructure</option>
+                  <option value="All">{t('categories.all')}</option>
+                  <option value="Residential">{t('categories.residential')}</option>
+                  <option value="Commercial">{t('categories.commercial')}</option>
+                  <option value="Industrial">{t('categories.industrial')}</option>
+                  <option value="Infrastructure">{t('categories.infrastructure')}</option>
                 </select>
               </div>
             </div>
 
             {/* Grid of Projects */}
             {isLoading ? (
-              <div className="text-center py-20 text-slate-500">Loading project records...</div>
+              <div className="text-center py-20 text-slate-500">{t('loading')}</div>
             ) : filteredProjects.length === 0 ? (
               <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-400">
-                No matching project records found.
+                {t('noResults')}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

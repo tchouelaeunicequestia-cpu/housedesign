@@ -14,10 +14,10 @@ interface Project {
 }
 
 interface StatsBannerProps {
-  projects: Project[];
+  projects?: Project[];
 }
 
-export default function StatsBanner({ projects }: StatsBannerProps) {
+export default function StatsBanner({ projects = [] }: StatsBannerProps) {
   const total = projects.length;
   const planning = projects.filter((p) => p.status === 'Planning').length;
   const inProgress = projects.filter((p) => p.status === 'In-Progress').length;
