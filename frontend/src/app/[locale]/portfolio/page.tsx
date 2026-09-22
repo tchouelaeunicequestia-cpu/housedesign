@@ -5,6 +5,7 @@ import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Search, PlayCircle } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function PortfolioPage() {
   const t = useTranslations('PortfolioPage');
@@ -13,7 +14,6 @@ export default function PortfolioPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
 
-  // Keep values in English to match backend `project.category` — only labels are translated
   const categories = ['All', 'Structural', 'Commercial', 'Residential', 'Industrial', 'Infrastructure'];
   const categoryLabelKeys: Record<string, string> = {
     All: 'categories.all',
@@ -72,12 +72,13 @@ export default function PortfolioPage() {
 
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
               <Link href="/" className="hover:text-white transition-colors">{t('nav.home')}</Link>
-              <Link href="/portfolio" className="text-white font-semibold transition-colors">{t('nav.portfolio')}</Link>
+              <Link href="/portfolio" className="text-cyan-400 font-bold transition-colors">{t('nav.portfolio')}</Link>
               <Link href="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link>
               <Link href="/marketplace" className="hover:text-white transition-colors">{t('nav.marketplace')}</Link>
             </nav>
 
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
@@ -124,7 +125,7 @@ export default function PortfolioPage() {
                 <button
                   key={cat}
                   onClick={() => setFilterCategory(cat)}
-                  className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors border ${
+                  className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors border cursor-pointer ${
                     filterCategory === cat
                       ? 'bg-cyan-600 text-white border-cyan-500 shadow-sm'
                       : 'bg-slate-950 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'

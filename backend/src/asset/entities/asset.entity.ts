@@ -3,14 +3,18 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Project } from '../../project/project.entity';
+import { Offer } from './offer.entity';
 
 export enum AssetCategory {
+  DESIGN = 'design',
   LAND = 'land',
+  MATERIAL = 'material',
   OBJECT = 'object',
   TOOL = 'tool',
 }
@@ -29,8 +33,20 @@ export class Asset {
   @Column()
   title!: string;
 
+  @Column({ nullable: true })
+  titleEn?: string;
+
+  @Column({ nullable: true })
+  titleFr?: string;
+
   @Column({ type: 'text' })
   description!: string;
+
+  @Column({ type: 'text', nullable: true })
+  descriptionEn?: string;
+
+  @Column({ type: 'text', nullable: true })
+  descriptionFr?: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   price!: number;
@@ -38,7 +54,7 @@ export class Asset {
   @Column({
     type: 'enum',
     enum: AssetCategory,
-    default: AssetCategory.OBJECT,
+    default: AssetCategory.DESIGN,
   })
   category!: AssetCategory;
 
@@ -59,7 +75,10 @@ export class Asset {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  project!: Project;
+  project?: Project;
+
+  @OneToMany(() => Offer, (offer) => offer.asset)
+  offers!: Offer[];
 
   @CreateDateColumn()
   createdAt!: Date;

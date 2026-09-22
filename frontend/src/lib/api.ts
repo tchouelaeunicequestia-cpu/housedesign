@@ -13,13 +13,18 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to attach JWT token and format API prefix
+// Add a request interceptor to attach JWT token, locale, and format API prefix
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('access_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Detect locale from URL path e.g. /fr/... or /en/...
+    const path = window.location.pathname;
+    const isFr = path.startsWith('/fr') || (!path.startsWith('/en') && navigator.language.startsWith('fr'));
+    config.headers['Accept-Language'] = isFr ? 'fr' : 'en';
   }
 
   if (

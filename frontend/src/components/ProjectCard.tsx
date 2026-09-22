@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Trash2, ExternalLink, Video, Image as ImageIcon } from 'lucide-react';
+import { Trash2, Edit, Video, Image as ImageIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import api from '@/lib/api';
 
 interface Project {
   id: string;
@@ -18,31 +20,24 @@ interface Project {
 interface ProjectCardProps {
   project: Project;
   onUpdate?: () => void;
+  onEdit?: (project: Project) => void;
 }
 
-export default function ProjectCard({ project, onUpdate }: ProjectCardProps) {
+export default function ProjectCard({ project, onUpdate, onEdit }: ProjectCardProps) {
+  const t = useTranslations('ProjectCard');
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to delete "${project.title}"?`)) return;
+    if (!confirm(t('confirmDelete', { title: project.title }))) return;
 
     setIsDeleting(true);
-    const token = localStorage.getItem('access_token');
 
     try {
-      const response = await fetch(`http://localhost:3000/api/project/${project.id}`, {
-        method: 'DELETE',
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-
-      if (!response.ok) throw new Error('Failed to delete project');
-
-      toast.success('Project deleted successfully');
+      await api.delete(`/project/${project.id}`);
+      toast.success(t('deleteSuccess'));
       if (onUpdate) onUpdate();
     } catch (error) {
-      toast.error('Error deleting project record.');
+      toast.error(t('deleteError'));
     } finally {
       setIsDeleting(false);
     }
@@ -57,6 +52,13 @@ export default function ProjectCard({ project, onUpdate }: ProjectCardProps) {
       default:
         return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
     }
+  };
+
+  const getMediaUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '');
+    return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
   };
 
   return (
@@ -81,38 +83,49 @@ export default function ProjectCard({ project, onUpdate }: ProjectCardProps) {
         <div className="flex items-center gap-2">
           {project.imageUrl && (
             <a
-              href={project.imageUrl.startsWith('http') ? project.imageUrl : `http://localhost:3000${project.imageUrl}`}
+              href={getMediaUrl(project.imageUrl)}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs flex items-center gap-1 transition-colors"
-              title="View Image"
+              title={t('viewImage')}
             >
               <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Image</span>
+              <span>{t('viewImage')}</span>
             </a>
           )}
           {project.videoUrl && (
             <a
-              href={project.videoUrl.startsWith('http') ? project.videoUrl : `http://localhost:3000${project.videoUrl}`}
+              href={getMediaUrl(project.videoUrl)}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs flex items-center gap-1 transition-colors"
-              title="View Video Walkthrough"
+              title={t('viewVideo')}
             >
               <Video className="w-3.5 h-3.5 text-red-400" />
-              <span>Video</span>
+              <span>{t('viewVideo')}</span>
             </a>
           )}
         </div>
 
-        <button
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="p-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/20 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
-          title="Delete Project"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {onEdit && (
+            <button
+              onClick={() => onEdit(project)}
+              className="p-2 bg-slate-800 hover:bg-slate-700 text-cyan-400 border border-slate-700 rounded-lg transition-colors cursor-pointer"
+              title={t('editProject')}
+            >
+              <Edit className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="p-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 border border-red-600/20 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+            title={t('deleteProject')}
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

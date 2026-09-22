@@ -12,29 +12,41 @@ import { Asset } from '../asset/entities/asset.entity';
 @Entity()
 export class Project {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column()
-  title: string;
+  title!: string;
+
+  @Column({ nullable: true })
+  titleEn?: string;
+
+  @Column({ nullable: true })
+  titleFr?: string;
 
   @Column('text')
-  description: string;
+  description!: string;
+
+  @Column('text', { nullable: true })
+  descriptionEn?: string;
+
+  @Column('text', { nullable: true })
+  descriptionFr?: string;
 
   @Column({ nullable: true })
-  category: string;
+  category?: string;
 
   @Column({ nullable: true })
-  status: string;
+  status?: string;
 
   @Column({ nullable: true })
-  imageUrl: string;
+  imageUrl?: string;
 
   @Column({ nullable: true })
-  videoUrl: string;
+  videoUrl?: string;
 
   @OneToMany(() => Asset, (asset) => asset.project)
-  assets: Asset[];
+  assets!: Asset[];
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 }

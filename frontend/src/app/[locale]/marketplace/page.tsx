@@ -4,7 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useAssets } from '@/hooks/useAssets';
 import { useTranslations } from 'next-intl';
-import { Building, Wrench, MapPin, FileText, Send, Eye, ChevronLeft, ChevronRight, Map } from 'lucide-react';
+import { Building, Wrench, MapPin, FileText, Send, Eye, ChevronLeft, ChevronRight, Map, Home, Package, Loader2 } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import api from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function MarketplacePage() {
@@ -18,6 +20,11 @@ export default function MarketplacePage() {
   // Modals state
   const [selectedAssetForDocs, setSelectedAssetForDocs] = useState<any>(null);
   const [selectedAssetForOffer, setSelectedAssetForOffer] = useState<any>(null);
+  
+  // Offer Form State
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [senderPhone, setSenderPhone] = useState('');
   const [offerAmount, setOfferAmount] = useState('');
   const [offerMessage, setOfferMessage] = useState('');
   const [isSubmittingOffer, setIsSubmittingOffer] = useState(false);
@@ -48,28 +55,24 @@ export default function MarketplacePage() {
     if (!selectedAssetForOffer) return;
     setIsSubmittingOffer(true);
 
-    const token = localStorage.getItem('access_token');
-
     try {
-      const response = await fetch(`http://localhost:3000/api/asset/${selectedAssetForOffer.id}/offer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          offerAmount: Number(offerAmount),
-          message: offerMessage,
-        }),
+      await api.post(`/asset/${selectedAssetForOffer.id}/offer`, {
+        senderName,
+        senderEmail,
+        senderPhone,
+        offerAmount: Number(offerAmount),
+        message: offerMessage,
       });
-
-      if (!response.ok) throw new Error('Failed to submit offer');
 
       toast.success(t('offerSuccess'));
       setSelectedAssetForOffer(null);
+      setSenderName('');
+      setSenderEmail('');
+      setSenderPhone('');
       setOfferAmount('');
       setOfferMessage('');
     } catch (error) {
+      console.error('Failed to submit offer:', error);
       toast.error(t('offerError'));
     } finally {
       setIsSubmittingOffer(false);
@@ -81,9 +84,13 @@ export default function MarketplacePage() {
       case 'land':
         return <MapPin className="w-4 h-4 text-emerald-400" />;
       case 'tool':
-        return <Wrench className="w-4 h-4 text-cyan-400" />;
+        return <Wrench className="w-4 h-4 text-purple-400" />;
+      case 'material':
+        return <Package className="w-4 h-4 text-amber-400" />;
+      case 'design':
+        return <Home className="w-4 h-4 text-cyan-400" />;
       default:
-        return <Building className="w-4 h-4 text-amber-400" />;
+        return <Building className="w-4 h-4 text-blue-400" />;
     }
   };
 
@@ -98,8 +105,15 @@ export default function MarketplacePage() {
     }
   };
 
+  const getMediaUrl = (url?: string) => {
+    if (!url) return '/placeholder.jpg';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '');
+    return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
       <div>
         <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-10 shadow-md">
           <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -119,6 +133,7 @@ export default function MarketplacePage() {
             </nav>
 
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
@@ -149,13 +164,13 @@ export default function MarketplacePage() {
               <div className="flex bg-slate-900 border border-slate-800 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${viewMode === 'grid' ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors cursor-pointer ${viewMode === 'grid' ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:text-white'}`}
                 >
                   {t('gridView')}
                 </button>
                 <button
                   onClick={() => setViewMode('map')}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1 ${viewMode === 'map' ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:text-white'}`}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors flex items-center gap-1 cursor-pointer ${viewMode === 'map' ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:text-white'}`}
                 >
                   <Map className="w-3.5 h-3.5" /> {t('mapView')}
                 </button>
@@ -176,7 +191,9 @@ export default function MarketplacePage() {
                 className="bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 <option value="All">{t('categories.all')}</option>
+                <option value="design">{t('categories.design')}</option>
                 <option value="land">{t('categories.land')}</option>
+                <option value="material">{t('categories.material')}</option>
                 <option value="tool">{t('categories.tool')}</option>
                 <option value="object">{t('categories.object')}</option>
               </select>
@@ -212,7 +229,6 @@ export default function MarketplacePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredAssets?.map((asset: any) => {
-                // Mapped to backend property 'mediaUrls'
                 const images = asset.mediaUrls?.length > 0 ? asset.mediaUrls : ['/placeholder.jpg'];
                 const currentImgIdx = activeImageIndices[asset.id] || 0;
 
@@ -225,7 +241,7 @@ export default function MarketplacePage() {
                       {/* Interactive Image Carousel */}
                       <div className="relative h-48 bg-slate-950 overflow-hidden group">
                         <img
-                          src={images[currentImgIdx].startsWith('http') ? images[currentImgIdx] : `http://localhost:3000${images[currentImgIdx]}`}
+                          src={getMediaUrl(images[currentImgIdx])}
                           alt={asset.title}
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         />
@@ -233,13 +249,13 @@ export default function MarketplacePage() {
                           <>
                             <button
                               onClick={() => handleImageNav(asset.id, 'prev', images.length)}
-                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white p-1 rounded-full transition-colors"
+                              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white p-1 rounded-full transition-colors cursor-pointer"
                             >
                               <ChevronLeft className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleImageNav(asset.id, 'next', images.length)}
-                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white p-1 rounded-full transition-colors"
+                              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 hover:bg-black text-white p-1 rounded-full transition-colors cursor-pointer"
                             >
                               <ChevronRight className="w-4 h-4" />
                             </button>
@@ -304,7 +320,7 @@ export default function MarketplacePage() {
         </main>
       </div>
 
-      {/* Secure Online Document Preview Modal (No Downloads) */}
+      {/* Secure Online Document Preview Modal */}
       {selectedAssetForDocs && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
@@ -324,7 +340,7 @@ export default function MarketplacePage() {
               <p className="text-xs text-slate-400">
                 {t('docsModal.description', { title: selectedAssetForDocs.title })}
               </p>
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2 max-h-60 overflow-y-auto">
                 {selectedAssetForDocs.documentUrls?.length > 0 ? (
                   selectedAssetForDocs.documentUrls.map((doc: string, idx: number) => (
                     <div key={idx} className="flex justify-between items-center text-xs text-slate-300 py-2 border-b border-slate-900 last:border-none">
@@ -347,7 +363,7 @@ export default function MarketplacePage() {
         </div>
       )}
 
-      {/* In-App Negotiation & Offer Modal */}
+      {/* In-App Negotiation & Offer Modal with Contact Info */}
       {selectedAssetForOffer && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
@@ -362,7 +378,43 @@ export default function MarketplacePage() {
             </div>
             <form onSubmit={handleOfferSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.priceLabel')}</label>
+                <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.nameLabel')} *</label>
+                <input
+                  type="text"
+                  required
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  placeholder={t('offerModal.namePlaceholder')}
+                  className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.emailLabel')} *</label>
+                  <input
+                    type="email"
+                    required
+                    value={senderEmail}
+                    onChange={(e) => setSenderEmail(e.target.value)}
+                    placeholder={t('offerModal.emailPlaceholder')}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.phoneLabel')}</label>
+                  <input
+                    type="tel"
+                    value={senderPhone}
+                    onChange={(e) => setSenderPhone(e.target.value)}
+                    placeholder={t('offerModal.phonePlaceholder')}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.priceLabel')} *</label>
                 <input
                   type="number"
                   required
@@ -372,6 +424,7 @@ export default function MarketplacePage() {
                   className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
+
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">{t('offerModal.messageLabel')}</label>
                 <textarea
@@ -382,12 +435,20 @@ export default function MarketplacePage() {
                   className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                 />
               </div>
+
               <button
                 type="submit"
                 disabled={isSubmittingOffer}
-                className="w-full py-2.5 text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm cursor-pointer"
+                className="w-full py-2.5 text-sm font-bold text-white bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm cursor-pointer flex items-center justify-center gap-2"
               >
-                {isSubmittingOffer ? t('offerModal.submitting') : t('offerModal.submitButton')}
+                {isSubmittingOffer ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>{t('offerModal.submitting')}</span>
+                  </>
+                ) : (
+                  <span>{t('offerModal.submitButton')}</span>
+                )}
               </button>
             </form>
           </div>

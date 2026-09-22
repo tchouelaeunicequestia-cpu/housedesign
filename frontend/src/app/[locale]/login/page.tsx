@@ -6,6 +6,7 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function LoginPage() {
   const t = useTranslations('LoginPage');
@@ -49,7 +50,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
       <header className="bg-slate-900 border-b border-slate-800 shadow-md">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link className="flex items-center gap-3" href="/">
@@ -59,9 +60,12 @@ export default function LoginPage() {
               <p className="text-[10px] text-cyan-400 font-semibold tracking-widest uppercase">— la maison c'est nous —</p>
             </div>
           </Link>
-          <Link className="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="/">
-            {t('backToHome')}
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Link className="text-sm font-medium text-slate-300 hover:text-white transition-colors" href="/">
+              {t('backToHome')}
+            </Link>
+          </div>
         </div>
       </header>
 

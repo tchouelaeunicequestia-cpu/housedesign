@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ShieldCheck, Award, Users, HardHat, Building2, Compass, Cpu, User } from 'lucide-react';
+import { ShieldCheck, Award, HardHat, Building2, Compass, Cpu, User } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import api from '@/lib/api';
 
 interface EngineerProfile {
   name: string;
@@ -21,11 +23,10 @@ export default function AboutPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/engineer-profile')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && data.name) {
-          setProfile(data);
+    api.get('/engineer-profile')
+      .then((res) => {
+        if (res.data && res.data.name) {
+          setProfile(res.data);
         }
       })
       .catch((err) => console.error('Failed to load profile:', err))
@@ -54,6 +55,7 @@ export default function AboutPage() {
             </nav>
 
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"

@@ -5,10 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User } from 'lucide-react';
+import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
 import StatsBanner from '@/components/StatsBanner';
+import AppointmentsList from '@/components/AppointmentsList';
+import api from '@/lib/api';
 
 interface Project {
   id: string;
@@ -24,10 +27,15 @@ interface Project {
 export default function AdminDashboard() {
   const t = useTranslations('AdminPage');
   const router = useRouter();
+  
+  const [activeTab, setActiveTab] = useState<'projects' | 'appointments'>('projects');
   const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  
+  // Project Edit Modal State
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('access_token');
@@ -40,10 +48,8 @@ export default function AdminDashboard() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/project');
-      if (!response.ok) throw new Error('Failed to fetch projects');
-      const data = await response.json();
-      setProjects(data);
+      const response = await api.get('/project');
+      setProjects(response.data);
     } catch (error) {
       toast.error(t('errors.loadFailed'));
     } finally {
@@ -53,6 +59,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
+    localStorage.removeItem('user_info');
     toast.success(t('logoutSuccess'));
     router.push('/login');
   };
@@ -65,7 +72,7 @@ export default function AdminDashboard() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
+    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10 font-sans">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header Bar */}
@@ -81,18 +88,19 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
+            <LanguageSwitcher />
             <Link
               href="/admin/profile"
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <User className="w-4 h-4 text-cyan-400" />
+              <User className="w-4 h-4 text-white" />
               <span>{t('actions.manageProfile')}</span>
             </Link>
             <Link
               href="/admin/marketplace"
               className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <ShoppingBag className="w-4 h-4" />
+              <ShoppingBag className="w-4 h-4 text-white" />
               <span>{t('actions.manageMarketplace')}</span>
             </Link>
             <button
@@ -108,64 +116,107 @@ export default function AdminDashboard() {
         {/* Statistics Banner */}
         <StatsBanner projects={projects} />
 
-        {/* Main Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Dashboard Navigation Tabs */}
+        <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1.5 w-fit gap-2">
+          <button
+            onClick={() => setActiveTab('projects')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
+              activeTab === 'projects'
+                ? 'bg-cyan-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <FolderKanban className="w-4 h-4" />
+            <span>{t('tabs.projects')}</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('appointments')}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
+              activeTab === 'appointments'
+                ? 'bg-cyan-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Calendar className="w-4 h-4" />
+            <span>{t('tabs.appointments')}</span>
+          </button>
+        </div>
 
-          {/* Left Column: Project Creation Form */}
-          <div className="lg:col-span-1">
-            <ProjectForm />
-          </div>
-
-          {/* Right Column: Project Records List & Filters */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
-
-              {/* Search input */}
-              <div className="relative w-full sm:w-72">
-                <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
-                <input
-                  type="text"
-                  placeholder={t('searchPlaceholder')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
-                />
-              </div>
-
-              {/* Category Filter */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <Filter className="w-4 h-4 text-slate-400" />
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full sm:w-auto bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
-                >
-                  <option value="All">{t('categories.all')}</option>
-                  <option value="Residential">{t('categories.residential')}</option>
-                  <option value="Commercial">{t('categories.commercial')}</option>
-                  <option value="Industrial">{t('categories.industrial')}</option>
-                  <option value="Infrastructure">{t('categories.infrastructure')}</option>
-                </select>
-              </div>
+        {/* Tab Content */}
+        {activeTab === 'appointments' ? (
+          <AppointmentsList />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Project Creation / Edit Form */}
+            <div className="lg:col-span-1">
+              <ProjectForm
+                editingProject={editingProject}
+                onSuccess={() => {
+                  setEditingProject(null);
+                  fetchProjects();
+                }}
+                onCancel={() => setEditingProject(null)}
+              />
             </div>
 
-            {/* Grid of Projects */}
-            {isLoading ? (
-              <div className="text-center py-20 text-slate-500">{t('loading')}</div>
-            ) : filteredProjects.length === 0 ? (
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-400">
-                {t('noResults')}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredProjects.map((project) => (
-                  <ProjectCard key={project.id} project={project} onUpdate={fetchProjects} />
-                ))}
-              </div>
-            )}
-          </div>
+            {/* Right Column: Project Records List & Filters */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
+                {/* Search input */}
+                <div className="relative w-full sm:w-72">
+                  <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                  <input
+                    type="text"
+                    placeholder={t('searchPlaceholder')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  />
+                </div>
 
-        </div>
+                {/* Category Filter */}
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Filter className="w-4 h-4 text-slate-400" />
+                  <select
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className="w-full sm:w-auto bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
+                  >
+                    <option value="All">{t('categories.all')}</option>
+                    <option value="Residential">{t('categories.residential')}</option>
+                    <option value="Commercial">{t('categories.commercial')}</option>
+                    <option value="Industrial">{t('categories.industrial')}</option>
+                    <option value="Infrastructure">{t('categories.infrastructure')}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Grid of Projects */}
+              {isLoading ? (
+                <div className="text-center py-20 text-slate-500">{t('loading')}</div>
+              ) : filteredProjects.length === 0 ? (
+                <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-400">
+                  {t('noResults')}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {filteredProjects.map((project) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      onUpdate={fetchProjects}
+                      onEdit={(proj) => {
+                        setEditingProject(proj);
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
       </div>
     </main>
   );

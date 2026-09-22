@@ -1,342 +1,448 @@
-﻿{
+{
   "HomePage": {
-    "title": "Tableau de bord HouseDesign",
-    "projectsTitle": "Vos projets architecturaux",
+    "title": "Tableau de Bord HouseDesign",
+    "projectsTitle": "Vos Projets Architecturaux",
     "tagline": "— la maison c'est nous —",
     "nav": {
       "home": "Accueil",
       "portfolio": "Portfolio",
-      "about": "À propos",
-      "marketplace": "Marché",
-      "engineerLogin": "Connexion Ingénieur"
+      "about": "À Propos",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Espace Ingénieur"
     },
     "hero": {
-      "eyebrow": "Excellence en Ingénierie Structurelle & Architecture",
-      "title": "Construisons Votre Vision Avec Précision",
-      "description": "Solutions d'ingénierie professionnelles résidentielles, commerciales et industrielles. Découvrez nos services complets, prenez rendez-vous et explorez notre portfolio de référence.",
-      "bookButton": "Prendre Rendez-vous",
+      "eyebrow": "Génie Civil, Calcul de Structure & Architecture",
+      "title": "Bâtir Vos Visions Avec Précision",
+      "description": "Solutions d'ingénierie résidentielle, commerciale et industrielle de premier plan. Découvrez notre expertise, réservez un rendez-vous et explorez nos réalisations certifiées.",
+      "bookButton": "Prendre un Rendez-vous",
       "servicesButton": "Nos Services"
     },
     "services": {
       "title": "Services Proposés",
-      "subtitle": "Une expertise d'ingénierie complète adaptée aux exigences modernes de construction.",
+      "subtitle": "Une expertise technique complète adaptée aux exigences modernes de la construction.",
       "structural": {
-        "title": "Architecture Structurelle",
-        "description": "Conception complète de plans structurels, plans techniques et calculs de charge pour constructions résidentielles et commerciales."
+        "title": "Architecture & Calcul de Structure",
+        "description": "Conception complète des plans d'exécution, modélisation de charges et dimensionnement pour constructions neuves."
       },
       "supervision": {
-        "title": "Supervision de Chantier & Exécution",
-        "description": "Supervision technique sur site, évaluation de la qualité et gestion de projet, des fondations à la finition."
+        "title": "Suivi de Chantier & Direction des Travaux",
+        "description": "Contrôle technique permanent sur site, assurance qualité des matériaux et respect scrupuleux des délais et budgets."
       },
       "consultation": {
-        "title": "Consultation & Audits",
-        "description": "Audits d'intégrité structurelle, évaluations techniques, conseils en matériaux et conformité réglementaire."
+        "title": "Consultation & Audits Techniques",
+        "description": "Audits de conformité structurelle, études géotechniques, expertise en réhabilitation et conseils réglementaires."
       }
     },
     "rendezvous": {
-      "eyebrow": "Planifier une Réunion",
-      "title": "Prendre Rendez-vous",
-      "description": "Discutez de vos plans architecturaux et exigences techniques directement avec notre ingénieur principal.",
-      "nameLabel": "Nom Complet",
+      "eyebrow": "Planifier une Consultation",
+      "title": "Prendre un Rendez-vous",
+      "description": "Échangez directement sur vos projets de construction et plans d'ingénierie avec notre ingénieur principal.",
+      "nameLabel": "Votre Nom Complet",
       "namePlaceholder": "Jean Dupont",
       "emailLabel": "Adresse Email",
       "emailPlaceholder": "jean@exemple.com",
-      "dateLabel": "Date & Heure Préférées",
+      "phoneLabel": "Numéro de Téléphone",
+      "phonePlaceholder": "+237 699 978 704",
+      "dateLabel": "Date & Heure Souhaitées",
+      "serviceTypeLabel": "Type de Prestation",
+      "serviceTypePlaceholder": "Conception / Suivi de chantier / Audit structure",
+      "notesLabel": "Détails du Projet / Questions",
+      "notesPlaceholder": "Précisez l'emplacement du terrain, l'envergure du projet ou vos questions clés...",
       "submitButton": "Confirmer la Demande de Rendez-vous",
-      "successAlert": "Demande de rendez-vous envoyée avec succès !"
+      "submitting": "Enregistrement en cours...",
+      "successAlert": "Demande de rendez-vous enregistrée avec succès ! Notre équipe vous contactera sous peu.",
+      "errorAlert": "Échec de l'enregistrement de la demande. Veuillez vérifier votre connexion."
     },
     "contact": {
-      "eyebrow": "Contact Ingénieur Principal",
+      "eyebrow": "Contact Ingénieur Conseil",
       "title": "Ing. Spécialiste Principal",
-      "description": "Contactez-nous directement par téléphone ou email pour toute demande technique, consultation ou visite de site.",
+      "description": "Contactez-nous directement par téléphone ou email pour toute question structurelle urgente, devis ou visite sur site.",
       "locationLabel": "Localisation",
-      "phoneLabel": "Numéro de Téléphone",
+      "phoneLabel": "Téléphone",
       "emailLabel": "Adresse Email"
     },
     "social": {
-      "title": "Suivez-nous",
-      "description": "Suivez nos réseaux professionnels et portails en ligne pour des mises à jour quotidiennes et nos réalisations."
+      "title": "Réseaux & Actualités",
+      "description": "Suivez nos publications professionnelles pour découvrir nos chantiers en cours et nos innovations architecturales."
     },
     "footer": {
       "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
     }
   },
   "Marketplace": {
-    "title": "Marché Architectural",
-    "subtitle": "Parcourez et gérez vos actifs du marché."
+    "title": "Marché Architectural & Matériel",
+    "subtitle": "Parcourez et gérez les actifs certifiés."
   },
   "AboutPage": {
-  "nav": {
-    "home": "Accueil",
-    "portfolio": "Portfolio",
-    "about": "À propos",
-    "marketplace": "Marché",
-    "engineerLogin": "Connexion Ingénieur"
-  },
-  "hero": {
-    "eyebrow": "À propos de House Design",
-    "title": "Excellence en Ingénierie & Innovation Structurelle",
-    "description": "Dédiés à la conception d'architectures résidentielles et commerciales durables, écologiques et modernes au Cameroun et au-delà."
-  },
-  "defaults": {
-    "engineerName": "Ingénieur Principal",
-    "engineerTitle": "Ingénieur Structurel Principal",
-    "bio": "Chez House Design, nous croyons que chaque structure doit harmoniser force, sécurité et élégance esthétique moderne. De la conception initiale des plans à la coulée des fondations et à la finition, chaque projet est géré avec une rigueur technique extrême.",
-    "history": "Fort de nombreuses années de pratique rigoureuse en calculs structurels, conformité aux normes de construction et exécution de chantier, notre cabinet établit la référence en matière de livraison architecturale fiable dans la région."
-  },
-  "background": {
-    "eyebrow": "Parcours Professionnel"
-  },
-  "stats": {
-    "completedProjects": "Projets Réalisés",
-    "yearsExperience": "Années d'Expérience",
-    "codeCompliance": "Conformité aux Normes",
-    "structuralGrade": "Note Structurelle"
-  },
-  "pillars": {
-    "title": "Nos Piliers d'Ingénierie",
-    "subtitle": "Les normes et méthodologies techniques qui guident chaque plan.",
-    "precision": {
-      "title": "Architecture de Précision",
-      "description": "Simulation avancée de l'agencement spatial et des charges garantissant zéro écart pendant la construction."
+    "nav": {
+      "home": "Accueil",
+      "portfolio": "Portfolio",
+      "about": "À Propos",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Espace Ingénieur"
     },
-    "safety": {
-      "title": "Sécurité & Conformité",
-      "description": "Respect rigoureux des normes de sécurité structurelle, des mesures de sol et des standards environnementaux régionaux."
+    "hero": {
+      "eyebrow": "À Propos de House Design",
+      "title": "Excellence en Ingénierie & Innovation Structurale",
+      "description": "Engagés dans la conception d'architectures durables, écologiques et modernes au Cameroun et à l'international."
     },
-    "marketplace": {
-      "title": "Marché Numérique",
-      "description": "Acquisition simplifiée de parcelles vérifiées, de matériaux de construction et de plans préconçus."
+    "defaults": {
+      "engineerName": "Ingénieur Principal",
+      "engineerTitle": "Ingénieur en Chef Génie Civil & Structures",
+      "bio": "Chez House Design, nous pensons que chaque bâtiment doit allier robustesse pérenne, sécurité absolue et élégance architecturale contemporaine.",
+      "history": "Fort d'années de pratique rigoureuse dans les calculs de béton armé, la conformité aux normes eurocodes et le pilotage de chantiers complexes."
+    },
+    "background": {
+      "eyebrow": "Parcours Professionnel"
+    },
+    "stats": {
+      "completedProjects": "Projets Livrés",
+      "yearsExperience": "Années d'Expérience",
+      "codeCompliance": "Conformité Normes",
+      "structuralGrade": "Note Structurale"
+    },
+    "pillars": {
+      "title": "Nos Piliers d'Excellence",
+      "subtitle": "Les normes techniques et exigences qui fondent chacune de nos réalisations.",
+      "precision": {
+        "title": "Précision Structurale",
+        "description": "Modélisation numérique avancée et simulations pour une exécution zéro défaut."
+      },
+      "safety": {
+        "title": "Sécurité & Conformité",
+        "description": "Respect strict des normes de sécurité parasismique, mécanique des sols et durabilité."
+      },
+      "marketplace": {
+        "title": "Marketplace Numérique",
+        "description": "Acquisition transparente de terrains certifiés, matériaux et plans architecturaux d'ingénieur."
+      }
+    },
+    "cta": {
+      "title": "Prêt à démarrer votre projet de construction ?",
+      "description": "Découvrez notre catalogue de plans ou explorez nos projets réalisés dans le portfolio.",
+      "viewPortfolio": "Voir le Portfolio",
+      "exploreMarketplace": "Explorer le Marché"
+    },
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
     }
   },
-  "cta": {
-    "title": "Prêt à démarrer votre projet de construction ?",
-    "description": "Explorez notre catalogue de plans ou découvrez nos réalisations dans notre portfolio.",
-    "viewPortfolio": "Voir le Portfolio",
-    "exploreMarketplace": "Explorer le Marché"
+  "AdminPage": {
+    "title": "Centre de Contrôle Administrateur",
+    "subtitle": "Gérez les projets, rendez-vous clients, inventaire marketplace et médias.",
+    "tabs": {
+      "projects": "Portfolio Projets",
+      "appointments": "Rendez-vous Clients",
+      "offers": "Offres Marketplace"
+    },
+    "actions": {
+      "manageProfile": "Gérer Profil",
+      "manageMarketplace": "Gérer Marché",
+      "signOut": "Déconnexion"
+    },
+    "searchPlaceholder": "Rechercher un projet...",
+    "categories": {
+      "all": "Toutes Catégories",
+      "residential": "Résidentiel",
+      "commercial": "Commercial",
+      "industrial": "Industriel",
+      "infrastructure": "Infrastructure"
+    },
+    "loading": "Chargement des projets...",
+    "noResults": "Aucun projet trouvé.",
+    "logoutSuccess": "Déconnexion réussie",
+    "editModal": {
+      "title": "Modifier le Projet",
+      "saveBtn": "Enregistrer les Modifications",
+      "saving": "Enregistrement...",
+      "success": "Projet mis à jour avec succès !"
+    },
+    "appointments": {
+      "title": "Consultations & Rendez-vous Clients",
+      "subtitle": "Consultez et validez les demandes de rendez-vous prises depuis le portail public.",
+      "loading": "Chargement des rendez-vous...",
+      "empty": "Aucune demande de rendez-vous enregistrée.",
+      "status": {
+        "pending": "En attente",
+        "confirmed": "Confirmé",
+        "completed": "Terminé",
+        "cancelled": "Annulé"
+      },
+      "actions": {
+        "confirm": "Confirmer le RDV",
+        "complete": "Marquer Terminé",
+        "cancel": "Annuler",
+        "delete": "Supprimer la Demande"
+      },
+      "updateSuccess": "Statut du rendez-vous mis à jour !",
+      "deleteSuccess": "Rendez-vous supprimé."
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger les enregistrements."
+    }
   },
-  "footer": {
-    "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
+  "ProjectForm": {
+    "heading": "Ajouter un Nouveau Projet",
+    "titleLabel": "Titre du Projet",
+    "titlePlaceholder": "ex. Villa Contemporaine Yaoundé",
+    "categoryLabel": "Catégorie",
+    "statusLabel": "Statut d'Exécution",
+    "imageLabel": "Image du Projet (URL ou Fichier)",
+    "videoLabel": "Vidéo de Visite (URL ou Fichier)",
+    "descriptionLabel": "Description Technique",
+    "descriptionPlaceholder": "Détails des spécifications structurelles et plans architecturaux...",
+    "uploadingImage": "Téléchargement de l'image...",
+    "uploadingVideo": "Téléchargement de la vidéo...",
+    "submitting": "Publication en cours...",
+    "submitBtn": "Publier le Projet",
+    "success": "Projet créé avec succès !",
+    "error": "Erreur lors de la création du projet. Vérifiez vos données."
+  },
+  "ProjectCard": {
+    "viewImage": "Voir Image",
+    "viewVideo": "Voir Vidéo",
+    "editProject": "Modifier Projet",
+    "deleteProject": "Supprimer Projet",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer \"{title}\" ?",
+    "deleteSuccess": "Projet supprimé avec succès",
+    "deleteError": "Erreur lors de la suppression."
+  },
+  "AdminProfilePage": {
+    "title": "Gérer le Profil Ingénieur",
+    "subtitle": "Mettez à jour votre biographie publique, parcours et réalisations.",
+    "backToDashboard": "Retour au Tableau de Bord",
+    "loading": "Chargement du profil...",
+    "fields": {
+      "profilePhoto": "Photo de Profil",
+      "photoHint": "Recommandé : Portrait carré haute résolution.",
+      "fullName": "Nom Complet",
+      "fullNamePlaceholder": "ex. Jean Dupont",
+      "professionalTitle": "Titre Professionnel",
+      "professionalTitlePlaceholder": "ex. Ingénieur en Chef Génie Civil",
+      "shortBio": "Biographie Courte",
+      "history": "Historique & Parcours",
+      "experienceYears": "Années d'Expérience",
+      "completedProjectsCount": "Nombre de Projets Livrés"
+    },
+    "saving": "Enregistrement en cours...",
+    "saveButton": "Sauvegarder le Profil",
+    "saveSuccess": "Profil mis à jour avec succès !",
+    "photoUploadSuccess": "Photo téléchargée avec succès !",
+    "errors": {
+      "loadFailed": "Échec du chargement du profil",
+      "photoUploadFailed": "Erreur lors du téléchargement de la photo",
+      "saveFailed": "Erreur lors de la sauvegarde"
+    }
+  },
+  "AdminMarketplacePage": {
+    "title": "Gestion du Marché d'Actifs",
+    "subtitle": "Gérez les plans de maisons, terrains, matériaux et outillages.",
+    "tabs": {
+      "listings": "Annonces Actives",
+      "offers": "Offres Reçues ({count})"
+    },
+    "liveMarketplaceLink": "Voir le Marché en Direct ↗",
+    "createSuccess": "Actif publié avec succès !",
+    "createError": "Erreur lors de la publication de l'actif",
+    "confirmDelete": "Voulez-vous vraiment supprimer \"{title}\" ?",
+    "deleteSuccess": "Annonce supprimée avec succès",
+    "deleteError": "Erreur lors de la suppression de l'annonce",
+    "form": {
+      "heading": "Créer une Nouvelle Annonce",
+      "assetTitle": "Titre de l'Actif",
+      "assetTitlePlaceholder": "ex. Plan Duplex 4 Chambres Moderne",
+      "description": "Description",
+      "descriptionPlaceholder": "Spécifications techniques, dimensions, surfaces...",
+      "price": "Prix ($)",
+      "category": "Catégorie",
+      "status": "Statut de Disponibilité",
+      "images": "Rendus / Photos (Lot)",
+      "documents": "Plans / Devis / Docs (PDF/DOC)",
+      "submitting": "Téléchargement & Publication...",
+      "submitButton": "Publier l'Actif"
+    },
+    "editModal": {
+      "title": "Modifier l'Annonce Marketplace",
+      "saveBtn": "Mettre à Jour l'Annonce",
+      "saving": "Enregistrement...",
+      "success": "Annonce mise à jour avec succès !"
+    },
+    "categories": {
+      "design": "Plan de Maison / Conception",
+      "land": "Terrain / Parcelle",
+      "material": "Matériaux de Construction",
+      "tool": "Outillage / Engins",
+      "object": "Objet / Élément 3D"
+    },
+    "statuses": {
+      "available": "Disponible",
+      "pending": "En Négociation",
+      "sold": "Vendu"
+    },
+    "inventory": {
+      "heading": "Annonces Actives dans la Base ({count})",
+      "loading": "Chargement des actifs...",
+      "loadError": "Échec du chargement des annonces.",
+      "empty": "Aucun actif trouvé. Utilisez le formulaire à gauche pour en créer un !",
+      "rendersCount": "{count} Rendus",
+      "specsCount": "{count} Docs",
+      "deleteTitle": "Supprimer l'Actif",
+      "editTitle": "Modifier l'Actif",
+      "viewOffers": "Voir Offres ({count})"
+    },
+    "offers": {
+      "title": "Offres & Propositions de Négociation",
+      "empty": "Aucune offre reçue pour le moment.",
+      "buyer": "Acheteur",
+      "contact": "Coordonnées",
+      "asset": "Annonce Ciblée",
+      "offered": "Prix Proposé",
+      "message": "Message / Demande de Visite",
+      "date": "Date Soumise",
+      "status": "Statut",
+      "statusValues": {
+        "pending": "En attente",
+        "accepted": "Acceptée",
+        "rejected": "Refusée"
+      },
+      "actions": {
+        "accept": "Accepter l'Offre",
+        "reject": "Refuser l'Offre"
+      },
+      "statusSuccess": "Statut de l'offre mis à jour !"
+    }
+  },
+  "LoginPage": {
+    "backToHome": "Retour à l'Accueil",
+    "restrictedArea": "Espace Réservé",
+    "portalTitle": "Portail Ingénieur",
+    "portalSubtitle": "Connectez-vous pour administrer les projets et actifs.",
+    "emailLabel": "Email Ingénieur",
+    "passwordLabel": "Mot de Passe",
+    "verifying": "Vérification en cours...",
+    "signIn": "Se Connecter",
+    "needAccount": "Besoin d'un compte administrateur ?",
+    "registerHere": "Créer un Compte",
+    "loginSuccess": "Authentification réussie.",
+    "noTokenError": "Authentification réussie, mais aucun jeton n'a été renvoyé.",
+    "genericError": "Identifiants invalides ou serveur indisponible.",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
+    }
+  },
+  "MarketplacePage": {
+    "nav": {
+      "home": "Accueil",
+      "portfolio": "Portfolio",
+      "about": "À Propos",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Espace Ingénieur"
+    },
+    "hero": {
+      "eyebrow": "Marché de l'Ingénierie & Terrains",
+      "title": "Plans Architecturaux, Terrains & Matériaux",
+      "description": "Parcourez nos parcelles certifiées, nos équipements de construction et nos plans de maisons validés."
+    },
+    "availableAssets": "Actifs Disponibles",
+    "gridView": "Vue Grille",
+    "mapView": "Vue Carte",
+    "searchPlaceholder": "Rechercher sur le marché...",
+    "categories": {
+      "all": "Tous les Types",
+      "design": "Plans de Maisons",
+      "land": "Parcelles de Terrain",
+      "material": "Matériaux",
+      "tool": "Outillage & Engins",
+      "object": "Objets 3D"
+    },
+    "loading": "Chargement des actifs...",
+    "loadError": "Impossible de charger les actifs depuis le serveur.",
+    "noResults": "Aucun actif trouvé dans le catalogue.",
+    "map": {
+      "title": "Carte Interactive des Parcelles",
+      "description": "Affichage des coordonnées cadastrales pour {count} parcelles et sites en cours."
+    },
+    "askingPrice": "Prix Demandé",
+    "viewDocs": "Voir Docs",
+    "makeOffer": "Faire une Offre / Visite",
+    "offerSuccess": "Offre envoyée avec succès ! Notre équipe d'ingénierie prendra contact avec vous.",
+    "offerError": "Échec de l'envoi de l'offre. Veuillez réessayer.",
+    "docsModal": {
+      "title": "Coffre de Documentation Certifiée",
+      "description": "Visualiseur sécurisé pour {title}. Conformément aux protocoles de confidentialité, les téléchargements directs sont désactivés.",
+      "verifiedSecure": "Vérifié & Sécurisé",
+      "noDocuments": "Aucun document secondaire rattaché à cet actif.",
+      "closeButton": "Fermer le Visualiseur"
+    },
+    "offerModal": {
+      "title": "Proposer une Offre : {title}",
+      "nameLabel": "Votre Nom Complet",
+      "namePlaceholder": "Jean Dupont",
+      "emailLabel": "Adresse Email",
+      "emailPlaceholder": "jean@exemple.com",
+      "phoneLabel": "Numéro de Téléphone",
+      "phonePlaceholder": "+237 699 978 704",
+      "priceLabel": "Votre Prix Proposé ($)",
+      "pricePlaceholder": "Prix demandé : ${price}",
+      "messageLabel": "Message / Demande de Visite sur Terrain",
+      "messagePlaceholder": "Précisez vos disponibilités pour une visite ou vos modalités...",
+      "submitting": "Envoi de la proposition...",
+      "submitButton": "Transmettre l'Offre à l'Ingénieur"
+    },
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
+    }
+  },
+  "PortfolioPage": {
+    "nav": {
+      "home": "Accueil",
+      "portfolio": "Portfolio",
+      "about": "À Propos",
+      "marketplace": "Marketplace",
+      "engineerLogin": "Espace Ingénieur"
+    },
+    "hero": {
+      "eyebrow": "Portfolio de Réalisations",
+      "title": "Ouvrages d'Art & Bâtiments d'Exception",
+      "description": "Découvrez nos chantiers d'ingénierie et réalisations certifiées avec un taux de satisfaction et conformité de 100%."
+    },
+    "searchPlaceholder": "Rechercher un projet par nom ou mot-clé...",
+    "categories": {
+      "all": "Tous",
+      "structural": "Structure",
+      "commercial": "Commercial",
+      "residential": "Résidentiel",
+      "industrial": "Industriel",
+      "infrastructure": "Infrastructure"
+    },
+    "loading": "Chargement des projets...",
+    "loadError": "Impossible de charger les projets depuis le serveur.",
+    "noResults": "Aucun projet ne correspond à vos critères de recherche.",
+    "videoWalkthrough": "Vidéo Visite du Projet",
+    "videoUnsupported": "Votre navigateur ne supporte pas la lecture vidéo.",
+    "idLabel": "ID : #{id}",
+    "verifiedExecution": "Exécution Vérifiée",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
+    }
+  },
+  "RegisterPage": {
+    "backToHome": "Retour à l'Accueil",
+    "setupBadge": "Configuration Administrateur",
+    "title": "Créer un Compte",
+    "subtitle": "Créer un compte administrateur / ingénieur pour accéder au portail.",
+    "usernameLabel": "Nom d'Utilisateur",
+    "usernamePlaceholder": "nom_utilisateur",
+    "emailLabel": "Email Ingénieur",
+    "passwordLabel": "Mot de Passe",
+    "registering": "Création du compte...",
+    "createButton": "Créer le Compte",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signInHere": "Se Connecter",
+    "registerSuccess": "Compte administrateur créé ! Vous pouvez vous connecter.",
+    "genericError": "Échec de l'enregistrement. L'utilisateur ou l'email existe peut-être déjà.",
+    "footer": {
+      "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
+    }
   }
-},
-"AdminPage": {
-  "title": "Centre de Contrôle Admin",
-  "subtitle": "Gérez les dossiers techniques, les spécifications d'infrastructure et les ressources médias.",
-  "actions": {
-    "manageProfile": "Gérer le Profil",
-    "manageMarketplace": "Gérer le Marché",
-    "signOut": "Déconnexion"
-  },
-  "searchPlaceholder": "Rechercher des projets...",
-  "categories": {
-    "all": "Toutes les Catégories",
-    "residential": "Résidentiel",
-    "commercial": "Commercial",
-    "industrial": "Industriel",
-    "infrastructure": "Infrastructure"
-  },
-  "loading": "Chargement des dossiers de projet...",
-  "noResults": "Aucun dossier de projet correspondant trouvé.",
-  "logoutSuccess": "Déconnexion réussie",
-  "errors": {
-    "loadFailed": "Impossible de charger les dossiers de projet."
-  }
-},
-"AdminProfilePage": {
-  "title": "Gérer le Profil de l'Ingénieur",
-  "subtitle": "Mettez à jour votre biographie publique, votre parcours professionnel et vos qualifications.",
-  "backToDashboard": "Retour au Tableau de Bord",
-  "loading": "Chargement du profil...",
-  "fields": {
-    "profilePhoto": "Photo de Profil",
-    "photoHint": "Recommandé : photo carrée en haute résolution.",
-    "fullName": "Nom Complet",
-    "fullNamePlaceholder": "ex. Jean Dupont",
-    "professionalTitle": "Titre Professionnel",
-    "professionalTitlePlaceholder": "ex. Ingénieur Structurel Principal",
-    "shortBio": "Biographie Courte",
-    "history": "Historique & Parcours de l'Entreprise",
-    "experienceYears": "Années d'Expérience",
-    "completedProjectsCount": "Nombre de Projets Réalisés"
-  },
-  "saving": "Enregistrement en cours...",
-  "saveButton": "Enregistrer les Modifications",
-  "saveSuccess": "Profil de l'ingénieur mis à jour avec succès !",
-  "photoUploadSuccess": "Photo téléchargée avec succès !",
-  "errors": {
-    "loadFailed": "Échec du chargement du profil de l'ingénieur",
-    "photoUploadFailed": "Erreur lors du téléchargement de la photo",
-    "saveFailed": "Erreur lors de l'enregistrement du profil"
-  }
-},
-"AdminMarketplacePage": {
-  "title": "Gestion des Actifs du Marché",
-  "subtitle": "Gérez les plans de maisons, plans techniques, parcelles, matériaux et machines.",
-  "liveMarketplaceLink": "Voir le Marché en Direct ↗",
-  "createSuccess": "Actif du marché publié avec succès !",
-  "createError": "Erreur lors de la création de l'annonce",
-  "confirmDelete": "Êtes-vous sûr de vouloir supprimer « {title} » ?",
-  "deleteSuccess": "Annonce supprimée",
-  "deleteError": "Erreur lors de la suppression de l'annonce",
-  "form": {
-    "heading": "Créer une Nouvelle Annonce",
-    "assetTitle": "Titre de l'Actif",
-    "assetTitlePlaceholder": "ex. Plan de Duplex Moderne 4 Chambres",
-    "description": "Description",
-    "descriptionPlaceholder": "Spécifications, plans d'étage, dimensions, matériaux...",
-    "price": "Prix ($)",
-    "category": "Catégorie",
-    "status": "Statut de l'Annonce",
-    "images": "Images / Rendus (Lot)",
-    "documents": "Plans / Spécifications (PDF/DOC)",
-    "submitting": "Téléchargement & Création...",
-    "submitButton": "Publier l'Actif"
-  },
-  "categories": {
-    "design": "Plan de Maison",
-    "land": "Parcelle de Terrain",
-    "material": "Matériaux de Construction",
-    "tool": "Outil / Machine",
-    "object": "Objet 3D / Composant"
-  },
-  "statuses": {
-    "available": "Disponible",
-    "pending": "En Attente",
-    "sold": "Vendu"
-  },
-  "inventory": {
-    "heading": "Annonces Actives ({count})",
-    "loading": "Chargement des articles du marché...",
-    "loadError": "Échec du chargement des enregistrements.",
-    "empty": "Aucun actif trouvé. Créez-en un avec le formulaire à gauche !",
-    "rendersCount": "{count} Rendus",
-    "specsCount": "{count} Fiches",
-    "deleteTitle": "Supprimer l'Actif"
-  }
-},
-"LoginPage": {
-  "backToHome": "Retour à l'Accueil",
-  "restrictedArea": "Zone Restreinte",
-  "portalTitle": "Portail Ingénieur",
-  "portalSubtitle": "Connectez-vous pour gérer les dossiers et plans techniques.",
-  "emailLabel": "Email de l'Ingénieur",
-  "passwordLabel": "Code d'Accès",
-  "verifying": "Vérification des Identifiants...",
-  "signIn": "Se Connecter",
-  "needAccount": "Besoin d'un compte admin ?",
-  "registerHere": "S'inscrire Ici",
-  "loginSuccess": "Authentification réussie en tant qu'Ingénieur.",
-  "noTokenError": "Authentification réussie, mais aucun jeton d'accès n'a été renvoyé.",
-  "genericError": "Identifiants invalides ou serveur indisponible.",
-  "footer": {
-    "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
-  }
-},
-"MarketplacePage": {
-  "nav": {
-    "home": "Accueil",
-    "portfolio": "Portfolio",
-    "about": "À propos",
-    "marketplace": "Marché",
-    "engineerLogin": "Connexion Ingénieur"
-  },
-  "hero": {
-    "eyebrow": "Marché de l'Ingénierie",
-    "title": "Actifs Structurels & Parcelles à Vendre",
-    "description": "Parcourez les parcelles approuvées, les machines de construction spécialisées et les objets architecturaux."
-  },
-  "availableAssets": "Actifs Disponibles",
-  "gridView": "Vue Grille",
-  "mapView": "Vue Carte",
-  "searchPlaceholder": "Rechercher dans le marché...",
-  "categories": {
-    "all": "Tous les Types d'Actifs",
-    "land": "Parcelles de Terrain",
-    "tool": "Outils & Machines",
-    "object": "Objets Architecturaux"
-  },
-  "loading": "Chargement des articles du marché...",
-  "loadError": "Impossible de charger les actifs du marché depuis le serveur.",
-  "noResults": "Aucun actif trouvé dans la base de données du marché.",
-  "map": {
-    "title": "Carte Spatiale Régionale Interactive",
-    "description": "Affichage des coordonnées géographiques et secteurs pour {count} parcelles et sites structurels actifs."
-  },
-  "askingPrice": "Prix Demandé",
-  "viewDocs": "Voir les Documents",
-  "makeOffer": "Faire une Offre / Planifier une Visite",
-  "offerSuccess": "Offre envoyée avec succès ! Notre équipe technique l'examinera.",
-  "offerError": "Échec de l'envoi de l'offre. Veuillez réessayer.",
-  "docsModal": {
-    "title": "Coffre-fort de Documentation Vérifiée",
-    "description": "Visionneuse en ligne sécurisée pour {title}. Pour des raisons de sécurité, le téléchargement direct est désactivé ; consultez les références des documents ci-dessous.",
-    "verifiedSecure": "Vérifié et Sécurisé",
-    "noDocuments": "Aucun document secondaire attaché à cette annonce.",
-    "closeButton": "Fermer la Visionneuse"
-  },
-  "offerModal": {
-    "title": "Faire une Offre : {title}",
-    "priceLabel": "Votre Prix Proposé ($)",
-    "pricePlaceholder": "Demandé : {price}$",
-    "messageLabel": "Message / Détails de la Demande de Visite",
-    "messagePlaceholder": "Précisez vos préférences d'horaire d'inspection ou les termes de l'offre...",
-    "submitting": "Envoi de la Proposition...",
-    "submitButton": "Envoyer l'Offre à l'Admin"
-  },
-  "footer": {
-    "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
-  }
-},
-"PortfolioPage": {
-  "nav": {
-    "home": "Accueil",
-    "portfolio": "Portfolio",
-    "about": "À propos",
-    "marketplace": "Marché",
-    "engineerLogin": "Connexion Ingénieur"
-  },
-  "hero": {
-    "eyebrow": "Portfolio des Projets Réalisés",
-    "title": "Prouesses d'Ingénierie & Plans Architecturaux",
-    "description": "Découvrez notre portfolio vérifié, fort de plus de 25 ans d'expérience à travers plus de 15 réalisations structurelles majeures avec un taux d'achèvement de 98 %."
-  },
-  "searchPlaceholder": "Rechercher un projet par titre ou mot-clé...",
-  "categories": {
-    "all": "Tous",
-    "structural": "Structurel",
-    "commercial": "Commercial",
-    "residential": "Résidentiel",
-    "industrial": "Industriel",
-    "infrastructure": "Infrastructure"
-  },
-  "loading": "Chargement des projets et dossiers architecturaux...",
-  "loadError": "Échec du chargement des projets depuis le serveur. Veuillez vérifier la connexion.",
-  "noResults": "Aucun projet ne correspond à votre recherche ou filtre.",
-  "videoWalkthrough": "Visite Vidéo du Projet",
-  "videoUnsupported": "Votre navigateur ne prend pas en charge la balise vidéo.",
-  "idLabel": "ID : #{id}",
-  "verifiedExecution": "Exécution Vérifiée",
-  "footer": {
-    "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
-  }
-},
-"RegisterPage": {
-  "backToHome": "Retour à l'Accueil",
-  "setupBadge": "Configuration Admin Système",
-  "title": "Créer un Compte",
-  "subtitle": "Créez un compte ingénieur / administrateur pour accéder au portail.",
-  "usernameLabel": "Nom d'Utilisateur",
-  "usernamePlaceholder": "nom_utilisateur_ingenieur",
-  "emailLabel": "Email de l'Ingénieur",
-  "passwordLabel": "Code d'Accès",
-  "registering": "Création du Compte...",
-  "createButton": "Créer un Compte Admin",
-  "haveAccount": "Vous avez déjà un compte ?",
-  "signInHere": "Se Connecter Ici",
-  "registerSuccess": "Compte administrateur système créé ! Veuillez vous connecter.",
-  "genericError": "Échec de la création du compte. L'utilisateur ou l'email existe peut-être déjà.",
-  "footer": {
-    "copyright": "© {year} House Design. — la maison c'est nous —. Tous droits réservés."
-  }
-}
 }

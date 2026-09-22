@@ -8,42 +8,54 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
+  Query,
+  Headers,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { ProjectDto } from './dto/project.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('projects')
-@ApiBearerAuth()
 @Controller('project')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Create a new project (Admin Only)' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new project with auto-translation (Admin Only)' })
   @ApiResponse({ status: 201, description: 'The project has been successfully created.' })
-  @ApiResponse({ status: 401, description: 'Missing or invalid token.' })
   create(@Body() projectDto: ProjectDto) {
     return this.projectService.create(projectDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all architectural projects (Public Showcase)' })
-  @ApiResponse({ status: 200, description: 'Return all architectural projects.' })
-  findAll() {
-    return this.projectService.findAll();
+  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
+  findAll(
+    @Query('locale') queryLocale?: string,
+    @Headers('accept-language') headerLocale?: string,
+  ) {
+    const locale = queryLocale || headerLocale;
+    return this.projectService.findAll(locale);
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single project by ID' })
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.projectService.findOne(id);
+  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('locale') queryLocale?: string,
+    @Headers('accept-language') headerLocale?: string,
+  ) {
+    const locale = queryLocale || headerLocale;
+    return this.projectService.findOne(id, locale);
   }
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update an existing project (Admin Only)' })
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -54,6 +66,7 @@ export class ProjectController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a project (Admin Only)' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.projectService.remove(id);

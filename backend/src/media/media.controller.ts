@@ -1,10 +1,9 @@
 import type {
   Request,
-} from 'express'; // 👈 Fixed: Using 'import type' to satisfy TS1272
+} from 'express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 
-// src/media/media.controller.ts
 import {
   BadRequestException,
   Controller,
@@ -12,13 +11,16 @@ import {
   Req,
   UploadedFile,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import {
   FileInterceptor,
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOperation,
@@ -28,7 +30,6 @@ import {
 
 import { MediaService } from './media.service';
 
-// Custom file filter to block dangerous or unapproved extensions
 const fileFilter = (req: any, file: any, callback: any) => {
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx', '.mp4', '.mov'];
   const ext = extname(file.originalname).toLowerCase();
@@ -39,7 +40,6 @@ const fileFilter = (req: any, file: any, callback: any) => {
   callback(null, true);
 };
 
-// Storage configuration with unique filename generation
 const storageConfig = diskStorage({
   destination: './uploads',
   filename: (req, file, callback) => {
@@ -55,7 +55,9 @@ export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Post('upload-single')
-  @ApiOperation({ summary: 'Upload a single media file or blueprint document' })
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload a single media file or blueprint document (Admin Only)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -70,11 +72,12 @@ export class MediaController {
   })
   @ApiResponse({ status: 201, description: 'File uploaded successfully.' })
   @ApiResponse({ status: 400, description: 'Bad request or unsupported file format.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: storageConfig,
       fileFilter: fileFilter,
-      limits: { fileSize: 50 * 1024 * 1024 }, // 50MB maximum size (supports video/specs)
+      limits: { fileSize: 50 * 1024 * 1024 },
     }),
   )
   uploadSingle(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
@@ -84,7 +87,9 @@ export class MediaController {
   }
 
   @Post('upload-multiple')
-  @ApiOperation({ summary: 'Upload multiple assets or project images' })
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Upload multiple assets or project images (Admin Only)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -102,6 +107,7 @@ export class MediaController {
   })
   @ApiResponse({ status: 201, description: 'Files uploaded successfully.' })
   @ApiResponse({ status: 400, description: 'Bad request or unsupported formats.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseInterceptors(
     FilesInterceptor('files', 10, {
       storage: storageConfig,

@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { User, ArrowLeft, Save } from 'lucide-react';
+import { User, ArrowLeft, Save, Loader2 } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import api from '@/lib/api';
 
 export default function AdminProfilePage() {
   const t = useTranslations('AdminProfilePage');
@@ -27,17 +29,16 @@ export default function AdminProfilePage() {
       return;
     }
 
-    fetch('http://localhost:3000/api/engineer-profile')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data) {
-          setName(data.name || '');
-          setTitle(data.title || '');
-          setBio(data.bio || '');
-          setHistory(data.history || '');
-          setExperienceYears(data.experienceYears || '');
-          setCompletedProjectsCount(data.completedProjectsCount || '');
-          setPhotoUrl(data.photoUrl || '');
+    api.get('/engineer-profile')
+      .then((res) => {
+        if (res.data) {
+          setName(res.data.name || '');
+          setTitle(res.data.title || '');
+          setBio(res.data.bio || '');
+          setHistory(res.data.history || '');
+          setExperienceYears(res.data.experienceYears?.toString() || '');
+          setCompletedProjectsCount(res.data.completedProjectsCount?.toString() || '');
+          setPhotoUrl(res.data.photoUrl || '');
         }
       })
       .catch(() => toast.error(t('errors.loadFailed')))
@@ -49,19 +50,15 @@ export default function AdminProfilePage() {
     if (!files || files.length === 0) return;
 
     const formData = new FormData();
-    formData.append('files', files[0]);
+    formData.append('file', files[0]);
 
     try {
-      const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:3000/api/media/upload-multiple', {
-        method: 'POST',
-        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-        body: formData,
+      const res = await api.post('/media/upload-single', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      if (data[0]?.url) {
-        setPhotoUrl(data[0].url);
+      const uploadedUrl = res.data.url || res.data.filePath || res.data.path;
+      if (uploadedUrl) {
+        setPhotoUrl(uploadedUrl);
         toast.success(t('photoUploadSuccess'));
       }
     } catch {
@@ -73,25 +70,16 @@ export default function AdminProfilePage() {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const token = localStorage.getItem('access_token');
-      const res = await fetch('http://localhost:3000/api/engineer-profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({
-          name,
-          title,
-          bio,
-          history,
-          experienceYears: Number(experienceYears),
-          completedProjectsCount: Number(completedProjectsCount),
-          photoUrl,
-        }),
+      await api.put('/engineer-profile', {
+        name,
+        title,
+        bio,
+        history,
+        experienceYears: Number(experienceYears),
+        completedProjectsCount: Number(completedProjectsCount),
+        photoUrl,
       });
 
-      if (!res.ok) throw new Error('Failed to update profile');
       toast.success(t('saveSuccess'));
     } catch {
       toast.error(t('errors.saveFailed'));
@@ -105,11 +93,11 @@ export default function AdminProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10">
+    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10 font-sans">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Header navigation */}
-        <div className="flex items-center justify-between bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <div className="flex items-center justify-between bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl flex-wrap gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-cyan-600/10 border border-cyan-800/30 rounded-xl text-cyan-400">
               <User className="w-6 h-6" />
@@ -119,13 +107,16 @@ export default function AdminProfilePage() {
               <p className="text-sm text-slate-400">{t('subtitle')}</p>
             </div>
           </div>
-          <Link
-            href="/admin"
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>{t('backToDashboard')}</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>{t('backToDashboard')}</span>
+            </Link>
+          </div>
         </div>
 
         {/* Profile Editor Form Card */}
@@ -136,7 +127,7 @@ export default function AdminProfilePage() {
             <div className="flex items-center gap-6 pb-6 border-b border-slate-800">
               <div className="w-24 h-24 rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center shadow-inner shrink-0">
                 {photoUrl ? (
-                  <img src={photoUrl} alt="Engineer" className="w-full h-full object-cover" />
+                  <img src={photoUrl.startsWith('http') ? photoUrl : `http://localhost:3000${photoUrl}`} alt="Engineer" className="w-full h-full object-cover" />
                 ) : (
                   <User className="w-10 h-10 text-slate-600" />
                 )}
@@ -228,8 +219,17 @@ export default function AdminProfilePage() {
               disabled={isSaving}
               className="w-full py-3.5 bg-cyan-600 hover:bg-cyan-700 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-lg"
             >
-              <Save className="w-4 h-4" />
-              <span>{isSaving ? t('saving') : t('saveButton')}</span>
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{t('saving')}</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  <span>{t('saveButton')}</span>
+                </>
+              )}
             </button>
 
           </form>

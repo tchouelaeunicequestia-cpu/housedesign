@@ -1,11 +1,53 @@
-﻿'use client';
+'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { MapPin, Phone, Mail, Calendar, Globe, ArrowRight, Building2, Wrench, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import api from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function Home() {
   const t = useTranslations('HomePage');
+
+  // Appointment Form State
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [appointmentDate, setAppointmentDate] = useState('');
+  const [serviceType, setServiceType] = useState('');
+  const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAppointmentSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await api.post('/appointment', {
+        name,
+        email,
+        phone,
+        appointmentDate,
+        serviceType,
+        notes,
+      });
+
+      toast.success(t('rendezvous.successAlert'));
+      setName('');
+      setEmail('');
+      setPhone('');
+      setAppointmentDate('');
+      setServiceType('');
+      setNotes('');
+    } catch (error: any) {
+      console.error('Failed to book appointment:', error);
+      toast.error(t('rendezvous.errorAlert'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
@@ -28,13 +70,14 @@ export default function Home() {
             </Link>
 
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-              <Link href="/" className="hover:text-white transition-colors">{t('nav.home')}</Link>
+              <Link href="/" className="text-cyan-400 font-bold transition-colors">{t('nav.home')}</Link>
               <Link href="/portfolio" className="hover:text-white transition-colors">{t('nav.portfolio')}</Link>
               <Link href="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link>
               <Link href="/marketplace" className="hover:text-white transition-colors">{t('nav.marketplace')}</Link>
             </nav>
 
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
@@ -124,38 +167,90 @@ export default function Home() {
               </p>
             </div>
 
-            <form onSubmit={(e) => { e.preventDefault(); alert(t('rendezvous.successAlert')); }} className="space-y-4 max-w-lg mx-auto">
+            <form onSubmit={handleAppointmentSubmit} className="space-y-4 max-w-lg mx-auto">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.nameLabel')}</label>
+                <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.nameLabel')} *</label>
                 <input
                   type="text"
                   required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder={t('rendezvous.namePlaceholder')}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 />
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.emailLabel')} *</label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t('rendezvous.emailPlaceholder')}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.phoneLabel')}</label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={t('rendezvous.phonePlaceholder')}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.dateLabel')} *</label>
+                  <input
+                    type="datetime-local"
+                    required
+                    value={appointmentDate}
+                    onChange={(e) => setAppointmentDate(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.serviceTypeLabel')}</label>
+                  <input
+                    type="text"
+                    value={serviceType}
+                    onChange={(e) => setServiceType(e.target.value)}
+                    placeholder={t('rendezvous.serviceTypePlaceholder')}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.emailLabel')}</label>
-                <input
-                  type="email"
-                  required
-                  placeholder={t('rendezvous.emailPlaceholder')}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.notesLabel')}</label>
+                <textarea
+                  rows={3}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder={t('rendezvous.notesPlaceholder')}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 resize-none"
                 />
               </div>
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">{t('rendezvous.dateLabel')}</label>
-                <input
-                  type="datetime-local"
-                  required
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
-                />
-              </div>
+
               <button
                 type="submit"
-                className="w-full mt-2 py-3 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors shadow-sm"
+                disabled={isSubmitting}
+                className="w-full mt-2 py-3 text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               >
-                {t('rendezvous.submitButton')}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>{t('rendezvous.submitting')}</span>
+                  </>
+                ) : (
+                  <span>{t('rendezvous.submitButton')}</span>
+                )}
               </button>
             </form>
           </div>
@@ -197,7 +292,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{t('contact.phoneLabel')}</p>
-                    <p className="font-medium text-white">+237 6999788704  +237 [EMAIL_ADDRESS]</p>
+                    <p className="font-medium text-white">+237 6999788704 / +237 671234567</p>
                   </div>
                 </div>
 
@@ -207,7 +302,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{t('contact.emailLabel')}</p>
-                    <p className="font-medium text-white">[EMAIL_ADDRESS]</p>
+                    <p className="font-medium text-white">contact@housedesign.cm</p>
                   </div>
                 </div>
               </div>
@@ -220,15 +315,15 @@ export default function Home() {
               <div className="flex flex-col gap-3">
                 <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
                   <span className="font-medium">Facebook</span>
-                  <Globe className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs text-cyan-400 font-semibold">House Design CM ↗</span>
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
                   <span className="font-medium">TikTok</span>
-                  <Globe className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs text-cyan-400 font-semibold">@housedesign_cm ↗</span>
                 </a>
                 <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
                   <span className="font-medium">Instagram</span>
-                  <Globe className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs text-cyan-400 font-semibold">@housedesign_structures ↗</span>
                 </a>
               </div>
             </div>

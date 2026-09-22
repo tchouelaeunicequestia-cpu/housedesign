@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+import { AppointmentModule } from './appointment/appointment.module';
 import { AssetModule } from './asset/asset.module';
 import { AuthModule } from './auth/auth.module';
+import { EngineerProfileModule } from './engineer-profile/engineer-profile.module';
 import { MediaModule } from './media/media.module';
 import { ProjectModule } from './project/project.module';
+import { TranslationModule } from './translation/translation.module';
 import { UserModule } from './user/user.module';
-import { EngineerProfileModule } from './engineer-profile/engineer-profile.module';
 
 @Module({
   imports: [
@@ -26,12 +28,14 @@ import { EngineerProfileModule } from './engineer-profile/engineer-profile.modul
         ssl: { rejectUnauthorized: false },
       }),
     }),
+    TranslationModule,
     AuthModule,
     UserModule,
     AssetModule,
     ProjectModule,
     MediaModule,
     EngineerProfileModule,
+    AppointmentModule,
   ],
   controllers: [AppController], 
   providers: [AppService],       
