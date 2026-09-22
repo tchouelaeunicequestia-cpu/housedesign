@@ -186,7 +186,7 @@ export default function Home() {
                       rel="noopener noreferrer"
                       className="font-medium text-white hover:text-cyan-400 transition-colors"
                     >
-                      WG3W+2F4, Rte de Ngousso, Yaoundé
+                      Yaoundé, Centre Region, Cameroon
                     </a>
                   </div>
                 </div>
