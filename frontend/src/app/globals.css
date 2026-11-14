@@ -1,53 +1,25 @@
 @import "tailwindcss";
 
+/* Brand palette: primary = blue, secondary = white, tertiary = red */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--color-blue-600);
+  --color-primary-dark: var(--color-blue-700);
+  --color-secondary: #ffffff;
+  --color-tertiary: var(--color-red-600);
+  --color-tertiary-dark: var(--color-red-700);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-  top: 0 !important;
-}
-
-iframe.skiptranslate,
-.goog-te-banner-frame,
-#goog-gt-tt,
-.goog-te-balloon-frame {
-  display: none !important;
-}
-
-.goog-text-highlight {
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
-
-#google_translate_element {
-  position: fixed;
-  top: 0;
-  left: -10000px;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
 }

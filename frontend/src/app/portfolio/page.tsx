@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
-import { getTranslator } from '@/lib/translations';
+import { useTranslations } from 'next-intl';
 import { Search, PlayCircle } from 'lucide-react';
-import GoogleTranslate from '@/components/GoogleTranslate';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function PortfolioPage() {
-  const t = getTranslator('PortfolioPage');
+  const t = useTranslations('PortfolioPage');
   const { data: projects, isLoading, isError } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -35,11 +35,11 @@ export default function PortfolioPage() {
   const getStatusBadgeColor = (st: string) => {
     switch (st) {
       case 'Completed':
-        return 'bg-emerald-950 text-emerald-400 border-emerald-800/50';
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
       case 'In-Progress':
-        return 'bg-amber-950 text-amber-400 border-amber-800/50';
+        return 'bg-amber-50 text-amber-700 border-amber-200';
       default:
-        return 'bg-cyan-950 text-cyan-400 border-cyan-800/50';
+        return 'bg-blue-50 text-blue-700 border-blue-200';
     }
   };
 
@@ -51,10 +51,10 @@ export default function PortfolioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between font-sans">
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col justify-between font-sans">
       <div>
         {/* Navigation Header */}
-        <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-md">
           <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <Link href="/" className="flex items-center gap-3">
               <img
@@ -63,36 +63,42 @@ export default function PortfolioPage() {
                 className="h-10 w-auto object-contain"
               />
               <div>
-                <h1 className="text-xl font-bold tracking-tight text-white">House Design</h1>
-                <p className="text-[10px] text-cyan-400 font-semibold tracking-widest uppercase">
+                <h1 className="text-xl font-bold tracking-tight text-slate-900">House Design</h1>
+                <p className="text-[10px] text-blue-700 font-semibold tracking-widest uppercase">
                   — la maison c'est nous —
                 </p>
               </div>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-              <Link href="/" className="hover:text-white transition-colors">{t('nav.home')}</Link>
-              <Link href="/portfolio" className="text-cyan-400 font-bold transition-colors">{t('nav.portfolio')}</Link>
-              <Link href="/about" className="hover:text-white transition-colors">{t('nav.about')}</Link>
-              <Link href="/marketplace" className="hover:text-white transition-colors">{t('nav.marketplace')}</Link>
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
+              <Link href="/" className="hover:text-slate-900 transition-colors">{t('nav.home')}</Link>
+              <Link href="/portfolio" className="text-blue-700 font-bold transition-colors">{t('nav.portfolio')}</Link>
+              <Link href="/about" className="hover:text-slate-900 transition-colors">{t('nav.about')}</Link>
+              <Link href="/marketplace" className="hover:text-slate-900 transition-colors">{t('nav.marketplace')}</Link>
             </nav>
 
             <div className="flex items-center gap-3">
-              <GoogleTranslate />
+              <LanguageSwitcher />
+              <Link
+                href="/login"
+                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+              >
+                {t('nav.engineerLogin')}
+              </Link>
             </div>
           </div>
         </header>
 
         {/* Portfolio Hero Header */}
-        <section className="bg-gradient-to-b from-slate-900 to-slate-950 text-white py-16 px-6 text-center border-b border-slate-800">
+        <section className="bg-gradient-to-b from-blue-50 to-white text-slate-900 py-16 px-6 text-center border-b border-slate-200">
           <div className="max-w-3xl mx-auto">
-            <span className="text-cyan-400 text-xs uppercase tracking-widest font-bold bg-cyan-950/60 border border-cyan-800/50 px-3.5 py-1.5 rounded-full inline-block mb-4">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block mb-4">
               {t('hero.eyebrow')}
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-slate-900">
               {t('hero.title')}
             </h2>
-            <p className="text-slate-400 text-sm md:text-base leading-relaxed">
+            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
               {t('hero.description')}
             </p>
           </div>
@@ -100,16 +106,16 @@ export default function PortfolioPage() {
 
         {/* Search & Filter Controls */}
         <section className="max-w-7xl mx-auto px-6 py-8">
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Search Input */}
             <div className="relative w-full md:w-96">
-              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-600" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={t('searchPlaceholder')}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
               />
             </div>
 
@@ -121,8 +127,8 @@ export default function PortfolioPage() {
                   onClick={() => setFilterCategory(cat)}
                   className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors border cursor-pointer ${
                     filterCategory === cat
-                      ? 'bg-cyan-600 text-white border-cyan-500 shadow-sm'
-                      : 'bg-slate-950 text-slate-300 border-slate-700 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
                   {t(categoryLabelKeys[cat])}
@@ -135,19 +141,19 @@ export default function PortfolioPage() {
         {/* Project Grid */}
         <main className="max-w-7xl mx-auto px-6 py-6">
           {isLoading && (
-            <div className="text-center py-20 text-slate-400 text-sm">
+            <div className="text-center py-20 text-slate-600 text-sm">
               {t('loading')}
             </div>
           )}
 
           {isError && (
-            <div className="text-center py-20 text-red-400 text-sm bg-red-950/20 border border-red-900/50 rounded-xl">
+            <div className="text-center py-20 text-red-600 text-sm bg-red-50/20 border border-red-900/50 rounded-xl">
               {t('loadError')}
             </div>
           )}
 
           {!isLoading && !isError && filteredProjects?.length === 0 && (
-            <div className="text-center py-20 text-slate-400 text-sm bg-slate-900 border border-slate-800 rounded-xl">
+            <div className="text-center py-20 text-slate-600 text-sm bg-slate-50 border border-slate-200 rounded-xl">
               {t('noResults')}
             </div>
           )}
@@ -156,14 +162,14 @@ export default function PortfolioPage() {
             {filteredProjects?.map((project: any) => (
               <div
                 key={project.id}
-                className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg hover:border-slate-700 transition-all flex flex-col justify-between"
+                className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-lg hover:border-slate-300 transition-all flex flex-col justify-between"
               >
                 {/* 1. Project Name & Description First */}
                 <div className="p-6 flex flex-col flex-grow">
-                  <h4 className="text-xl font-bold text-white mb-2">{project.title}</h4>
+                  <h4 className="text-xl font-bold text-slate-900 mb-2">{project.title}</h4>
 
                   <div className="flex gap-2 mb-4">
-                    <span className="bg-slate-950 text-cyan-400 border border-cyan-900/50 text-xs px-2.5 py-0.5 rounded-full font-medium">
+                    <span className="bg-white text-blue-700 border border-blue-200 text-xs px-2.5 py-0.5 rounded-full font-medium">
                       {project.category || 'Structural'}
                     </span>
                     <span
@@ -175,13 +181,13 @@ export default function PortfolioPage() {
                     </span>
                   </div>
 
-                  <p className="text-slate-400 text-sm leading-relaxed">{project.description}</p>
+                  <p className="text-slate-600 text-sm leading-relaxed">{project.description}</p>
                 </div>
 
                 <div>
                   {/* 2. Image */}
                   {project.imageUrl && (
-                    <div className="relative h-48 w-full bg-slate-950 overflow-hidden border-t border-slate-800">
+                    <div className="relative h-48 w-full bg-white overflow-hidden border-t border-slate-200">
                       <img
                         src={getMediaUrl(project.imageUrl)}
                         alt={project.title}
@@ -192,13 +198,13 @@ export default function PortfolioPage() {
 
                   {/* 3. Video */}
                   {project.videoUrl && (
-                    <div className="p-4 bg-slate-950/90 border-t border-slate-800">
-                      <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-cyan-400 uppercase tracking-wider">
+                    <div className="p-4 bg-white/90 border-t border-slate-200">
+                      <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-blue-700 uppercase tracking-wider">
                         <PlayCircle className="w-4 h-4" /> {t('videoWalkthrough')}
                       </div>
                       <video
                         controls
-                        className="w-full h-40 rounded-lg bg-black object-cover border border-slate-800"
+                        className="w-full h-40 rounded-lg bg-black object-cover border border-slate-200"
                         src={getMediaUrl(project.videoUrl)}
                       >
                         {t('videoUnsupported')}
@@ -207,9 +213,9 @@ export default function PortfolioPage() {
                   )}
                 </div>
 
-                <div className="px-6 py-3 border-t border-slate-800/50 flex justify-between items-center text-xs text-slate-500 bg-slate-900">
+                <div className="px-6 py-3 border-t border-slate-200/50 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
                   <span>{t('idLabel', { id: project.id })}</span>
-                  <span className="text-cyan-400 font-medium">{t('verifiedExecution')}</span>
+                  <span className="text-blue-700 font-medium">{t('verifiedExecution')}</span>
                 </div>
               </div>
             ))}
@@ -218,11 +224,8 @@ export default function PortfolioPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-slate-900 border-t border-slate-800 mt-20 py-8 text-center text-xs text-slate-500">
+      <footer className="bg-slate-50 border-t border-slate-200 mt-20 py-8 text-center text-xs text-slate-500">
         <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
-        <Link href="/login" className="mt-3 inline-block text-slate-400 transition-colors hover:text-white">
-          Staff login
-        </Link>
       </footer>
     </div>
   );
