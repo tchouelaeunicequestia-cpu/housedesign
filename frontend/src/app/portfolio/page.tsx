@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { Search, PlayCircle } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 
 export default function PortfolioPage() {
-  const t = useTranslations('PortfolioPage');
+  const t = getTranslator('PortfolioPage');
   const { data: projects, isLoading, isError } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -78,7 +78,7 @@ export default function PortfolioPage() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+              <GoogleTranslate />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
