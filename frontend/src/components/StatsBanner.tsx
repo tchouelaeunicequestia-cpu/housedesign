@@ -25,43 +25,43 @@ export default function StatsBanner({ projects = [] }: StatsBannerProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg flex items-center gap-4">
-        <div className="p-3 bg-cyan-500/10 text-cyan-400 rounded-lg">
+      <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-lg flex items-center gap-4">
+        <div className="p-3 bg-blue-500/10 text-blue-700 rounded-lg">
           <FolderKanban className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Total Projects</p>
-          <h4 className="text-2xl font-bold text-white">{total}</h4>
+          <p className="text-xs text-slate-600 font-medium">Total Projects</p>
+          <h4 className="text-2xl font-bold text-slate-900">{total}</h4>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg flex items-center gap-4">
-        <div className="p-3 bg-amber-500/10 text-amber-400 rounded-lg">
+      <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-lg flex items-center gap-4">
+        <div className="p-3 bg-amber-500/10 text-amber-700 rounded-lg">
           <Clock className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Planning</p>
-          <h4 className="text-2xl font-bold text-white">{planning}</h4>
+          <p className="text-xs text-slate-600 font-medium">Planning</p>
+          <h4 className="text-2xl font-bold text-slate-900">{planning}</h4>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg flex items-center gap-4">
-        <div className="p-3 bg-blue-500/10 text-blue-400 rounded-lg">
+      <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-lg flex items-center gap-4">
+        <div className="p-3 bg-blue-500/10 text-blue-700 rounded-lg">
           <Layers className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">In-Progress</p>
-          <h4 className="text-2xl font-bold text-white">{inProgress}</h4>
+          <p className="text-xs text-slate-600 font-medium">In-Progress</p>
+          <h4 className="text-2xl font-bold text-slate-900">{inProgress}</h4>
         </div>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg flex items-center gap-4">
-        <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg">
+      <div className="bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-lg flex items-center gap-4">
+        <div className="p-3 bg-emerald-500/10 text-emerald-700 rounded-lg">
           <CheckCircle2 className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-xs text-slate-400 font-medium">Completed</p>
-          <h4 className="text-2xl font-bold text-white">{completed}</h4>
+          <p className="text-xs text-slate-600 font-medium">Completed</p>
+          <h4 className="text-2xl font-bold text-slate-900">{completed}</h4>
         </div>
       </div>
     </div>

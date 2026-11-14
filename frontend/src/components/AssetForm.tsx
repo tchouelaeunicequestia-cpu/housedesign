@@ -40,28 +40,28 @@ export default function AssetForm() {
   };
 
   return (
-    <section className="bg-slate-900 p-6 md:p-8 rounded-2xl shadow-xl border border-slate-800">
-      <h3 className="text-2xl font-bold text-white mb-6">List Marketplace Asset (Land / Tool / Object)</h3>
+    <section className="bg-slate-50 p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200">
+      <h3 className="text-2xl font-bold text-slate-900 mb-6">List Marketplace Asset (Land / Tool / Object)</h3>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">Asset Title</label>
+          <label className="block text-sm font-semibold text-slate-800 mb-2">Asset Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
             placeholder="e.g. 500sqm Land Plot in Bastos..."
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-2">Asset Category</label>
+            <label className="block text-sm font-semibold text-slate-800 mb-2">Asset Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as any)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+              className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
             >
               <option value="land">Land Plot</option>
               <option value="tool">Tools & Machinery</option>
@@ -70,7 +70,7 @@ export default function AssetForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-slate-200 mb-2">Price ($ USD)</label>
+            <label className="block text-sm font-semibold text-slate-800 mb-2">Price ($ USD)</label>
             <input
               type="number"
               step="0.01"
@@ -78,27 +78,27 @@ export default function AssetForm() {
               onChange={(e) => setPrice(e.target.value)}
               required
               placeholder="e.g. 25000"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+              className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-slate-200 mb-2">Asset Description</label>
+          <label className="block text-sm font-semibold text-slate-800 mb-2">Asset Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
             rows={3}
             placeholder="Enter plot dimensions, tool specifications, or architectural details..."
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 shadow-inner"
+            className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-base text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner"
           />
         </div>
 
         <button
           type="submit"
           disabled={createAssetMutation.isPending}
-          className="w-full md:w-auto bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3.5 rounded-xl text-base font-bold transition-colors shadow-lg shadow-cyan-950/50 disabled:opacity-50 cursor-pointer"
+          className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-xl text-base font-bold transition-colors shadow-lg shadow-blue-200 disabled:opacity-50 cursor-pointer"
         >
           {createAssetMutation.isPending ? 'Publishing Asset...' : 'Publish Marketplace Listing'}
         </button>

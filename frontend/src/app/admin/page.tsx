@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { getTranslator } from '@/lib/translations';
+import { useTranslations } from 'next-intl';
 import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban } from 'lucide-react';
-import GoogleTranslate from '@/components/GoogleTranslate';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
 import StatsBanner from '@/components/StatsBanner';
@@ -25,7 +25,7 @@ interface Project {
 }
 
 export default function AdminDashboard() {
-  const t = getTranslator('AdminPage');
+  const t = useTranslations('AdminPage');
   const router = useRouter();
   
   const [activeTab, setActiveTab] = useState<'projects' | 'appointments'>('projects');
@@ -72,42 +72,42 @@ export default function AdminDashboard() {
   });
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-6 lg:p-10 font-sans">
+    <main className="min-h-screen bg-white text-slate-900 p-6 lg:p-10 font-sans">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header Bar */}
-        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-xl">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-red-600/10 border border-red-600/20 rounded-xl text-red-500">
               <LayoutDashboard className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-white">{t('title')}</h1>
-              <p className="text-sm text-slate-400">{t('subtitle')}</p>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-900">{t('title')}</h1>
+              <p className="text-sm text-slate-600">{t('subtitle')}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
-            <GoogleTranslate />
+            <LanguageSwitcher />
             <Link
               href="/admin/profile"
-              className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <User className="w-4 h-4 text-white" />
+              <User className="w-4 h-4 text-slate-900" />
               <span>{t('actions.manageProfile')}</span>
             </Link>
             <Link
               href="/admin/marketplace"
-              className="flex items-center gap-2 px-4 py-2.5 bg-cyan-600 hover:bg-cyan-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <ShoppingBag className="w-4 h-4 text-white" />
+              <ShoppingBag className="w-4 h-4 text-slate-900" />
               <span>{t('actions.manageMarketplace')}</span>
             </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-sm font-medium text-slate-800 transition-colors cursor-pointer"
             >
-              <LogOut className="w-4 h-4 text-red-400" />
+              <LogOut className="w-4 h-4 text-red-600" />
               <span>{t('actions.signOut')}</span>
             </button>
           </div>
@@ -117,13 +117,13 @@ export default function AdminDashboard() {
         <StatsBanner projects={projects} />
 
         {/* Dashboard Navigation Tabs */}
-        <div className="flex bg-slate-900 border border-slate-800 rounded-xl p-1.5 w-fit gap-2">
+        <div className="flex bg-slate-50 border border-slate-200 rounded-xl p-1.5 w-fit gap-2">
           <button
             onClick={() => setActiveTab('projects')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
               activeTab === 'projects'
-                ? 'bg-cyan-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <FolderKanban className="w-4 h-4" />
@@ -133,8 +133,8 @@ export default function AdminDashboard() {
             onClick={() => setActiveTab('appointments')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold transition-colors cursor-pointer ${
               activeTab === 'appointments'
-                ? 'bg-cyan-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-blue-600 text-white shadow-sm'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             <Calendar className="w-4 h-4" />
@@ -161,7 +161,7 @@ export default function AdminDashboard() {
 
             {/* Right Column: Project Records List & Filters */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 sm:p-6 shadow-lg flex flex-col sm:flex-row gap-4 justify-between items-center">
                 {/* Search input */}
                 <div className="relative w-full sm:w-72">
                   <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
@@ -170,17 +170,17 @@ export default function AdminDashboard() {
                     placeholder={t('searchPlaceholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
+                    className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-600"
                   />
                 </div>
 
                 {/* Category Filter */}
                 <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Filter className="w-4 h-4 text-slate-400" />
+                  <Filter className="w-4 h-4 text-slate-600" />
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full sm:w-auto bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600"
+                    className="w-full sm:w-auto bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-600"
                   >
                     <option value="All">{t('categories.all')}</option>
                     <option value="Residential">{t('categories.residential')}</option>
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
               {isLoading ? (
                 <div className="text-center py-20 text-slate-500">{t('loading')}</div>
               ) : filteredProjects.length === 0 ? (
-                <div className="bg-slate-900 border border-slate-800 rounded-xl p-12 text-center text-slate-400">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-12 text-center text-slate-600">
                   {t('noResults')}
                 </div>
               ) : (
