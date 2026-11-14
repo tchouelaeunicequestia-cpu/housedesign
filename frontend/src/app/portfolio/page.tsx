@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useProjects } from '@/hooks/useProjects';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { Search, PlayCircle } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 
 export default function PortfolioPage() {
-  const t = useTranslations('PortfolioPage');
+  const t = getTranslator('PortfolioPage');
   const { data: projects, isLoading, isError } = useProjects();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -78,13 +78,7 @@ export default function PortfolioPage() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <Link
-                href="/login"
-                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
-              >
-                {t('nav.engineerLogin')}
-              </Link>
+              <GoogleTranslate />
             </div>
           </div>
         </header>
@@ -226,6 +220,9 @@ export default function PortfolioPage() {
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-800 mt-20 py-8 text-center text-xs text-slate-500">
         <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <Link href="/login" className="mt-3 inline-block text-slate-400 transition-colors hover:text-white">
+          Staff login
+        </Link>
       </footer>
     </div>
   );

@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Project } from './project.entity';
 import { ProjectDto } from './dto/project.dto';
 import { TranslationService } from '../translation/translation.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ProjectService {
@@ -11,6 +12,7 @@ export class ProjectService {
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
     private readonly translationService: TranslationService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   async create(projectDto: ProjectDto): Promise<Project> {
@@ -60,6 +62,8 @@ export class ProjectService {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
 
+    const previousStatus = project.status;
+
     if (projectDto.name && !projectDto.title) {
       projectDto.title = projectDto.name;
     }
@@ -77,7 +81,18 @@ export class ProjectService {
     }
 
     Object.assign(project, projectDto);
-    return await this.projectRepository.save(project);
+    const updatedProject = await this.projectRepository.save(project);
+
+    // Check if status changed to COMPLETED
+    if (projectDto.status && projectDto.status.toUpperCase() === 'COMPLETED' && previousStatus?.toUpperCase() !== 'COMPLETED') {
+      this.eventEmitter.emit('project.completed', {
+        projectId: id.toString(),
+        projectTitle: updatedProject.title,
+        notes: updatedProject.description,
+      });
+    }
+
+    return updatedProject;
   }
 
   async remove(id: number): Promise<{ message: string }> {

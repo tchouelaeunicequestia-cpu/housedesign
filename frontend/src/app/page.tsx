@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function Home() {
-  const t = useTranslations('HomePage');
+  const t = getTranslator('HomePage');
 
   // Appointment Form State
   const [name, setName] = useState('');
@@ -77,13 +77,7 @@ export default function Home() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <Link
-                href="/login"
-                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
-              >
-                {t('nav.engineerLogin')}
-              </Link>
+              <GoogleTranslate />
             </div>
           </div>
         </header>
@@ -292,7 +286,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{t('contact.phoneLabel')}</p>
-                    <p className="font-medium text-white">+237 6999788704 / +237 671234567</p>
+                    <p className="font-medium text-white">+237 699978704 / +237 679370303</p>
                   </div>
                 </div>
 
@@ -302,7 +296,7 @@ export default function Home() {
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">{t('contact.emailLabel')}</p>
-                    <p className="font-medium text-white">contact@housedesign.cm</p>
+                    <p className="font-medium text-white">eric.tchouela@gmail.com</p>
                   </div>
                 </div>
               </div>
@@ -325,6 +319,10 @@ export default function Home() {
                   <span className="font-medium">Instagram</span>
                   <span className="text-xs text-cyan-400 font-semibold">@housedesign_structures ↗</span>
                 </a>
+                <a href="#" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-3.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white hover:border-slate-700 transition-colors">
+                  <span className="font-medium">Whatsapp</span>
+                  <span className="text-xs text-cyan-400 font-semibold">+237 699978704 ↗</span>
+                </a>  
               </div>
             </div>
           </div>
@@ -334,6 +332,9 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-800 py-8 text-center text-xs text-slate-500">
         <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <Link href="/login" className="mt-3 inline-block text-slate-400 transition-colors hover:text-white">
+          Staff login
+        </Link>
       </footer>
     </div>
   );

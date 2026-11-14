@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Upload, Video, PlusCircle, Edit3, Loader2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import api from '@/lib/api';
 
 interface ProjectFormProps {
@@ -13,7 +13,7 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ editingProject, onSuccess, onCancel }: ProjectFormProps) {
-  const t = useTranslations('ProjectForm');
+  const t = getTranslator('ProjectForm');
 
   const [formData, setFormData] = useState({
     title: '',

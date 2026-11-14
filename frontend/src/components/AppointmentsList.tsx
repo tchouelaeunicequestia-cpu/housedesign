@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { Calendar, CheckCircle2, Clock, XCircle, Trash2, Mail, Phone, User, FileText, Check } from 'lucide-react';
 import api from '@/lib/api';
 
@@ -19,7 +19,7 @@ interface Appointment {
 }
 
 export default function AppointmentsList() {
-  const t = useTranslations('AdminPage.appointments');
+  const t = getTranslator('AdminPage.appointments');
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');

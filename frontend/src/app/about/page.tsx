@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { ShieldCheck, Award, HardHat, Building2, Compass, Cpu, User } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 
 interface EngineerProfile {
@@ -18,7 +18,7 @@ interface EngineerProfile {
 }
 
 export default function AboutPage() {
-  const t = useTranslations('AboutPage');
+  const t = getTranslator('AboutPage');
   const [profile, setProfile] = useState<EngineerProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -55,13 +55,7 @@ export default function AboutPage() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <Link
-                href="/login"
-                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
-              >
-                {t('nav.engineerLogin')}
-              </Link>
+              <GoogleTranslate />
             </div>
           </div>
         </header>
@@ -208,6 +202,9 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="bg-slate-900 border-t border-slate-800 py-8 text-center text-xs text-slate-500">
         <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <Link href="/login" className="mt-3 inline-block text-slate-400 transition-colors hover:text-white">
+          Staff login
+        </Link>
       </footer>
     </div>
   );

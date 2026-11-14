@@ -48,4 +48,8 @@ export class UserService {
       where: [{ username: identifier }, { email: identifier }],
     });
   }
+
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
+  }
 }

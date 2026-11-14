@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { User, ArrowLeft, Save, Loader2 } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 
 export default function AdminProfilePage() {
-  const t = useTranslations('AdminProfilePage');
+  const t = getTranslator('AdminProfilePage');
   const router = useRouter();
   const [name, setName] = useState('');
   const [title, setTitle] = useState('');
@@ -108,7 +108,7 @@ export default function AdminProfilePage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
+            <GoogleTranslate />
             <Link
               href="/admin"
               className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-medium text-slate-200 transition-colors"
