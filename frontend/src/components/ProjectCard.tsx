@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Trash2, Edit, Video, Image as ImageIcon } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import api from '@/lib/api';
 
 interface Project {
@@ -24,7 +24,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, onUpdate, onEdit }: ProjectCardProps) {
-  const t = useTranslations('ProjectCard');
+  const t = getTranslator('ProjectCard');
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {

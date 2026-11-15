@@ -19,7 +19,238 @@ export default function PortfolioPage() {
     All: 'categories.all',
     Structural: 'categories.structural',
     Commercial: 'categories.commercial',
+    Residential: 'categories.residential','use client';
+
+import { useState } from 'react';
+import { useProjects } from '@/hooks/useProjects';
+import Link from 'next/link';
+import { getTranslator } from '@/lib/translations';
+import { Search, PlayCircle } from 'lucide-react';
+import GoogleTranslate from '@/components/GoogleTranslate';
+
+export default function PortfolioPage() {
+  const t = getTranslator('PortfolioPage');
+  const { data: projects, isLoading, isError } = useProjects();
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('All');
+
+  const categories = ['All', 'Structural', 'Commercial', 'Residential', 'Industrial', 'Infrastructure'];
+  const categoryLabelKeys: Record<string, string> = {
+    All: 'categories.all',
+    Structural: 'categories.structural',
+    Commercial: 'categories.commercial',
     Residential: 'categories.residential',
+    Industrial: 'categories.industrial',
+    Infrastructure: 'categories.infrastructure',
+  };
+
+  const filteredProjects = projects?.filter((project: any) => {
+    const matchesSearch =
+      project.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'All' || project.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const getStatusBadgeColor = (st: string) => {
+    switch (st) {
+      case 'Completed':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'In-Progress':
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      default:
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+    }
+  };
+
+  const getMediaUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/api$/, '');
+    return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+  };
+
+  return (
+    <div className="min-h-screen bg-white text-slate-900 flex flex-col justify-between font-sans">
+      <div>
+        {/* Navigation Header */}
+        <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-md">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-3">
+              <img
+                src="/logo.png"
+                alt="House Design Logo"
+                className="h-10 w-auto object-contain"
+              />
+              <div>
+                <h1 className="text-xl font-bold tracking-tight text-slate-900">House Design</h1>
+                <p className="text-[10px] text-blue-700 font-semibold tracking-widest uppercase">
+                  — la maison c'est nous —
+                </p>
+              </div>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-700">
+              <Link href="/" className="hover:text-slate-900 transition-colors">{t('nav.home')}</Link>
+              <Link href="/portfolio" className="text-blue-700 font-bold transition-colors">{t('nav.portfolio')}</Link>
+              <Link href="/about" className="hover:text-slate-900 transition-colors">{t('nav.about')}</Link>
+              <Link href="/marketplace" className="hover:text-slate-900 transition-colors">{t('nav.marketplace')}</Link>
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <GoogleTranslate />
+              <Link
+                href="/login"
+                className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+              >
+                {t('nav.engineerLogin')}
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        {/* Portfolio Hero Header */}
+        <section className="bg-gradient-to-b from-blue-50 to-white text-slate-900 py-16 px-6 text-center border-b border-slate-200">
+          <div className="max-w-3xl mx-auto">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block mb-4">
+              {t('hero.eyebrow')}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-slate-900">
+              {t('hero.title')}
+            </h2>
+            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+              {t('hero.description')}
+            </p>
+          </div>
+        </section>
+
+        {/* Search & Filter Controls */}
+        <section className="max-w-7xl mx-auto px-6 py-8">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+            {/* Search Input */}
+            <div className="relative w-full md:w-96">
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-600" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={t('searchPlaceholder')}
+                className="w-full bg-white border border-slate-300 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              />
+            </div>
+
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFilterCategory(cat)}
+                  className={`text-xs px-4 py-2 rounded-lg font-medium transition-colors border cursor-pointer ${
+                    filterCategory === cat
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  {t(categoryLabelKeys[cat])}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Project Grid */}
+        <main className="max-w-7xl mx-auto px-6 py-6">
+          {isLoading && (
+            <div className="text-center py-20 text-slate-600 text-sm">
+              {t('loading')}
+            </div>
+          )}
+
+          {isError && (
+            <div className="text-center py-20 text-red-600 text-sm bg-red-50/20 border border-red-900/50 rounded-xl">
+              {t('loadError')}
+            </div>
+          )}
+
+          {!isLoading && !isError && filteredProjects?.length === 0 && (
+            <div className="text-center py-20 text-slate-600 text-sm bg-slate-50 border border-slate-200 rounded-xl">
+              {t('noResults')}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProjects?.map((project: any) => (
+              <div
+                key={project.id}
+                className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-lg hover:border-slate-300 transition-all flex flex-col justify-between"
+              >
+                {/* 1. Project Name & Description First */}
+                <div className="p-6 flex flex-col flex-grow">
+                  <h4 className="text-xl font-bold text-slate-900 mb-2">{project.title}</h4>
+
+                  <div className="flex gap-2 mb-4">
+                    <span className="bg-white text-blue-700 border border-blue-200 text-xs px-2.5 py-0.5 rounded-full font-medium">
+                      {project.category || 'Structural'}
+                    </span>
+                    <span
+                      className={`border text-xs px-2.5 py-0.5 rounded-full font-medium ${getStatusBadgeColor(
+                        project.status
+                      )}`}
+                    >
+                      {project.status || 'Planning'}
+                    </span>
+                  </div>
+
+                  <p className="text-slate-600 text-sm leading-relaxed">{project.description}</p>
+                </div>
+
+                <div>
+                  {/* 2. Image */}
+                  {project.imageUrl && (
+                    <div className="relative h-48 w-full bg-white overflow-hidden border-t border-slate-200">
+                      <img
+                        src={getMediaUrl(project.imageUrl)}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+
+                  {/* 3. Video */}
+                  {project.videoUrl && (
+                    <div className="p-4 bg-white/90 border-t border-slate-200">
+                      <div className="flex items-center gap-2 mb-2 text-xs font-semibold text-blue-700 uppercase tracking-wider">
+                        <PlayCircle className="w-4 h-4" /> {t('videoWalkthrough')}
+                      </div>
+                      <video
+                        controls
+                        className="w-full h-40 rounded-lg bg-black object-cover border border-slate-200"
+                        src={getMediaUrl(project.videoUrl)}
+                      >
+                        {t('videoUnsupported')}
+                      </video>
+                    </div>
+                  )}
+                </div>
+
+                <div className="px-6 py-3 border-t border-slate-200/50 flex justify-between items-center text-xs text-slate-500 bg-slate-50">
+                  <span>{t('idLabel', { id: project.id })}</span>
+                  <span className="text-blue-700 font-medium">{t('verifiedExecution')}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-slate-50 border-t border-slate-200 mt-20 py-8 text-center text-xs text-slate-500">
+        <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+      </footer>
+    </div>
+  );
+}
     Industrial: 'categories.industrial',
     Infrastructure: 'categories.infrastructure',
   };
