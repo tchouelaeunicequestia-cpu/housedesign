@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
 import StatsBanner from '@/components/StatsBanner';
@@ -25,7 +25,7 @@ interface Project {
 }
 
 export default function AdminDashboard() {
-  const t = useTranslations('AdminPage');
+  const t = getTranslator('AdminPage');
   const router = useRouter();
   
   const [activeTab, setActiveTab] = useState<'projects' | 'appointments'>('projects');
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
-            <LanguageSwitcher />
+            <GoogleTranslate />
             <Link
               href="/admin/profile"
               className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"

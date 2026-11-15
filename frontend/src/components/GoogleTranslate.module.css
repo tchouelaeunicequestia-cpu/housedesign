@@ -4,29 +4,29 @@
   gap: 8px;
   min-height: 40px;
   padding: 0 11px;
-  border: 1px solid rgba(34, 211, 238, 0.3);
+  border: 1px solid rgba(37, 99, 235, 0.3);
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(8, 47, 73, 0.72));
-  box-shadow: 0 6px 18px rgba(2, 8, 23, 0.22);
-  color: #cbd5e1;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  color: #334155;
   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 
 .control:focus-within,
 .control:hover {
-  border-color: rgba(34, 211, 238, 0.72);
-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12), 0 8px 20px rgba(2, 8, 23, 0.28);
+  border-color: rgba(37, 99, 235, 0.7);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), 0 8px 20px rgba(15, 23, 42, 0.12);
 }
 
 .icon {
   width: 16px;
   height: 16px;
   flex: 0 0 auto;
-  color: #22d3ee;
+  color: #2563eb;
 }
 
 .label {
-  color: #94a3b8;
+  color: #475569;
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
@@ -39,7 +39,7 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: #f8fafc;
+  color: #0f172a;
   font: inherit;
   font-size: 12px;
   font-weight: 600;
@@ -47,13 +47,13 @@
 }
 
 .select:disabled {
-  color: #64748b;
+  color: #94a3b8;
   cursor: wait;
 }
 
 .select option {
-  background: #0f172a;
-  color: #f8fafc;
+  background: #ffffff;
+  color: #0f172a;
 }
 
 .chevron {
@@ -61,6 +61,6 @@
   height: 14px;
   margin-left: -17px;
   flex: 0 0 auto;
-  color: #94a3b8;
+  color: #64748b;
   pointer-events: none;
 }

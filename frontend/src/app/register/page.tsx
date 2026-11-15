@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import { toast } from 'sonner';
-import { useTranslations } from 'next-intl';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { getTranslator } from '@/lib/translations';
+import GoogleTranslate from '@/components/GoogleTranslate';
 
 export default function RegisterPage() {
-  const t = useTranslations('RegisterPage');
+  const t = getTranslator('RegisterPage');
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -53,7 +53,7 @@ export default function RegisterPage() {
             </div>
           </Link>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
+            <GoogleTranslate />
             <Link className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors" href="/">
               {t('backToHome')}
             </Link>

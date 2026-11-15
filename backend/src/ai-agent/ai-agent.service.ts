@@ -120,8 +120,9 @@ export class AiAgentService {
 
       if (emails.length === 0) return;
 
+      // BCC keeps every user's email address hidden from the other recipients.
       await this.mailerService.sendMail({
-        to: emails,
+        bcc: emails,
         subject: `[Civil Engineer Platform] ${subject}`,
         text: text,
       });

@@ -1,11 +1,11 @@
 .container {
   min-height: 100vh;
   padding: 40px 20px 60px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #ffffff;
+  color: #0f172a;
   font-family: 'Inter', sans-serif;
   position: relative;
   overflow: hidden;
@@ -17,7 +17,7 @@
   left: -10%;
   width: 50%;
   height: 50%;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(0,0,0,0) 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;
@@ -29,7 +29,7 @@
   right: -10%;
   width: 60%;
   height: 60%;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(0,0,0,0) 70%);
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, rgba(0,0,0,0) 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;
@@ -53,7 +53,7 @@
   font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 15px;
-  background: linear-gradient(to right, #38bdf8, #a855f7);
+  background: linear-gradient(to right, #1d4ed8, #dc2626);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
@@ -61,29 +61,29 @@
 
 .subtitle {
   font-size: 1.2rem;
-  color: #94a3b8;
+  color: #475569;
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
 }
 
 .card {
-  background: rgba(30, 41, 59, 0.7);
+  background: #ffffff;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #cbd5e1;
   border-radius: 24px;
   padding: 50px;
   width: 100%;
   max-width: 700px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12);
   z-index: 1;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.18);
 }
 
 .formGroup {
@@ -96,25 +96,25 @@
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 10px;
-  color: #cbd5e1;
+  color: #334155;
 }
 
 .input {
   width: 100%;
   padding: 16px 20px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
   border-radius: 12px;
-  color: #fff;
+  color: #0f172a;
   font-size: 1rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
 .input:focus {
-  border-color: #38bdf8;
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
 }
 
 .input::placeholder {
@@ -138,7 +138,7 @@ textarea.input {
 .button {
   width: 100%;
   padding: 18px;
-  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   border: none;
   border-radius: 12px;
   color: white;
@@ -147,12 +147,12 @@ textarea.input {
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 20px;
-  box-shadow: 0 10px 20px -10px rgba(56, 189, 248, 0.5);
+  box-shadow: 0 10px 20px -10px rgba(220, 38, 38, 0.4);
 }
 
 .button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 25px -10px rgba(56, 189, 248, 0.6);
+  box-shadow: 0 15px 25px -10px rgba(220, 38, 38, 0.5);
 }
 
 .button:active {
@@ -188,11 +188,11 @@ textarea.input {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 15px;
-  color: #fff;
+  color: #0f172a;
 }
 
 .successText {
-  color: #94a3b8;
+  color: #475569;
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 30px;
