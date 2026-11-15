@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function Home() {
-  const t = useTranslations('HomePage');
+  const t = getTranslator('HomePage');
 
   // Appointment Form State
   const [name, setName] = useState('');
@@ -77,7 +77,7 @@ export default function Home() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+              <GoogleTranslate />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"

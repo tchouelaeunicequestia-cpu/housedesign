@@ -33,20 +33,8 @@ export class Asset {
   @Column()
   title!: string;
 
-  @Column({ nullable: true })
-  titleEn?: string;
-
-  @Column({ nullable: true })
-  titleFr?: string;
-
   @Column({ type: 'text' })
   description!: string;
-
-  @Column({ type: 'text', nullable: true })
-  descriptionEn?: string;
-
-  @Column({ type: 'text', nullable: true })
-  descriptionFr?: string;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   price!: number;

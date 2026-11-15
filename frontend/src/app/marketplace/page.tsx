@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAssets } from '@/hooks/useAssets';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { Building, Wrench, MapPin, FileText, Send, Eye, ChevronLeft, ChevronRight, Map, Home, Package, Loader2 } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
 export default function MarketplacePage() {
-  const t = useTranslations('MarketplacePage');
+  const t = getTranslator('MarketplacePage');
   const { data: assets, isLoading, isError } = useAssets();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,7 +133,7 @@ export default function MarketplacePage() {
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+              <GoogleTranslate />
               <Link
                 href="/login"
                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"

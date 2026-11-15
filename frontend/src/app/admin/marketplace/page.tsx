@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAssets } from '@/hooks/useAssets';
-import { useTranslations } from 'next-intl';
+import { getTranslator } from '@/lib/translations';
 import { Plus, Trash2, Upload, Building, Wrench, MapPin, CheckCircle2, ArrowLeft, Image as ImageIcon, Home, Package, Edit, Inbox, Check, X, Mail, Phone, Clock, DollarSign, Loader2 } from 'lucide-react';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import GoogleTranslate from '@/components/GoogleTranslate';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -26,7 +26,7 @@ interface Offer {
 }
 
 export default function AdminMarketplacePage() {
-  const t = useTranslations('AdminMarketplacePage');
+  const t = getTranslator('AdminMarketplacePage');
   const { data: assets, isLoading, isError, mutate } = useAssets();
 
   const [activeTab, setActiveTab] = useState<'listings' | 'offers'>('listings');
@@ -197,7 +197,7 @@ export default function AdminMarketplacePage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <LanguageSwitcher />
+            <GoogleTranslate />
             <Link
               href="/marketplace"
               target="_blank"
