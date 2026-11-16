@@ -5,10 +5,13 @@ import { useGoogleTranslate } from './GoogleTranslateProvider';
 import styles from './GoogleTranslate.module.css';
 
 export default function GoogleTranslate() {
-  const { language, languages, isReady, setLanguage } = useGoogleTranslate();
+  const { language, languages, isReady, hasError, setLanguage } = useGoogleTranslate();
 
   return (
-    <label className={styles.control}>
+    <label
+      className={styles.control}
+      title={hasError ? 'Google Translate could not load. Check your internet connection or ad blocker, then reload the page.' : undefined}
+    >
       <Languages className={styles.icon} aria-hidden="true" />
       <span className={styles.label}>Translate</span>
       <select
@@ -21,7 +24,7 @@ export default function GoogleTranslate() {
         }}
       >
         <option value="" disabled>
-          {isReady ? 'Choose language' : 'Loading'}
+          {isReady ? 'Choose language' : hasError ? 'Unavailable' : 'Loading'}
         </option>
         {languages.map((availableLanguage) => (
           <option key={availableLanguage.code} value={availableLanguage.code}>
