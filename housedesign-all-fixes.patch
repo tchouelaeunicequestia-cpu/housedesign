@@ -1,0 +1,1585 @@
+From 548a58641f76eadf8e877f45b301842696241fd4 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sat, 14 Nov 2026 15:45:54 +0100
+Subject: [PATCH 1/3] Fix broken imports, restore translations, light-theme
+ remaining styles, remove committed secrets
+
+- Replace removed next-intl useTranslations with local getTranslator (12 files)
+- Restore nav.engineerLogin key in en.json
+- Use GoogleTranslate instead of deleted LanguageSwitcher
+- Restyle dashboard, appointments and translate widget to blue/white/red
+- Remove stray root [locale]/page.tsx
+- Replace credentials in backend/.env.example with placeholders
+- Hide recipients of AI notification emails (BCC)
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPUgNSTXRbtN7LhQJbCJXF
+---
+ [locale]/page.tsx                             | 10 -----
+ backend/.env.example                          | 32 +++++++++-----
+ backend/src/ai-agent/ai-agent.service.ts      |  3 +-
+ frontend/messages/en.json                     | 12 +++--
+ frontend/src/app/about/page.tsx               |  8 ++--
+ frontend/src/app/admin/marketplace/page.tsx   |  8 ++--
+ frontend/src/app/admin/page.tsx               |  8 ++--
+ frontend/src/app/admin/profile/page.tsx       |  8 ++--
+ .../app/appointments/appointments.module.css  | 44 +++++++++----------
+ .../src/app/dashboard/dashboard.module.css    | 40 ++++++++---------
+ frontend/src/app/login/page.tsx               |  8 ++--
+ frontend/src/app/marketplace/page.tsx         |  8 ++--
+ frontend/src/app/page.tsx                     |  8 ++--
+ frontend/src/app/portfolio/page.tsx           |  8 ++--
+ frontend/src/app/register/page.tsx            |  8 ++--
+ frontend/src/components/AppointmentsList.tsx  |  4 +-
+ .../src/components/GoogleTranslate.module.css | 26 +++++------
+ frontend/src/components/ProjectCard.tsx       |  4 +-
+ frontend/src/components/ProjectForm.tsx       |  4 +-
+ 19 files changed, 129 insertions(+), 122 deletions(-)
+ delete mode 100644 [locale]/page.tsx
+
+diff --git a/[locale]/page.tsx b/[locale]/page.tsx
+deleted file mode 100644
+index 6fd975e..0000000
+--- a/[locale]/page.tsx
++++ /dev/null
+@@ -1,10 +0,0 @@
+-﻿export default function LocaleHomePage() {
+-  return (
+-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-8">
+-      <div className="text-center">
+-        <h1 className="text-4xl font-bold mb-4">Welcome to HouseDesign</h1>
+-        <p className="text-slate-400">Your localization setup is working successfully!</p>
+-      </div>
+-    </main>
+-  );
+-}
+\ No newline at end of file
+diff --git a/backend/.env.example b/backend/.env.example
+index bdbf11e..2da60dc 100644
+--- a/backend/.env.example
++++ b/backend/.env.example
+@@ -1,16 +1,28 @@
+ PORT=3000
+ 
+-# Full Neon Connection String (Copy this directly from your Neon Console)
+-DATABASE_URL=postgresql://neondb_owner:npg_JyX6uMAi9etG@ep-hidden-sunset-atmemedn-pooler.c-9.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
++# Full database connection string (copy it from your Neon console).
++# Never commit the real value: keep it only in your local .env file.
++DATABASE_URL=postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require
+ 
+-# Individual variables (if your TypeORM setup breaks down the string)
+-DB_HOST=ep-your-endpoint-name.region.aws.neon.tech
++# Individual variables (only if you split the connection string)
++DB_HOST=your-endpoint.region.aws.neon.tech
+ DB_PORT=5432
+-DB_USERNAME= neondb_owner
+-DB_PASSWORD= npg_JyX6uMAi9etG
+-DB_DATABASE=neondb
++DB_USERNAME=your-db-user
++DB_PASSWORD=your-db-password
++DB_DATABASE=your-db-name
+ DB_SSL=true
+ 
+-# Authentication & Secrets
+-JWT_SECRET=25J2007ayaounde
+-JWT_EXPIRES_IN=1d
+\ No newline at end of file
++# Authentication & Secrets (use a long random value, for example from: openssl rand -hex 32)
++JWT_SECRET=change-me-to-a-long-random-string
++JWT_EXPIRES_IN=1d
++
++# AI agent (leave empty to keep the AI routines switched off)
++OPENAI_API_KEY=
++
++# Email (used by the AI agent notifications)
++SMTP_HOST=smtp.example.com
++SMTP_PORT=587
++SMTP_SECURE=false
++SMTP_USER=
++SMTP_PASS=
++SMTP_FROM="House Design" <no-reply@example.com>
+diff --git a/backend/src/ai-agent/ai-agent.service.ts b/backend/src/ai-agent/ai-agent.service.ts
+index e57f5e8..4a4c445 100644
+--- a/backend/src/ai-agent/ai-agent.service.ts
++++ b/backend/src/ai-agent/ai-agent.service.ts
+@@ -120,8 +120,9 @@ export class AiAgentService {
+ 
+       if (emails.length === 0) return;
+ 
++      // BCC keeps every user's email address hidden from the other recipients.
+       await this.mailerService.sendMail({
+-        to: emails,
++        bcc: emails,
+         subject: `[Civil Engineer Platform] ${subject}`,
+         text: text,
+       });
+diff --git a/frontend/messages/en.json b/frontend/messages/en.json
+index 4fc40fe..e3960ff 100644
+--- a/frontend/messages/en.json
++++ b/frontend/messages/en.json
+@@ -7,7 +7,8 @@
+       "home": "Home",
+       "portfolio": "Portfolio",
+       "about": "About Us",
+-      "marketplace": "Marketplace"
++      "marketplace": "Marketplace",
++      "engineerLogin": "Engineer Login"
+     },
+     "hero": {
+       "eyebrow": "Structural Engineering & Architectural Excellence",
+@@ -77,7 +78,8 @@
+       "home": "Home",
+       "portfolio": "Portfolio",
+       "about": "About Us",
+-      "marketplace": "Marketplace"
++      "marketplace": "Marketplace",
++      "engineerLogin": "Engineer Login"
+     },
+     "hero": {
+       "eyebrow": "About House Design",
+@@ -333,7 +335,8 @@
+       "home": "Home",
+       "portfolio": "Portfolio",
+       "about": "About Us",
+-      "marketplace": "Marketplace"
++      "marketplace": "Marketplace",
++      "engineerLogin": "Engineer Login"
+     },
+     "hero": {
+       "eyebrow": "Engineering Marketplace",
+@@ -395,7 +398,8 @@
+       "home": "Home",
+       "portfolio": "Portfolio",
+       "about": "About Us",
+-      "marketplace": "Marketplace"
++      "marketplace": "Marketplace",
++      "engineerLogin": "Engineer Login"
+     },
+     "hero": {
+       "eyebrow": "Executed Projects Portfolio",
+diff --git a/frontend/src/app/about/page.tsx b/frontend/src/app/about/page.tsx
+index af921fa..d853be3 100644
+--- a/frontend/src/app/about/page.tsx
++++ b/frontend/src/app/about/page.tsx
+@@ -2,9 +2,9 @@
+ 
+ import { useState, useEffect } from 'react';
+ import Link from 'next/link';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { ShieldCheck, Award, HardHat, Building2, Compass, Cpu, User } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import api from '@/lib/api';
+ 
+ interface EngineerProfile {
+@@ -18,7 +18,7 @@ interface EngineerProfile {
+ }
+ 
+ export default function AboutPage() {
+-  const t = useTranslations('AboutPage');
++  const t = getTranslator('AboutPage');
+   const [profile, setProfile] = useState<EngineerProfile | null>(null);
+   const [isLoading, setIsLoading] = useState(true);
+ 
+@@ -55,7 +55,7 @@ export default function AboutPage() {
+             </nav>
+ 
+             <div className="flex items-center gap-3">
+-              <LanguageSwitcher />
++              <GoogleTranslate />
+               <Link
+                 href="/login"
+                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+diff --git a/frontend/src/app/admin/marketplace/page.tsx b/frontend/src/app/admin/marketplace/page.tsx
+index f797141..8ddb757 100644
+--- a/frontend/src/app/admin/marketplace/page.tsx
++++ b/frontend/src/app/admin/marketplace/page.tsx
+@@ -3,9 +3,9 @@
+ import { useState, useEffect } from 'react';
+ import Link from 'next/link';
+ import { useAssets } from '@/hooks/useAssets';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { Plus, Trash2, Upload, Building, Wrench, MapPin, CheckCircle2, ArrowLeft, Image as ImageIcon, Home, Package, Edit, Inbox, Check, X, Mail, Phone, Clock, DollarSign, Loader2 } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import api from '@/lib/api';
+ import { toast } from 'sonner';
+ 
+@@ -26,7 +26,7 @@ interface Offer {
+ }
+ 
+ export default function AdminMarketplacePage() {
+-  const t = useTranslations('AdminMarketplacePage');
++  const t = getTranslator('AdminMarketplacePage');
+   const { data: assets, isLoading, isError, mutate } = useAssets();
+ 
+   const [activeTab, setActiveTab] = useState<'listings' | 'offers'>('listings');
+@@ -197,7 +197,7 @@ export default function AdminMarketplacePage() {
+             </div>
+           </div>
+           <div className="flex items-center gap-3">
+-            <LanguageSwitcher />
++            <GoogleTranslate />
+             <Link
+               href="/marketplace"
+               target="_blank"
+diff --git a/frontend/src/app/admin/page.tsx b/frontend/src/app/admin/page.tsx
+index 84845c9..695bf01 100644
+--- a/frontend/src/app/admin/page.tsx
++++ b/frontend/src/app/admin/page.tsx
+@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
+ import { useRouter } from 'next/navigation';
+ import Link from 'next/link';
+ import { toast } from 'sonner';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import ProjectForm from '@/components/ProjectForm';
+ import ProjectCard from '@/components/ProjectCard';
+ import StatsBanner from '@/components/StatsBanner';
+@@ -25,7 +25,7 @@ interface Project {
+ }
+ 
+ export default function AdminDashboard() {
+-  const t = useTranslations('AdminPage');
++  const t = getTranslator('AdminPage');
+   const router = useRouter();
+   
+   const [activeTab, setActiveTab] = useState<'projects' | 'appointments'>('projects');
+@@ -88,7 +88,7 @@ export default function AdminDashboard() {
+           </div>
+ 
+           <div className="flex items-center gap-3 w-full sm:w-auto justify-end flex-wrap">
+-            <LanguageSwitcher />
++            <GoogleTranslate />
+             <Link
+               href="/admin/profile"
+               className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+diff --git a/frontend/src/app/admin/profile/page.tsx b/frontend/src/app/admin/profile/page.tsx
+index 4f2927f..521d324 100644
+--- a/frontend/src/app/admin/profile/page.tsx
++++ b/frontend/src/app/admin/profile/page.tsx
+@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
+ import { useRouter } from 'next/navigation';
+ import Link from 'next/link';
+ import { toast } from 'sonner';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { User, ArrowLeft, Save, Loader2 } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import api from '@/lib/api';
+ 
+ export default function AdminProfilePage() {
+-  const t = useTranslations('AdminProfilePage');
++  const t = getTranslator('AdminProfilePage');
+   const router = useRouter();
+   const [name, setName] = useState('');
+   const [title, setTitle] = useState('');
+@@ -108,7 +108,7 @@ export default function AdminProfilePage() {
+             </div>
+           </div>
+           <div className="flex items-center gap-3">
+-            <LanguageSwitcher />
++            <GoogleTranslate />
+             <Link
+               href="/admin"
+               className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 rounded-xl text-sm font-medium text-slate-800 transition-colors"
+diff --git a/frontend/src/app/appointments/appointments.module.css b/frontend/src/app/appointments/appointments.module.css
+index 93dfffa..c942bf3 100644
+--- a/frontend/src/app/appointments/appointments.module.css
++++ b/frontend/src/app/appointments/appointments.module.css
+@@ -1,11 +1,11 @@
+ .container {
+   min-height: 100vh;
+   padding: 40px 20px 60px;
+-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
++  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+-  color: #ffffff;
++  color: #0f172a;
+   font-family: 'Inter', sans-serif;
+   position: relative;
+   overflow: hidden;
+@@ -17,7 +17,7 @@
+   left: -10%;
+   width: 50%;
+   height: 50%;
+-  background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, rgba(0,0,0,0) 70%);
++  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(0,0,0,0) 70%);
+   border-radius: 50%;
+   z-index: 0;
+   pointer-events: none;
+@@ -29,7 +29,7 @@
+   right: -10%;
+   width: 60%;
+   height: 60%;
+-  background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(0,0,0,0) 70%);
++  background: radial-gradient(circle, rgba(220, 38, 38, 0.08) 0%, rgba(0,0,0,0) 70%);
+   border-radius: 50%;
+   z-index: 0;
+   pointer-events: none;
+@@ -53,7 +53,7 @@
+   font-size: 3.5rem;
+   font-weight: 800;
+   margin-bottom: 15px;
+-  background: linear-gradient(to right, #38bdf8, #a855f7);
++  background: linear-gradient(to right, #1d4ed8, #dc2626);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   letter-spacing: -1px;
+@@ -61,29 +61,29 @@
+ 
+ .subtitle {
+   font-size: 1.2rem;
+-  color: #94a3b8;
++  color: #475569;
+   max-width: 600px;
+   margin: 0 auto;
+   line-height: 1.6;
+ }
+ 
+ .card {
+-  background: rgba(30, 41, 59, 0.7);
++  background: #ffffff;
+   backdrop-filter: blur(16px);
+   -webkit-backdrop-filter: blur(16px);
+-  border: 1px solid rgba(255, 255, 255, 0.1);
++  border: 1px solid #cbd5e1;
+   border-radius: 24px;
+   padding: 50px;
+   width: 100%;
+   max-width: 700px;
+-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
++  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12);
+   z-index: 1;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
+ }
+ 
+ .card:hover {
+   transform: translateY(-5px);
+-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
++  box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.18);
+ }
+ 
+ .formGroup {
+@@ -96,25 +96,25 @@
+   font-size: 0.95rem;
+   font-weight: 600;
+   margin-bottom: 10px;
+-  color: #cbd5e1;
++  color: #334155;
+ }
+ 
+ .input {
+   width: 100%;
+   padding: 16px 20px;
+-  background: rgba(15, 23, 42, 0.6);
+-  border: 1px solid rgba(255, 255, 255, 0.1);
++  background: #ffffff;
++  border: 1px solid #cbd5e1;
+   border-radius: 12px;
+-  color: #fff;
++  color: #0f172a;
+   font-size: 1rem;
+   outline: none;
+   transition: all 0.3s ease;
+ }
+ 
+ .input:focus {
+-  border-color: #38bdf8;
+-  background: rgba(15, 23, 42, 0.8);
+-  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
++  border-color: #2563eb;
++  background: #ffffff;
++  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+ }
+ 
+ .input::placeholder {
+@@ -138,7 +138,7 @@ textarea.input {
+ .button {
+   width: 100%;
+   padding: 18px;
+-  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
++  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+   border: none;
+   border-radius: 12px;
+   color: white;
+@@ -147,12 +147,12 @@ textarea.input {
+   cursor: pointer;
+   transition: all 0.3s ease;
+   margin-top: 20px;
+-  box-shadow: 0 10px 20px -10px rgba(56, 189, 248, 0.5);
++  box-shadow: 0 10px 20px -10px rgba(220, 38, 38, 0.4);
+ }
+ 
+ .button:hover {
+   transform: translateY(-2px);
+-  box-shadow: 0 15px 25px -10px rgba(56, 189, 248, 0.6);
++  box-shadow: 0 15px 25px -10px rgba(220, 38, 38, 0.5);
+ }
+ 
+ .button:active {
+@@ -188,11 +188,11 @@ textarea.input {
+   font-size: 2rem;
+   font-weight: 700;
+   margin-bottom: 15px;
+-  color: #fff;
++  color: #0f172a;
+ }
+ 
+ .successText {
+-  color: #94a3b8;
++  color: #475569;
+   font-size: 1.1rem;
+   line-height: 1.6;
+   margin-bottom: 30px;
+diff --git a/frontend/src/app/dashboard/dashboard.module.css b/frontend/src/app/dashboard/dashboard.module.css
+index 9bb9475..f5e3089 100644
+--- a/frontend/src/app/dashboard/dashboard.module.css
++++ b/frontend/src/app/dashboard/dashboard.module.css
+@@ -1,8 +1,8 @@
+ .container {
+   min-height: 100vh;
+   padding: 40px 20px 60px;
+-  background: #0f172a;
+-  color: #f8fafc;
++  background: #ffffff;
++  color: #0f172a;
+   font-family: 'Inter', sans-serif;
+   display: flex;
+   justify-content: center;
+@@ -18,23 +18,23 @@
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 40px;
+-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
++  border-bottom: 1px solid #e2e8f0;
+   padding-bottom: 20px;
+ }
+ 
+ .title {
+   font-size: 2.5rem;
+   font-weight: 700;
+-  background: linear-gradient(to right, #38bdf8, #818cf8);
++  background: linear-gradient(to right, #1d4ed8, #3b82f6);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+ }
+ 
+ .logoutBtn {
+   padding: 10px 20px;
+-  background: rgba(239, 68, 68, 0.1);
+-  color: #ef4444;
+-  border: 1px solid rgba(239, 68, 68, 0.2);
++  background: rgba(220, 38, 38, 0.08);
++  color: #dc2626;
++  border: 1px solid rgba(220, 38, 38, 0.25);
+   border-radius: 8px;
+   font-weight: 600;
+   cursor: pointer;
+@@ -42,7 +42,7 @@
+ }
+ 
+ .logoutBtn:hover {
+-  background: rgba(239, 68, 68, 0.2);
++  background: rgba(220, 38, 38, 0.16);
+ }
+ 
+ .grid {
+@@ -52,8 +52,8 @@
+ }
+ 
+ .section {
+-  background: rgba(30, 41, 59, 0.5);
+-  border: 1px solid rgba(255, 255, 255, 0.05);
++  background: #f8fafc;
++  border: 1px solid #e2e8f0;
+   border-radius: 16px;
+   padding: 30px;
+   backdrop-filter: blur(10px);
+@@ -63,7 +63,7 @@
+   font-size: 1.5rem;
+   font-weight: 600;
+   margin-bottom: 20px;
+-  color: #e2e8f0;
++  color: #1e293b;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+@@ -83,8 +83,8 @@
+ }
+ 
+ .card {
+-  background: rgba(15, 23, 42, 0.6);
+-  border: 1px solid rgba(255, 255, 255, 0.05);
++  background: #ffffff;
++  border: 1px solid #e2e8f0;
+   border-radius: 12px;
+   padding: 20px;
+   display: flex;
+@@ -95,7 +95,7 @@
+ 
+ .card:hover {
+   transform: translateY(-2px);
+-  border-color: rgba(56, 189, 248, 0.3);
++  border-color: rgba(37, 99, 235, 0.4);
+ }
+ 
+ .cardHeader {
+@@ -107,7 +107,7 @@
+ .cardTitle {
+   font-weight: 600;
+   font-size: 1.1rem;
+-  color: #f1f5f9;
++  color: #0f172a;
+ }
+ 
+ .badge {
+@@ -119,22 +119,22 @@
+   letter-spacing: 0.5px;
+ }
+ 
+-.badgePending { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+-.badgeCompleted, .badgeAccepted { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+-.badgeCancelled, .badgeRejected { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
++.badgePending { background: rgba(245, 158, 11, 0.1); color: #b45309; border: 1px solid rgba(245, 158, 11, 0.3); }
++.badgeCompleted, .badgeAccepted { background: rgba(34, 197, 94, 0.1); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.3); }
++.badgeCancelled, .badgeRejected { background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3); }
+ 
+ .detailRow {
+   display: flex;
+   align-items: center;
+   gap: 8px;
+-  color: #94a3b8;
++  color: #475569;
+   font-size: 0.9rem;
+ }
+ 
+ .loading {
+   text-align: center;
+   padding: 50px;
+-  color: #38bdf8;
++  color: #1d4ed8;
+   font-size: 1.2rem;
+   font-weight: 600;
+ }
+diff --git a/frontend/src/app/login/page.tsx b/frontend/src/app/login/page.tsx
+index 52c680d..1414f9a 100644
+--- a/frontend/src/app/login/page.tsx
++++ b/frontend/src/app/login/page.tsx
+@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
+ import Link from 'next/link';
+ import api from '@/lib/api';
+ import { toast } from 'sonner';
+-import { useTranslations } from 'next-intl';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import { getTranslator } from '@/lib/translations';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ 
+ export default function LoginPage() {
+-  const t = useTranslations('LoginPage');
++  const t = getTranslator('LoginPage');
+   const router = useRouter();
+   const [email, setEmail] = useState('');
+   const [password, setPassword] = useState('');
+@@ -61,7 +61,7 @@ export default function LoginPage() {
+             </div>
+           </Link>
+           <div className="flex items-center gap-3">
+-            <LanguageSwitcher />
++            <GoogleTranslate />
+             <Link className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors" href="/">
+               {t('backToHome')}
+             </Link>
+diff --git a/frontend/src/app/marketplace/page.tsx b/frontend/src/app/marketplace/page.tsx
+index 1516a3e..4d733d6 100644
+--- a/frontend/src/app/marketplace/page.tsx
++++ b/frontend/src/app/marketplace/page.tsx
+@@ -3,14 +3,14 @@
+ import { useState } from 'react';
+ import Link from 'next/link';
+ import { useAssets } from '@/hooks/useAssets';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { Building, Wrench, MapPin, FileText, Send, Eye, ChevronLeft, ChevronRight, Map, Home, Package, Loader2 } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import api from '@/lib/api';
+ import { toast } from 'sonner';
+ 
+ export default function MarketplacePage() {
+-  const t = useTranslations('MarketplacePage');
++  const t = getTranslator('MarketplacePage');
+   const { data: assets, isLoading, isError } = useAssets();
+ 
+   const [searchTerm, setSearchTerm] = useState('');
+@@ -133,7 +133,7 @@ export default function MarketplacePage() {
+             </nav>
+ 
+             <div className="flex items-center gap-3">
+-              <LanguageSwitcher />
++              <GoogleTranslate />
+               <Link
+                 href="/login"
+                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+diff --git a/frontend/src/app/page.tsx b/frontend/src/app/page.tsx
+index 200f9ab..0a6e890 100644
+--- a/frontend/src/app/page.tsx
++++ b/frontend/src/app/page.tsx
+@@ -2,14 +2,14 @@
+ 
+ import { useState } from 'react';
+ import Link from 'next/link';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ import api from '@/lib/api';
+ import { toast } from 'sonner';
+ 
+ export default function Home() {
+-  const t = useTranslations('HomePage');
++  const t = getTranslator('HomePage');
+ 
+   // Appointment Form State
+   const [name, setName] = useState('');
+@@ -77,7 +77,7 @@ export default function Home() {
+             </nav>
+ 
+             <div className="flex items-center gap-3">
+-              <LanguageSwitcher />
++              <GoogleTranslate />
+               <Link
+                 href="/login"
+                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+diff --git a/frontend/src/app/portfolio/page.tsx b/frontend/src/app/portfolio/page.tsx
+index cdf23a6..d3411bc 100644
+--- a/frontend/src/app/portfolio/page.tsx
++++ b/frontend/src/app/portfolio/page.tsx
+@@ -3,12 +3,12 @@
+ import { useState } from 'react';
+ import { useProjects } from '@/hooks/useProjects';
+ import Link from 'next/link';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { Search, PlayCircle } from 'lucide-react';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ 
+ export default function PortfolioPage() {
+-  const t = useTranslations('PortfolioPage');
++  const t = getTranslator('PortfolioPage');
+   const { data: projects, isLoading, isError } = useProjects();
+ 
+   const [searchTerm, setSearchTerm] = useState('');
+@@ -78,7 +78,7 @@ export default function PortfolioPage() {
+             </nav>
+ 
+             <div className="flex items-center gap-3">
+-              <LanguageSwitcher />
++              <GoogleTranslate />
+               <Link
+                 href="/login"
+                 className="text-xs font-medium text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors shadow-sm"
+diff --git a/frontend/src/app/register/page.tsx b/frontend/src/app/register/page.tsx
+index 0dbd22e..e5eee6e 100644
+--- a/frontend/src/app/register/page.tsx
++++ b/frontend/src/app/register/page.tsx
+@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
+ import Link from 'next/link';
+ import api from '@/lib/api';
+ import { toast } from 'sonner';
+-import { useTranslations } from 'next-intl';
+-import LanguageSwitcher from '@/components/LanguageSwitcher';
++import { getTranslator } from '@/lib/translations';
++import GoogleTranslate from '@/components/GoogleTranslate';
+ 
+ export default function RegisterPage() {
+-  const t = useTranslations('RegisterPage');
++  const t = getTranslator('RegisterPage');
+   const router = useRouter();
+   const [username, setUsername] = useState('');
+   const [email, setEmail] = useState('');
+@@ -53,7 +53,7 @@ export default function RegisterPage() {
+             </div>
+           </Link>
+           <div className="flex items-center gap-3">
+-            <LanguageSwitcher />
++            <GoogleTranslate />
+             <Link className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors" href="/">
+               {t('backToHome')}
+             </Link>
+diff --git a/frontend/src/components/AppointmentsList.tsx b/frontend/src/components/AppointmentsList.tsx
+index e9ce482..09ae21d 100644
+--- a/frontend/src/components/AppointmentsList.tsx
++++ b/frontend/src/components/AppointmentsList.tsx
+@@ -2,7 +2,7 @@
+ 
+ import { useState, useEffect } from 'react';
+ import { toast } from 'sonner';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import { Calendar, CheckCircle2, Clock, XCircle, Trash2, Mail, Phone, User, FileText, Check } from 'lucide-react';
+ import api from '@/lib/api';
+ 
+@@ -19,7 +19,7 @@ interface Appointment {
+ }
+ 
+ export default function AppointmentsList() {
+-  const t = useTranslations('AdminPage.appointments');
++  const t = getTranslator('AdminPage.appointments');
+   const [appointments, setAppointments] = useState<Appointment[]>([]);
+   const [isLoading, setIsLoading] = useState(true);
+   const [statusFilter, setStatusFilter] = useState('all');
+diff --git a/frontend/src/components/GoogleTranslate.module.css b/frontend/src/components/GoogleTranslate.module.css
+index 4afa7aa..b51ee51 100644
+--- a/frontend/src/components/GoogleTranslate.module.css
++++ b/frontend/src/components/GoogleTranslate.module.css
+@@ -4,29 +4,29 @@
+   gap: 8px;
+   min-height: 40px;
+   padding: 0 11px;
+-  border: 1px solid rgba(34, 211, 238, 0.3);
++  border: 1px solid rgba(37, 99, 235, 0.3);
+   border-radius: 12px;
+-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(8, 47, 73, 0.72));
+-  box-shadow: 0 6px 18px rgba(2, 8, 23, 0.22);
+-  color: #cbd5e1;
++  background: #ffffff;
++  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
++  color: #334155;
+   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+ }
+ 
+ .control:focus-within,
+ .control:hover {
+-  border-color: rgba(34, 211, 238, 0.72);
+-  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12), 0 8px 20px rgba(2, 8, 23, 0.28);
++  border-color: rgba(37, 99, 235, 0.7);
++  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12), 0 8px 20px rgba(15, 23, 42, 0.12);
+ }
+ 
+ .icon {
+   width: 16px;
+   height: 16px;
+   flex: 0 0 auto;
+-  color: #22d3ee;
++  color: #2563eb;
+ }
+ 
+ .label {
+-  color: #94a3b8;
++  color: #475569;
+   font-size: 12px;
+   font-weight: 600;
+   white-space: nowrap;
+@@ -39,7 +39,7 @@
+   border: 0;
+   outline: 0;
+   background: transparent;
+-  color: #f8fafc;
++  color: #0f172a;
+   font: inherit;
+   font-size: 12px;
+   font-weight: 600;
+@@ -47,13 +47,13 @@
+ }
+ 
+ .select:disabled {
+-  color: #64748b;
++  color: #94a3b8;
+   cursor: wait;
+ }
+ 
+ .select option {
+-  background: #0f172a;
+-  color: #f8fafc;
++  background: #ffffff;
++  color: #0f172a;
+ }
+ 
+ .chevron {
+@@ -61,6 +61,6 @@
+   height: 14px;
+   margin-left: -17px;
+   flex: 0 0 auto;
+-  color: #94a3b8;
++  color: #64748b;
+   pointer-events: none;
+ }
+diff --git a/frontend/src/components/ProjectCard.tsx b/frontend/src/components/ProjectCard.tsx
+index a016fe8..df8629e 100644
+--- a/frontend/src/components/ProjectCard.tsx
++++ b/frontend/src/components/ProjectCard.tsx
+@@ -3,7 +3,7 @@
+ import { useState } from 'react';
+ import { toast } from 'sonner';
+ import { Trash2, Edit, Video, Image as ImageIcon } from 'lucide-react';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import api from '@/lib/api';
+ 
+ interface Project {
+@@ -24,7 +24,7 @@ interface ProjectCardProps {
+ }
+ 
+ export default function ProjectCard({ project, onUpdate, onEdit }: ProjectCardProps) {
+-  const t = useTranslations('ProjectCard');
++  const t = getTranslator('ProjectCard');
+   const [isDeleting, setIsDeleting] = useState(false);
+ 
+   const handleDelete = async () => {
+diff --git a/frontend/src/components/ProjectForm.tsx b/frontend/src/components/ProjectForm.tsx
+index c37627d..6511690 100644
+--- a/frontend/src/components/ProjectForm.tsx
++++ b/frontend/src/components/ProjectForm.tsx
+@@ -3,7 +3,7 @@
+ import { useState, useEffect } from 'react';
+ import { toast } from 'sonner';
+ import { Upload, Video, PlusCircle, Edit3, Loader2 } from 'lucide-react';
+-import { useTranslations } from 'next-intl';
++import { getTranslator } from '@/lib/translations';
+ import api from '@/lib/api';
+ 
+ interface ProjectFormProps {
+@@ -13,7 +13,7 @@ interface ProjectFormProps {
+ }
+ 
+ export default function ProjectForm({ editingProject, onSuccess, onCancel }: ProjectFormProps) {
+-  const t = useTranslations('ProjectForm');
++  const t = getTranslator('ProjectForm');
+ 
+   const [formData, setFormData] = useState({
+     title: '',
+-- 
+2.43.0
+
+
+From fa73c87286bb408a84a2f0e521aade029fd7fa6b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 09:38:05 +0100
+Subject: [PATCH 2/3] Use English date format in appointments list
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPUgNSTXRbtN7LhQJbCJXF
+---
+ frontend/src/components/AppointmentsList.tsx | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/frontend/src/components/AppointmentsList.tsx b/frontend/src/components/AppointmentsList.tsx
+index 09ae21d..bb0941f 100644
+--- a/frontend/src/components/AppointmentsList.tsx
++++ b/frontend/src/components/AppointmentsList.tsx
+@@ -153,7 +153,7 @@ export default function AppointmentsList() {
+                   <div className="flex items-center gap-2 text-xs text-blue-700 font-semibold">
+                     <Clock className="w-3.5 h-3.5" />
+                     <span>
+-                      {new Date(app.appointmentDate).toLocaleString('fr-FR', {
++                      {new Date(app.appointmentDate).toLocaleString('en-US', {
+                         dateStyle: 'medium',
+                         timeStyle: 'short',
+                       })}
+-- 
+2.43.0
+
+
+From 69d1d4d3b1770fc20b458467493ccff703d1206e Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Sun, 15 Nov 2026 09:49:53 +0100
+Subject: [PATCH 3/3] Remove French and auto-translation code from backend
+
+- Delete translation module and service
+- Drop En/Fr columns from asset, project and engineer-profile entities
+- Remove locale query/header handling from controllers and services
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01YPUgNSTXRbtN7LhQJbCJXF
+---
+ backend/src/app.module.ts                     |  2 -
+ backend/src/asset/asset.controller.ts         | 25 ++----
+ backend/src/asset/asset.service.ts            | 50 ++---------
+ backend/src/asset/entities/asset.entity.ts    | 12 ---
+ .../engineer-profile.controller.ts            | 17 ++--
+ .../engineer-profile.entity.ts                | 18 ----
+ .../engineer-profile.service.ts               | 44 +---------
+ backend/src/project/project.controller.ts     | 25 ++----
+ backend/src/project/project.entity.ts         | 12 ---
+ backend/src/project/project.service.ts        | 45 +---------
+ backend/src/translation/translation.module.ts |  9 --
+ .../src/translation/translation.service.ts    | 86 -------------------
+ 12 files changed, 30 insertions(+), 315 deletions(-)
+ delete mode 100644 backend/src/translation/translation.module.ts
+ delete mode 100644 backend/src/translation/translation.service.ts
+
+diff --git a/backend/src/app.module.ts b/backend/src/app.module.ts
+index d53b92f..8ed1059 100644
+--- a/backend/src/app.module.ts
++++ b/backend/src/app.module.ts
+@@ -14,7 +14,6 @@ import { AuthModule } from './auth/auth.module';
+ import { EngineerProfileModule } from './engineer-profile/engineer-profile.module';
+ import { MediaModule } from './media/media.module';
+ import { ProjectModule } from './project/project.module';
+-import { TranslationModule } from './translation/translation.module';
+ import { UserModule } from './user/user.module';
+ // import { AiAgentModule } from './ai-agent/ai-agent.module'; // Will create this next
+ import { AiAgentModule } from './ai-agent/ai-agent.module';
+@@ -53,7 +52,6 @@ import { AiAgentModule } from './ai-agent/ai-agent.module';
+         },
+       }),
+     }),
+-    TranslationModule,
+     AuthModule,
+     UserModule,
+     AssetModule,
+diff --git a/backend/src/asset/asset.controller.ts b/backend/src/asset/asset.controller.ts
+index b953c6c..31d028c 100644
+--- a/backend/src/asset/asset.controller.ts
++++ b/backend/src/asset/asset.controller.ts
+@@ -3,16 +3,14 @@ import {
+   Controller,
+   Delete,
+   Get,
+-  Headers,
+   Param,
+   Patch,
+   Post,
+   Put,
+-  Query,
+   UseGuards,
+ } from '@nestjs/common';
+ import { AuthGuard } from '@nestjs/passport';
+-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
++import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+ 
+ import { AssetService } from './asset.service';
+ import { CreateAssetDto, CreateOfferDto, UpdateAssetDto, UpdateOfferStatusDto } from './dto/asset.dto';
+@@ -25,7 +23,7 @@ export class AssetController {
+   @Post()
+   @UseGuards(AuthGuard('jwt'))
+   @ApiBearerAuth()
+-  @ApiOperation({ summary: 'Create a new marketplace asset with auto-translation (Admin Only)' })
++  @ApiOperation({ summary: 'Create a new marketplace asset (Admin Only)' })
+   @ApiResponse({ status: 201, description: 'Asset created successfully.' })
+   create(@Body() createAssetDto: CreateAssetDto) {
+     return this.assetService.create(createAssetDto);
+@@ -33,13 +31,8 @@ export class AssetController {
+ 
+   @Get()
+   @ApiOperation({ summary: 'List all marketplace assets (Public)' })
+-  @ApiQuery({ name: 'locale', required: false, description: 'Locale code (en or fr)' })
+-  findAll(
+-    @Query('locale') queryLocale?: string,
+-    @Headers('accept-language') headerLocale?: string,
+-  ) {
+-    const locale = queryLocale || headerLocale;
+-    return this.assetService.findAll(locale);
++  findAll() {
++    return this.assetService.findAll();
+   }
+ 
+   @Get('offers/all')
+@@ -52,14 +45,8 @@ export class AssetController {
+ 
+   @Get(':id')
+   @ApiOperation({ summary: 'Get single asset by ID (Public)' })
+-  @ApiQuery({ name: 'locale', required: false, description: 'Locale code (en or fr)' })
+-  findOne(
+-    @Param('id') id: string,
+-    @Query('locale') queryLocale?: string,
+-    @Headers('accept-language') headerLocale?: string,
+-  ) {
+-    const locale = queryLocale || headerLocale;
+-    return this.assetService.findOne(id, locale);
++  findOne(@Param('id') id: string) {
++    return this.assetService.findOne(id);
+   }
+ 
+   @Put(':id')
+diff --git a/backend/src/asset/asset.service.ts b/backend/src/asset/asset.service.ts
+index 54b49ef..69ee16e 100644
+--- a/backend/src/asset/asset.service.ts
++++ b/backend/src/asset/asset.service.ts
+@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
+ import { CreateAssetDto, CreateOfferDto, UpdateAssetDto } from './dto/asset.dto';
+ import { Asset } from './entities/asset.entity';
+ import { Offer, OfferStatus } from './entities/offer.entity';
+-import { TranslationService } from '../translation/translation.service';
+ 
+ @Injectable()
+ export class AssetService {
+@@ -18,24 +17,10 @@ export class AssetService {
+     private readonly assetRepository: Repository<Asset>,
+     @InjectRepository(Offer)
+     private readonly offerRepository: Repository<Offer>,
+-    private readonly translationService: TranslationService,
+   ) {}
+ 
+   async create(createAssetDto: CreateAssetDto): Promise<Asset> {
+-    const [titlePair, descPair] = await Promise.all([
+-      this.translationService.translatePair(createAssetDto.title),
+-      this.translationService.translatePair(createAssetDto.description),
+-    ]);
+-
+-    const asset = this.assetRepository.create({
+-      ...createAssetDto,
+-      title: createAssetDto.title,
+-      titleEn: titlePair.en,
+-      titleFr: titlePair.fr,
+-      description: createAssetDto.description,
+-      descriptionEn: descPair.en,
+-      descriptionFr: descPair.fr,
+-    });
++    const asset = this.assetRepository.create(createAssetDto);
+ 
+     if (createAssetDto.projectId) {
+       asset.project = { id: createAssetDto.projectId } as any;
+@@ -44,17 +29,14 @@ export class AssetService {
+     return this.assetRepository.save(asset);
+   }
+ 
+-  async findAll(locale?: string): Promise<Asset[]> {
+-    const assets = await this.assetRepository.find({
++  async findAll(): Promise<Asset[]> {
++    return await this.assetRepository.find({
+       relations: { project: true, offers: true },
+       order: { createdAt: 'DESC' },
+     });
+-
+-    if (!locale) return assets;
+-    return assets.map((a) => this.localizeAsset(a, locale));
+   }
+ 
+-  async findOne(id: string, locale?: string): Promise<Asset> {
++  async findOne(id: string): Promise<Asset> {
+     const asset = await this.assetRepository.findOne({
+       where: { id },
+       relations: { project: true, offers: true },
+@@ -64,8 +46,7 @@ export class AssetService {
+       throw new NotFoundException(`Asset with ID "${id}" not found`);
+     }
+ 
+-    if (!locale) return asset;
+-    return this.localizeAsset(asset, locale);
++    return asset;
+   }
+ 
+   async update(id: string, updateAssetDto: UpdateAssetDto): Promise<Asset> {
+@@ -74,18 +55,6 @@ export class AssetService {
+       throw new NotFoundException(`Asset with ID "${id}" not found`);
+     }
+ 
+-    if (updateAssetDto.title && updateAssetDto.title !== asset.title) {
+-      const titlePair = await this.translationService.translatePair(updateAssetDto.title);
+-      asset.titleEn = titlePair.en;
+-      asset.titleFr = titlePair.fr;
+-    }
+-
+-    if (updateAssetDto.description && updateAssetDto.description !== asset.description) {
+-      const descPair = await this.translationService.translatePair(updateAssetDto.description);
+-      asset.descriptionEn = descPair.en;
+-      asset.descriptionFr = descPair.fr;
+-    }
+-    
+     Object.assign(asset, updateAssetDto);
+ 
+     if (updateAssetDto.projectId) {
+@@ -142,13 +111,4 @@ export class AssetService {
+       throw new NotFoundException(`Asset with ID "${id}" not found`);
+     }
+   }
+-
+-  private localizeAsset(asset: Asset, locale: string): Asset {
+-    const isFr = locale.toLowerCase().startsWith('fr');
+-    return {
+-      ...asset,
+-      title: isFr ? (asset.titleFr || asset.title) : (asset.titleEn || asset.title),
+-      description: isFr ? (asset.descriptionFr || asset.description) : (asset.descriptionEn || asset.description),
+-    };
+-  }
+ }
+\ No newline at end of file
+diff --git a/backend/src/asset/entities/asset.entity.ts b/backend/src/asset/entities/asset.entity.ts
+index 0e2fea8..c89a57d 100644
+--- a/backend/src/asset/entities/asset.entity.ts
++++ b/backend/src/asset/entities/asset.entity.ts
+@@ -33,21 +33,9 @@ export class Asset {
+   @Column()
+   title!: string;
+ 
+-  @Column({ nullable: true })
+-  titleEn?: string;
+-
+-  @Column({ nullable: true })
+-  titleFr?: string;
+-
+   @Column({ type: 'text' })
+   description!: string;
+ 
+-  @Column({ type: 'text', nullable: true })
+-  descriptionEn?: string;
+-
+-  @Column({ type: 'text', nullable: true })
+-  descriptionFr?: string;
+-
+   @Column({ type: 'decimal', precision: 12, scale: 2 })
+   price!: number;
+ 
+diff --git a/backend/src/engineer-profile/engineer-profile.controller.ts b/backend/src/engineer-profile/engineer-profile.controller.ts
+index ba79757..f5f363c 100644
+--- a/backend/src/engineer-profile/engineer-profile.controller.ts
++++ b/backend/src/engineer-profile/engineer-profile.controller.ts
+@@ -1,6 +1,6 @@
+-import { Controller, Get, Put, Body, UseGuards, Query, Headers } from '@nestjs/common';
++import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
+ import { AuthGuard } from '@nestjs/passport';
+-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
++import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+ import { EngineerProfileService } from './engineer-profile.service';
+ 
+ @ApiTags('engineer-profile')
+@@ -10,20 +10,15 @@ export class EngineerProfileController {
+ 
+   @Get()
+   @ApiOperation({ summary: 'Get engineer profile (Public)' })
+-  @ApiQuery({ name: 'locale', required: false, description: 'Locale code (en or fr)' })
+-  async getProfile(
+-    @Query('locale') queryLocale?: string,
+-    @Headers('accept-language') headerLocale?: string,
+-  ) {
+-    const locale = queryLocale || headerLocale;
+-    return this.profileService.getProfile(locale);
++  async getProfile() {
++    return this.profileService.getProfile();
+   }
+ 
+   @UseGuards(AuthGuard('jwt'))
+   @ApiBearerAuth()
+   @Put()
+-  @ApiOperation({ summary: 'Update engineer profile with auto-translation (Admin Only)' })
++  @ApiOperation({ summary: 'Update engineer profile (Admin Only)' })
+   async updateProfile(@Body() body: any) {
+     return this.profileService.updateProfile(body);
+   }
+-}
+\ No newline at end of file
++}
+diff --git a/backend/src/engineer-profile/engineer-profile.entity.ts b/backend/src/engineer-profile/engineer-profile.entity.ts
+index 2758f3b..31120ce 100644
+--- a/backend/src/engineer-profile/engineer-profile.entity.ts
++++ b/backend/src/engineer-profile/engineer-profile.entity.ts
+@@ -11,30 +11,12 @@ export class EngineerProfile {
+   @Column()
+   title!: string;
+ 
+-  @Column({ nullable: true })
+-  titleEn?: string;
+-
+-  @Column({ nullable: true })
+-  titleFr?: string;
+-
+   @Column('text')
+   bio!: string;
+ 
+-  @Column('text', { nullable: true })
+-  bioEn?: string;
+-
+-  @Column('text', { nullable: true })
+-  bioFr?: string;
+-
+   @Column('text')
+   history!: string;
+ 
+-  @Column('text', { nullable: true })
+-  historyEn?: string;
+-
+-  @Column('text', { nullable: true })
+-  historyFr?: string;
+-
+   @Column()
+   experienceYears!: number;
+ 
+diff --git a/backend/src/engineer-profile/engineer-profile.service.ts b/backend/src/engineer-profile/engineer-profile.service.ts
+index 14aae32..4ebd481 100644
+--- a/backend/src/engineer-profile/engineer-profile.service.ts
++++ b/backend/src/engineer-profile/engineer-profile.service.ts
+@@ -2,38 +2,29 @@ import { Injectable } from '@nestjs/common';
+ import { InjectRepository } from '@nestjs/typeorm';
+ import { Repository } from 'typeorm';
+ import { EngineerProfile } from './engineer-profile.entity';
+-import { TranslationService } from '../translation/translation.service';
+ 
+ @Injectable()
+ export class EngineerProfileService {
+   constructor(
+     @InjectRepository(EngineerProfile)
+     private readonly profileRepository: Repository<EngineerProfile>,
+-    private readonly translationService: TranslationService,
+   ) {}
+ 
+-  async getProfile(locale?: string): Promise<EngineerProfile> {
++  async getProfile(): Promise<EngineerProfile> {
+     let profile = await this.profileRepository.findOne({ where: {} });
+     if (!profile) {
+       profile = this.profileRepository.create({
+         name: 'Lead Engineer',
+         title: 'Principal Structural Engineer',
+-        titleEn: 'Principal Structural Engineer',
+-        titleFr: 'Ingénieur en Chef Génie Civil & Structures',
+         bio: 'At House Design, we believe every structure should harmonize strength, safety, and modern aesthetic elegance.',
+-        bioEn: 'At House Design, we believe every structure should harmonize strength, safety, and modern aesthetic elegance.',
+-        bioFr: 'Chez House Design, nous pensons que chaque bâtiment doit allier robustesse pérenne, sécurité absolue et élégance architecturale contemporaine.',
+         history: 'Specializing in structural calculations, building code compliance, and precision execution.',
+-        historyEn: 'Specializing in structural calculations, building code compliance, and precision execution.',
+-        historyFr: 'Spécialisé dans les calculs de béton armé, la conformité aux normes parasismiques et le pilotage de chantiers complexes.',
+         experienceYears: 10,
+         completedProjectsCount: 50,
+       });
+       await this.profileRepository.save(profile);
+     }
+ 
+-    if (!locale) return profile;
+-    return this.localizeProfile(profile, locale);
++    return profile;
+   }
+ 
+   async updateProfile(updateData: Partial<EngineerProfile>): Promise<EngineerProfile> {
+@@ -42,36 +33,7 @@ export class EngineerProfileService {
+       profile = this.profileRepository.create(updateData);
+     }
+ 
+-    // Auto-translate if text fields updated
+-    if (updateData.title) {
+-      const titlePair = await this.translationService.translatePair(updateData.title);
+-      updateData.titleEn = titlePair.en;
+-      updateData.titleFr = titlePair.fr;
+-    }
+-
+-    if (updateData.bio) {
+-      const bioPair = await this.translationService.translatePair(updateData.bio);
+-      updateData.bioEn = bioPair.en;
+-      updateData.bioFr = bioPair.fr;
+-    }
+-
+-    if (updateData.history) {
+-      const histPair = await this.translationService.translatePair(updateData.history);
+-      updateData.historyEn = histPair.en;
+-      updateData.historyFr = histPair.fr;
+-    }
+-
+     this.profileRepository.merge(profile, updateData);
+     return this.profileRepository.save(profile);
+   }
+-
+-  private localizeProfile(profile: EngineerProfile, locale: string): EngineerProfile {
+-    const isFr = locale.toLowerCase().startsWith('fr');
+-    return {
+-      ...profile,
+-      title: isFr ? (profile.titleFr || profile.title) : (profile.titleEn || profile.title),
+-      bio: isFr ? (profile.bioFr || profile.bio) : (profile.bioEn || profile.bio),
+-      history: isFr ? (profile.historyFr || profile.history) : (profile.historyEn || profile.history),
+-    };
+-  }
+-}
+\ No newline at end of file
++}
+diff --git a/backend/src/project/project.controller.ts b/backend/src/project/project.controller.ts
+index d31ecc6..ddebe88 100644
+--- a/backend/src/project/project.controller.ts
++++ b/backend/src/project/project.controller.ts
+@@ -8,12 +8,10 @@ import {
+   Param,
+   ParseIntPipe,
+   UseGuards,
+-  Query,
+-  Headers,
+ } from '@nestjs/common';
+ import { ProjectService } from './project.service';
+ import { ProjectDto } from './dto/project.dto';
+-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
++import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+ import { AuthGuard } from '@nestjs/passport';
+ 
+ @ApiTags('projects')
+@@ -24,7 +22,7 @@ export class ProjectController {
+   @Post()
+   @UseGuards(AuthGuard('jwt'))
+   @ApiBearerAuth()
+-  @ApiOperation({ summary: 'Create a new project with auto-translation (Admin Only)' })
++  @ApiOperation({ summary: 'Create a new project (Admin Only)' })
+   @ApiResponse({ status: 201, description: 'The project has been successfully created.' })
+   create(@Body() projectDto: ProjectDto) {
+     return this.projectService.create(projectDto);
+@@ -32,25 +30,14 @@ export class ProjectController {
+ 
+   @Get()
+   @ApiOperation({ summary: 'Get all architectural projects (Public Showcase)' })
+-  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
+-  findAll(
+-    @Query('locale') queryLocale?: string,
+-    @Headers('accept-language') headerLocale?: string,
+-  ) {
+-    const locale = queryLocale || headerLocale;
+-    return this.projectService.findAll(locale);
++  findAll() {
++    return this.projectService.findAll();
+   }
+ 
+   @Get(':id')
+   @ApiOperation({ summary: 'Get a single project by ID' })
+-  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
+-  findOne(
+-    @Param('id', ParseIntPipe) id: number,
+-    @Query('locale') queryLocale?: string,
+-    @Headers('accept-language') headerLocale?: string,
+-  ) {
+-    const locale = queryLocale || headerLocale;
+-    return this.projectService.findOne(id, locale);
++  findOne(@Param('id', ParseIntPipe) id: number) {
++    return this.projectService.findOne(id);
+   }
+ 
+   @Put(':id')
+diff --git a/backend/src/project/project.entity.ts b/backend/src/project/project.entity.ts
+index db66e0a..c64e3b8 100644
+--- a/backend/src/project/project.entity.ts
++++ b/backend/src/project/project.entity.ts
+@@ -17,21 +17,9 @@ export class Project {
+   @Column()
+   title!: string;
+ 
+-  @Column({ nullable: true })
+-  titleEn?: string;
+-
+-  @Column({ nullable: true })
+-  titleFr?: string;
+-
+   @Column('text')
+   description!: string;
+ 
+-  @Column('text', { nullable: true })
+-  descriptionEn?: string;
+-
+-  @Column('text', { nullable: true })
+-  descriptionFr?: string;
+-
+   @Column({ nullable: true })
+   category?: string;
+ 
+diff --git a/backend/src/project/project.service.ts b/backend/src/project/project.service.ts
+index 673095a..fbcd54b 100644
+--- a/backend/src/project/project.service.ts
++++ b/backend/src/project/project.service.ts
+@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
+ import { Repository } from 'typeorm';
+ import { Project } from './project.entity';
+ import { ProjectDto } from './dto/project.dto';
+-import { TranslationService } from '../translation/translation.service';
+ import { EventEmitter2 } from '@nestjs/event-emitter';
+ 
+ @Injectable()
+@@ -11,7 +10,6 @@ export class ProjectService {
+   constructor(
+     @InjectRepository(Project)
+     private readonly projectRepository: Repository<Project>,
+-    private readonly translationService: TranslationService,
+     private readonly eventEmitter: EventEmitter2,
+   ) {}
+ 
+@@ -19,41 +17,27 @@ export class ProjectService {
+     const rawTitle = projectDto.title || projectDto.name || 'Untitled Project';
+     const rawDescription = projectDto.description || '';
+ 
+-    // Auto-translate title and description
+-    const [titlePair, descPair] = await Promise.all([
+-      this.translationService.translatePair(rawTitle),
+-      this.translationService.translatePair(rawDescription),
+-    ]);
+-
+     const project = this.projectRepository.create({
+       ...projectDto,
+       title: rawTitle,
+-      titleEn: titlePair.en,
+-      titleFr: titlePair.fr,
+       description: rawDescription,
+-      descriptionEn: descPair.en,
+-      descriptionFr: descPair.fr,
+     });
+ 
+     return await this.projectRepository.save(project);
+   }
+ 
+-  async findAll(locale?: string): Promise<Project[]> {
+-    const projects = await this.projectRepository.find({
++  async findAll(): Promise<Project[]> {
++    return await this.projectRepository.find({
+       order: { createdAt: 'DESC' },
+     });
+-
+-    if (!locale) return projects;
+-    return projects.map((p) => this.localizeProject(p, locale));
+   }
+ 
+-  async findOne(id: number, locale?: string): Promise<Project> {
++  async findOne(id: number): Promise<Project> {
+     const project = await this.projectRepository.findOne({ where: { id } });
+     if (!project) {
+       throw new NotFoundException(`Project with ID ${id} not found`);
+     }
+-    if (!locale) return project;
+-    return this.localizeProject(project, locale);
++    return project;
+   }
+ 
+   async update(id: number, projectDto: Partial<ProjectDto>): Promise<Project> {
+@@ -68,18 +52,6 @@ export class ProjectService {
+       projectDto.title = projectDto.name;
+     }
+ 
+-    if (projectDto.title && projectDto.title !== project.title) {
+-      const titlePair = await this.translationService.translatePair(projectDto.title);
+-      project.titleEn = titlePair.en;
+-      project.titleFr = titlePair.fr;
+-    }
+-
+-    if (projectDto.description && projectDto.description !== project.description) {
+-      const descPair = await this.translationService.translatePair(projectDto.description);
+-      project.descriptionEn = descPair.en;
+-      project.descriptionFr = descPair.fr;
+-    }
+-
+     Object.assign(project, projectDto);
+     const updatedProject = await this.projectRepository.save(project);
+ 
+@@ -103,13 +75,4 @@ export class ProjectService {
+     await this.projectRepository.remove(project);
+     return { message: `Project #${id} deleted successfully` };
+   }
+-
+-  private localizeProject(project: Project, locale: string): Project {
+-    const isFr = locale.toLowerCase().startsWith('fr');
+-    return {
+-      ...project,
+-      title: isFr ? (project.titleFr || project.title) : (project.titleEn || project.title),
+-      description: isFr ? (project.descriptionFr || project.description) : (project.descriptionEn || project.description),
+-    };
+-  }
+ }
+\ No newline at end of file
+diff --git a/backend/src/translation/translation.module.ts b/backend/src/translation/translation.module.ts
+deleted file mode 100644
+index 6ccb9d8..0000000
+--- a/backend/src/translation/translation.module.ts
++++ /dev/null
+@@ -1,9 +0,0 @@
+-import { Global, Module } from '@nestjs/common';
+-import { TranslationService } from './translation.service';
+-
+-@Global()
+-@Module({
+-  providers: [TranslationService],
+-  exports: [TranslationService],
+-})
+-export class TranslationModule {}
+diff --git a/backend/src/translation/translation.service.ts b/backend/src/translation/translation.service.ts
+deleted file mode 100644
+index 7218d55..0000000
+--- a/backend/src/translation/translation.service.ts
++++ /dev/null
+@@ -1,86 +0,0 @@
+-import { Injectable, Logger } from '@nestjs/common';
+-import { ConfigService } from '@nestjs/config';
+-
+-@Injectable()
+-export class TranslationService {
+-  private readonly logger = new Logger(TranslationService.name);
+-
+-  constructor(private readonly configService: ConfigService) {}
+-
+-  /**
+-   * Translates a given text to both English and French.
+-   * Detects the source language or auto-translates to the other language.
+-   */
+-  async translatePair(
+-    text?: string,
+-  ): Promise<{ en: string; fr: string }> {
+-    if (!text || !text.trim()) {
+-      return { en: '', fr: '' };
+-    }
+-
+-    const trimmed = text.trim();
+-    const isFrench = this.detectIsFrench(trimmed);
+-
+-    try {
+-      if (isFrench) {
+-        const translatedEn = await this.translateText(trimmed, 'fr', 'en');
+-        return {
+-          fr: trimmed,
+-          en: translatedEn || trimmed,
+-        };
+-      } else {
+-        const translatedFr = await this.translateText(trimmed, 'en', 'fr');
+-        return {
+-          en: trimmed,
+-          fr: translatedFr || trimmed,
+-        };
+-      }
+-    } catch (error) {
+-      this.logger.warn(`Translation fallback used for: "${trimmed.slice(0, 30)}..."`);
+-      return {
+-        en: trimmed,
+-        fr: trimmed,
+-      };
+-    }
+-  }
+-
+-  /**
+-   * Helper to perform online translation with fallback
+-   */
+-  async translateText(text: string, sourceLang: string, targetLang: string): Promise<string> {
+-    if (!text) return '';
+-
+-    try {
+-      // 1. Google Translate API free web endpoint
+-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+-      const response = await fetch(url);
+-      
+-      if (!response.ok) {
+-        throw new Error(`Translation HTTP error ${response.status}`);
+-      }
+-
+-      const data = await response.json();
+-      if (Array.isArray(data) && Array.isArray(data[0])) {
+-        const translatedSegments = data[0].map((item: any) => item[0]).filter(Boolean);
+-        return translatedSegments.join('');
+-      }
+-    } catch (err: any) {
+-      this.logger.debug(`Online translation error: ${err.message}`);
+-    }
+-
+-    return text;
+-  }
+-
+-  /**
+-   * Basic heuristic to detect French common stopwords & accent patterns
+-   */
+-  private detectIsFrench(text: string): boolean {
+-    const lower = text.toLowerCase();
+-    const frenchIndicators = [
+-      /\b(le|la|les|un|une|des|du|de|pour|avec|dans|sur|projet|maison|bâtiment|béton|travaux|chantier|conception|structurel|structure|ingénieur|résidentiel|commercial)\b/,
+-      /[éèêëàâîïôùûç]/,
+-    ];
+-
+-    return frenchIndicators.some((regex) => regex.test(lower));
+-  }
+-}
+-- 
+2.43.0
+
