@@ -35,6 +35,15 @@ export class UserService {
     return result;
   }
 
+  /**
+   * Registration is open only while no account exists yet (first-time setup),
+   * or when ALLOW_REGISTRATION=true is set in the environment.
+   */
+  async isRegistrationOpen(): Promise<boolean> {
+    if (process.env.ALLOW_REGISTRATION === 'true') return true;
+    return (await this.userRepository.count()) === 0;
+  }
+
   async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { username } });
   }
