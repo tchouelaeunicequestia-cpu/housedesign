@@ -11,6 +11,7 @@ interface GoogleTranslateContextValue {
   language: string;
   languages: TranslationLanguage[];
   isReady: boolean;
+  hasError: boolean;
   setLanguage: (language: string) => void;
 }
 
@@ -44,12 +45,14 @@ export default function GoogleTranslateProvider({ children }: { children: React.
   const [language, setLanguage] = useState('');
   const [languages, setLanguages] = useState<TranslationLanguage[]>([]);
   const [isReady, setIsReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const initialized = useRef(false);
 
   useEffect(() => {
     const googleWindow = window as GoogleTranslateWindow;
     let cancelled = false;
     let observer: MutationObserver | undefined;
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const readLanguages = () => {
       const select = document.querySelector<HTMLSelectElement>('.goog-te-combo');
@@ -62,13 +65,18 @@ export default function GoogleTranslateProvider({ children }: { children: React.
       setLanguages(availableLanguages);
       setLanguage(select.value);
       setIsReady(true);
+      setHasError(false);
+      if (timeoutId) clearTimeout(timeoutId);
       return true;
     };
 
     const initialize = () => {
       const TranslateElement = googleWindow.google?.translate?.TranslateElement;
       if (cancelled || initialized.current || !TranslateElement) {
-        if (!TranslateElement) console.error('Google Translate loaded without its translation widget.');
+        if (!TranslateElement) {
+          console.warn('Google Translate loaded without its translation widget.');
+          setHasError(true);
+        }
         return;
       }
 
@@ -96,13 +104,25 @@ export default function GoogleTranslateProvider({ children }: { children: React.
       script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
       script.onerror = () => {
-        if (!cancelled) console.error('Unable to load the Google Translate script.');
+        if (!cancelled) {
+          console.warn('Unable to load the Google Translate script.');
+          setHasError(true);
+        }
       };
       document.body.appendChild(script);
     }
 
+    // If the widget has not appeared after 15 seconds (blocked or offline), stop showing "Loading".
+    timeoutId = setTimeout(() => {
+      if (!cancelled && !document.querySelector('.goog-te-combo')) {
+        console.warn('Google Translate did not respond in time.');
+        setHasError(true);
+      }
+    }, 15000);
+
     return () => {
       cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
       observer?.disconnect();
     };
   }, []);
@@ -112,7 +132,7 @@ export default function GoogleTranslateProvider({ children }: { children: React.
 
     const translateSelect = document.querySelector<HTMLSelectElement>('.goog-te-combo');
     if (!translateSelect) {
-      console.error('Google Translate initialized without its language selector.');
+      console.warn('Google Translate initialized without its language selector.');
       return;
     }
 
@@ -121,7 +141,7 @@ export default function GoogleTranslateProvider({ children }: { children: React.
   }, [isReady, language]);
 
   return (
-    <GoogleTranslateContext.Provider value={{ language, languages, isReady, setLanguage }}>
+    <GoogleTranslateContext.Provider value={{ language, languages, isReady, hasError, setLanguage }}>
       {children}
       <div id="google_translate_element" aria-hidden="true" />
     </GoogleTranslateContext.Provider>

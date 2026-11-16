@@ -153,7 +153,7 @@ export default function AppointmentsList() {
                   <div className="flex items-center gap-2 text-xs text-blue-700 font-semibold">
                     <Clock className="w-3.5 h-3.5" />
                     <span>
-                      {new Date(app.appointmentDate).toLocaleString('fr-FR', {
+                      {new Date(app.appointmentDate).toLocaleString('en-US', {
                         dateStyle: 'medium',
                         timeStyle: 'short',
                       })}

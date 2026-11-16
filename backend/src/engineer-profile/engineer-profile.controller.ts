@@ -1,6 +1,6 @@
-import { Controller, Get, Put, Body, UseGuards, Query, Headers } from '@nestjs/common';
+import { Controller, Get, Put, Body, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EngineerProfileService } from './engineer-profile.service';
 
 @ApiTags('engineer-profile')
@@ -10,19 +10,14 @@ export class EngineerProfileController {
 
   @Get()
   @ApiOperation({ summary: 'Get engineer profile (Public)' })
-  @ApiQuery({ name: 'locale', required: false, description: 'Locale code (en or fr)' })
-  async getProfile(
-    @Query('locale') queryLocale?: string,
-    @Headers('accept-language') headerLocale?: string,
-  ) {
-    const locale = queryLocale || headerLocale;
-    return this.profileService.getProfile(locale);
+  async getProfile() {
+    return this.profileService.getProfile();
   }
 
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @Put()
-  @ApiOperation({ summary: 'Update engineer profile with auto-translation (Admin Only)' })
+  @ApiOperation({ summary: 'Update engineer profile (Admin Only)' })
   async updateProfile(@Body() body: any) {
     return this.profileService.updateProfile(body);
   }

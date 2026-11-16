@@ -8,12 +8,10 @@ import {
   Param,
   ParseIntPipe,
   UseGuards,
-  Query,
-  Headers,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { ProjectDto } from './dto/project.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('projects')
@@ -24,7 +22,7 @@ export class ProjectController {
   @Post()
   @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Create a new project with auto-translation (Admin Only)' })
+  @ApiOperation({ summary: 'Create a new project (Admin Only)' })
   @ApiResponse({ status: 201, description: 'The project has been successfully created.' })
   create(@Body() projectDto: ProjectDto) {
     return this.projectService.create(projectDto);
@@ -32,25 +30,14 @@ export class ProjectController {
 
   @Get()
   @ApiOperation({ summary: 'Get all architectural projects (Public Showcase)' })
-  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
-  findAll(
-    @Query('locale') queryLocale?: string,
-    @Headers('accept-language') headerLocale?: string,
-  ) {
-    const locale = queryLocale || headerLocale;
-    return this.projectService.findAll(locale);
+  findAll() {
+    return this.projectService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single project by ID' })
-  @ApiQuery({ name: 'locale', required: false, description: 'Locale language code (en or fr)' })
-  findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @Query('locale') queryLocale?: string,
-    @Headers('accept-language') headerLocale?: string,
-  ) {
-    const locale = queryLocale || headerLocale;
-    return this.projectService.findOne(id, locale);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.projectService.findOne(id);
   }
 
   @Put(':id')

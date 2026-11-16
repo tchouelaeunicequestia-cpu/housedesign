@@ -14,7 +14,6 @@ import { AuthModule } from './auth/auth.module';
 import { EngineerProfileModule } from './engineer-profile/engineer-profile.module';
 import { MediaModule } from './media/media.module';
 import { ProjectModule } from './project/project.module';
-import { TranslationModule } from './translation/translation.module';
 import { UserModule } from './user/user.module';
 // import { AiAgentModule } from './ai-agent/ai-agent.module'; // Will create this next
 import { AiAgentModule } from './ai-agent/ai-agent.module';
@@ -53,7 +52,6 @@ import { AiAgentModule } from './ai-agent/ai-agent.module';
         },
       }),
     }),
-    TranslationModule,
     AuthModule,
     UserModule,
     AssetModule,

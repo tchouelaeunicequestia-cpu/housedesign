@@ -9,7 +9,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAssetDto, CreateOfferDto, UpdateAssetDto } from './dto/asset.dto';
 import { Asset } from './entities/asset.entity';
 import { Offer, OfferStatus } from './entities/offer.entity';
-import { TranslationService } from '../translation/translation.service';
 
 @Injectable()
 export class AssetService {
@@ -18,24 +17,10 @@ export class AssetService {
     private readonly assetRepository: Repository<Asset>,
     @InjectRepository(Offer)
     private readonly offerRepository: Repository<Offer>,
-    private readonly translationService: TranslationService,
   ) {}
 
   async create(createAssetDto: CreateAssetDto): Promise<Asset> {
-    const [titlePair, descPair] = await Promise.all([
-      this.translationService.translatePair(createAssetDto.title),
-      this.translationService.translatePair(createAssetDto.description),
-    ]);
-
-    const asset = this.assetRepository.create({
-      ...createAssetDto,
-      title: createAssetDto.title,
-      titleEn: titlePair.en,
-      titleFr: titlePair.fr,
-      description: createAssetDto.description,
-      descriptionEn: descPair.en,
-      descriptionFr: descPair.fr,
-    });
+    const asset = this.assetRepository.create(createAssetDto);
 
     if (createAssetDto.projectId) {
       asset.project = { id: createAssetDto.projectId } as any;
@@ -44,17 +29,14 @@ export class AssetService {
     return this.assetRepository.save(asset);
   }
 
-  async findAll(locale?: string): Promise<Asset[]> {
-    const assets = await this.assetRepository.find({
+  async findAll(): Promise<Asset[]> {
+    return await this.assetRepository.find({
       relations: { project: true, offers: true },
       order: { createdAt: 'DESC' },
     });
-
-    if (!locale) return assets;
-    return assets.map((a) => this.localizeAsset(a, locale));
   }
 
-  async findOne(id: string, locale?: string): Promise<Asset> {
+  async findOne(id: string): Promise<Asset> {
     const asset = await this.assetRepository.findOne({
       where: { id },
       relations: { project: true, offers: true },
@@ -64,8 +46,7 @@ export class AssetService {
       throw new NotFoundException(`Asset with ID "${id}" not found`);
     }
 
-    if (!locale) return asset;
-    return this.localizeAsset(asset, locale);
+    return asset;
   }
 
   async update(id: string, updateAssetDto: UpdateAssetDto): Promise<Asset> {
@@ -74,18 +55,6 @@ export class AssetService {
       throw new NotFoundException(`Asset with ID "${id}" not found`);
     }
 
-    if (updateAssetDto.title && updateAssetDto.title !== asset.title) {
-      const titlePair = await this.translationService.translatePair(updateAssetDto.title);
-      asset.titleEn = titlePair.en;
-      asset.titleFr = titlePair.fr;
-    }
-
-    if (updateAssetDto.description && updateAssetDto.description !== asset.description) {
-      const descPair = await this.translationService.translatePair(updateAssetDto.description);
-      asset.descriptionEn = descPair.en;
-      asset.descriptionFr = descPair.fr;
-    }
-    
     Object.assign(asset, updateAssetDto);
 
     if (updateAssetDto.projectId) {
@@ -141,14 +110,5 @@ export class AssetService {
     if (result.affected === 0) {
       throw new NotFoundException(`Asset with ID "${id}" not found`);
     }
-  }
-
-  private localizeAsset(asset: Asset, locale: string): Asset {
-    const isFr = locale.toLowerCase().startsWith('fr');
-    return {
-      ...asset,
-      title: isFr ? (asset.titleFr || asset.title) : (asset.titleEn || asset.title),
-      description: isFr ? (asset.descriptionFr || asset.description) : (asset.descriptionEn || asset.description),
-    };
   }
 }

@@ -17,20 +17,8 @@ export class Project {
   @Column()
   title!: string;
 
-  @Column({ nullable: true })
-  titleEn?: string;
-
-  @Column({ nullable: true })
-  titleFr?: string;
-
   @Column('text')
   description!: string;
-
-  @Column('text', { nullable: true })
-  descriptionEn?: string;
-
-  @Column('text', { nullable: true })
-  descriptionFr?: string;
 
   @Column({ nullable: true })
   category?: string;
