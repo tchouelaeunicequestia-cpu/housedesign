@@ -12,8 +12,15 @@ async function bootstrap() {
   console.log('Seeding database...');
 
   // 1. Seed default Admin / Engineer user if not exists
-  const adminEmail = process.env.ADMIN_DEFAULT_EMAIL || 'engineer@housedesign.com';
-  const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin1234!';
+  const adminEmail = process.env.ADMIN_DEFAULT_EMAIL;
+  const adminPassword = process.env.ADMIN_DEFAULT_PASSWORD;
+  if (!adminEmail || !adminPassword) {
+    console.error(
+      'Set ADMIN_DEFAULT_EMAIL and ADMIN_DEFAULT_PASSWORD (a strong password) before seeding.',
+    );
+    await app.close();
+    process.exit(1);
+  }
   const adminUsername = 'admin';
 
   try {
