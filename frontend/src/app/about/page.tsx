@@ -202,6 +202,9 @@ export default function AboutPage() {
       {/* Footer */}
       <footer className="bg-slate-50 border-t border-slate-200 py-8 text-center text-xs text-slate-500">
         <p>{t('footer.copyright', { year: new Date().getFullYear() })}</p>
+        <Link href="/login" className="inline-block mt-3 text-[11px] text-slate-400 hover:text-blue-700 transition-colors">
+          {t('nav.engineerLogin')}
+        </Link>
       </footer>
     </div>
   );
