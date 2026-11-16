@@ -112,13 +112,6 @@ export default function LoginPage() {
               {isLoading ? t('verifying') : t('signIn')}
             </button>
           </form>
-
-          <div className="mt-6 text-center text-xs text-slate-600">
-            {t('needAccount')}{' '}
-            <Link href="/register" className="text-blue-700 hover:underline font-medium">
-              {t('registerHere')}
-            </Link>
-          </div>
         </div>
       </main>
 
