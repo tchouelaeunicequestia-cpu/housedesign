@@ -23,3 +23,10 @@ npm run start
 ```
 
 The production server is available at [http://localhost:3001](http://localhost:3001).
+
+
+## Home page video background
+
+The hero on the home page is split into four panels. Each panel plays a different muted video, and the videos change one panel at a time without repeating on screen.
+
+To use your own videos, put them in `frontend/public/videos/` and list them in `frontend/src/lib/heroVideos.ts`. Use at least 5 short clips (10-20 seconds, 720p or smaller, `.mp4`, no sound, under 3 MB each). The six `sample-abstract-*.mp4` files are generated placeholders that you can delete once you have real footage.

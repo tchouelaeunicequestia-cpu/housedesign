@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getTranslator } from '@/lib/translations';
 import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
+import VideoQuadBackground from '@/components/VideoQuadBackground';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -83,27 +84,28 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section className="bg-gradient-to-b from-blue-50 to-white text-slate-900 py-20 px-6 text-center border-b border-slate-200">
-          <div className="max-w-3xl mx-auto">
-            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block mb-4">
+        <section className="relative overflow-hidden text-white py-24 px-6 text-center border-b border-slate-200">
+          <VideoQuadBackground />
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-white/90 border border-white px-3.5 py-1.5 rounded-full inline-block mb-4">
               {t('hero.eyebrow')}
             </span>
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-slate-900">
+            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white drop-shadow-md">
               {t('hero.title')}
             </h2>
-            <p className="text-slate-600 text-base md:text-lg mb-8 leading-relaxed">
+            <p className="text-blue-50 text-base md:text-lg mb-8 leading-relaxed drop-shadow">
               {t('hero.description')}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="#rendezvous"
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-3 rounded-lg transition-colors shadow-lg flex items-center gap-2"
+                className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-6 py-3 rounded-lg transition-colors shadow-lg flex items-center gap-2"
               >
                 <Calendar className="w-4 h-4" /> {t('hero.bookButton')}
               </a>
               <a
                 href="#services"
-                className="bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-800 text-sm font-medium px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
+                className="bg-white hover:bg-blue-50 border border-white text-blue-700 text-sm font-medium px-6 py-3 rounded-lg transition-colors flex items-center gap-2"
               >
                 {t('hero.servicesButton')} <ArrowRight className="w-4 h-4" />
               </a>
