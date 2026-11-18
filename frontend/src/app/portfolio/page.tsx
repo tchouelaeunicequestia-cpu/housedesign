@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { getTranslator } from '@/lib/translations';
 import { Search, PlayCircle } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
+import VideoQuadBackground from '@/components/VideoQuadBackground';
 
 export default function PortfolioPage() {
   const t = getTranslator('PortfolioPage');
@@ -84,15 +85,16 @@ export default function PortfolioPage() {
         </header>
 
         {/* Portfolio Hero Header */}
-        <section className="bg-gradient-to-b from-blue-50 to-white text-slate-900 py-16 px-6 text-center border-b border-slate-200">
-          <div className="max-w-3xl mx-auto">
-            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block mb-4">
+        <section className="relative overflow-hidden text-white py-20 px-6 text-center border-b border-slate-200">
+          <VideoQuadBackground />
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-white/90 border border-white px-3.5 py-1.5 rounded-full inline-block mb-4">
               {t('hero.eyebrow')}
             </span>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-slate-900">
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4 text-white drop-shadow-md">
               {t('hero.title')}
             </h2>
-            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+            <p className="text-blue-50 text-sm md:text-base leading-relaxed drop-shadow">
               {t('hero.description')}
             </p>
           </div>

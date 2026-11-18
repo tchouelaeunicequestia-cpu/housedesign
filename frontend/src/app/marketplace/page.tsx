@@ -6,6 +6,7 @@ import { useAssets } from '@/hooks/useAssets';
 import { getTranslator } from '@/lib/translations';
 import { Building, Wrench, MapPin, FileText, Send, Eye, ChevronLeft, ChevronRight, Map, Home, Package, Loader2 } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
+import VideoQuadBackground from '@/components/VideoQuadBackground';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -138,13 +139,14 @@ export default function MarketplacePage() {
           </div>
         </header>
 
-        <section className="bg-slate-50 text-slate-900 py-16 px-6 text-center border-b border-slate-200">
-          <div className="max-w-3xl mx-auto">
-            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block mb-3">
+        <section className="relative overflow-hidden text-white py-20 px-6 text-center border-b border-slate-200">
+          <VideoQuadBackground />
+          <div className="relative z-10 max-w-3xl mx-auto">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-white/90 border border-white px-3.5 py-1.5 rounded-full inline-block mb-3">
               {t('hero.eyebrow')}
             </span>
-            <h2 className="text-4xl font-extrabold mb-3 text-slate-900">{t('hero.title')}</h2>
-            <p className="text-slate-600 text-base">
+            <h2 className="text-4xl font-extrabold mb-3 text-white drop-shadow-md">{t('hero.title')}</h2>
+            <p className="text-blue-50 text-base drop-shadow">
               {t('hero.description')}
             </p>
           </div>

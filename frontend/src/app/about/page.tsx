@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getTranslator } from '@/lib/translations';
 import { ShieldCheck, Award, HardHat, Building2, Compass, Cpu, User } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
+import VideoQuadBackground from '@/components/VideoQuadBackground';
 import api from '@/lib/api';
 
 interface EngineerProfile {
@@ -61,13 +62,14 @@ export default function AboutPage() {
         </header>
 
         {/* Hero Banner */}
-        <section className="bg-slate-50 text-slate-900 py-16 px-6 text-center border-b border-slate-200">
-          <div className="max-w-3xl mx-auto space-y-3">
-            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-full inline-block">
+        <section className="relative overflow-hidden text-white py-20 px-6 text-center border-b border-slate-200">
+          <VideoQuadBackground />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-3">
+            <span className="text-blue-700 text-xs uppercase tracking-widest font-bold bg-white/90 border border-white px-3.5 py-1.5 rounded-full inline-block">
               {t('hero.eyebrow')}
             </span>
-            <h2 className="text-4xl font-extrabold text-slate-900">{t('hero.title')}</h2>
-            <p className="text-slate-600 text-base leading-relaxed">
+            <h2 className="text-4xl font-extrabold text-white drop-shadow-md">{t('hero.title')}</h2>
+            <p className="text-blue-50 text-base leading-relaxed drop-shadow">
               {t('hero.description')}
             </p>
           </div>
