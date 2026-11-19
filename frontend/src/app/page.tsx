@@ -6,6 +6,8 @@ import { getTranslator } from '@/lib/translations';
 import { MapPin, Phone, Mail, Calendar, ArrowRight, Building2, Wrench, ShieldCheck, Loader2 } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
 import VideoQuadBackground from '@/components/VideoQuadBackground';
+import SeasonBanner from '@/components/SeasonBanner';
+import LatestPublications from '@/components/LatestPublications';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -53,6 +55,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col justify-between font-sans">
       <div>
+        <SeasonBanner />
+
         {/* Navigation Header */}
         <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-md">
           <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -99,7 +103,7 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="#rendezvous"
-                className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-6 py-3 rounded-lg transition-colors shadow-lg flex items-center gap-2"
+                className="btn-accent text-white text-sm font-medium px-6 py-3 rounded-lg transition-colors shadow-lg flex items-center gap-2"
               >
                 <Calendar className="w-4 h-4" /> {t('hero.bookButton')}
               </a>
@@ -149,6 +153,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Latest AI-assisted posts (only shown once the engineer has approved some) */}
+        <LatestPublications />
 
         {/* Rendezvous / Appointment Section */}
         <section id="rendezvous" className="bg-white border-b border-slate-200 py-16 px-6">

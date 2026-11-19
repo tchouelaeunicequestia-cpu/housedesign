@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { getTranslator } from '@/lib/translations';
-import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban } from 'lucide-react';
+import { LogOut, LayoutDashboard, Search, Filter, ShoppingBag, User, Calendar, FolderKanban, FileText } from 'lucide-react';
 import GoogleTranslate from '@/components/GoogleTranslate';
 import ProjectForm from '@/components/ProjectForm';
 import ProjectCard from '@/components/ProjectCard';
@@ -93,15 +93,22 @@ export default function AdminDashboard() {
               href="/admin/profile"
               className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <User className="w-4 h-4 text-slate-900" />
+              <User className="w-4 h-4 text-white" />
               <span>{t('actions.manageProfile')}</span>
             </Link>
             <Link
               href="/admin/marketplace"
               className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
             >
-              <ShoppingBag className="w-4 h-4 text-slate-900" />
+              <ShoppingBag className="w-4 h-4 text-white" />
               <span>{t('actions.manageMarketplace')}</span>
+            </Link>
+            <Link
+              href="/admin/ai"
+              className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm font-medium text-white transition-colors shadow-sm"
+            >
+              <FileText className="w-4 h-4 text-white" />
+              <span>AI assistant</span>
             </Link>
             <button
               onClick={handleLogout}

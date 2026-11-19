@@ -15,8 +15,8 @@ import { EngineerProfileModule } from './engineer-profile/engineer-profile.modul
 import { MediaModule } from './media/media.module';
 import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
-// import { AiAgentModule } from './ai-agent/ai-agent.module'; // Will create this next
 import { AiAgentModule } from './ai-agent/ai-agent.module';
+import { AiContentModule } from './ai-content/ai-content.module';
 
 @Module({
   imports: [
@@ -59,6 +59,7 @@ import { AiAgentModule } from './ai-agent/ai-agent.module';
     MediaModule,
     EngineerProfileModule,
     AppointmentModule,
+    AiContentModule,
     AiAgentModule,
   ],
   controllers: [AppController], 

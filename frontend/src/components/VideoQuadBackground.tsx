@@ -123,7 +123,10 @@ export default function VideoQuadBackground() {
         ))}
       </div>
       {/* Blue tint keeps the text readable and ties the videos to the brand colors. */}
-      <div className="absolute inset-0 bg-blue-950/55" />
+      <div
+        className="absolute inset-0"
+        style={{ backgroundColor: 'var(--season-tint, #172554)', opacity: 'var(--season-tint-opacity, 0.55)' }}
+      />
       <div className="absolute inset-0 bg-gradient-to-b from-blue-950/40 via-transparent to-blue-950/60" />
     </div>
   );

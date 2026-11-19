@@ -8,6 +8,7 @@ import { ProjectController } from './project.controller';
   imports: [TypeOrmModule.forFeature([Project])],
   controllers: [ProjectController],
   providers: [ProjectService],
+  exports: [ProjectService],
 })
 export class ProjectModule {
 }

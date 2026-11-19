@@ -1,65 +1,57 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { MailerService } from '@nestjs-modules/mailer';
 import { AiAgentService } from './ai-agent.service';
-import { UserService } from '../user/user.service';
-import { AssetService } from '../asset/asset.service';
+import { AiContentService } from '../ai-content/ai-content.service';
+import { AiTextService } from '../ai-content/ai-text.service';
 
 describe('AiAgentService', () => {
   let service: AiAgentService;
-  const mailerService = { sendMail: jest.fn() };
-  const userService = { findAll: jest.fn() };
-  const assetService = { create: jest.fn() };
-  const configService = { get: jest.fn() };
+  const content = { generateWeeklyContent: jest.fn(), generateProjectStory: jest.fn() };
+  const ai = { isEnabled: false };
 
-  beforeEach(async () => {
-    jest.clearAllMocks();
-    configService.get.mockReturnValue(undefined);
+  const build = async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AiAgentService,
-        { provide: MailerService, useValue: mailerService },
-        { provide: UserService, useValue: userService },
-        { provide: AssetService, useValue: assetService },
-        { provide: ConfigService, useValue: configService },
+        { provide: AiContentService, useValue: content },
+        { provide: AiTextService, useValue: ai },
       ],
     }).compile();
-
     service = module.get<AiAgentService>(AiAgentService);
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    ai.isEnabled = false;
+    await build();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('skips AI routines when OPENAI_API_KEY is missing', async () => {
-    await service.generateDailyIndustryTip();
+  it('skips the AI routines when no AI key is configured', async () => {
+    await service.runWeeklyRoutine();
     await service.handleProjectCompletedEvent({
-      projectId: 'project-1',
+      projectId: '1',
       projectTitle: 'Test project',
       notes: 'Completed project notes',
     });
 
-    expect(assetService.create).not.toHaveBeenCalled();
-    expect(mailerService.sendMail).not.toHaveBeenCalled();
+    expect(content.generateWeeklyContent).not.toHaveBeenCalled();
+    expect(content.generateProjectStory).not.toHaveBeenCalled();
   });
 
-  it('treats the dummy-key placeholder as unconfigured', async () => {
-    configService.get.mockReturnValue('dummy-key');
-    const module = await Test.createTestingModule({
-      providers: [
-        AiAgentService,
-        { provide: MailerService, useValue: mailerService },
-        { provide: UserService, useValue: userService },
-        { provide: AssetService, useValue: assetService },
-        { provide: ConfigService, useValue: configService },
-      ],
-    }).compile();
-    service = module.get<AiAgentService>(AiAgentService);
+  it('writes a draft story when a project is completed and the AI is configured', async () => {
+    ai.isEnabled = true;
+    await service.handleProjectCompletedEvent({ projectId: '7', projectTitle: 'Villa', notes: 'Done' });
+    expect(content.generateProjectStory).toHaveBeenCalledWith(7);
+  });
 
-    await service.generateDailyIndustryTip();
-
-    expect(assetService.create).not.toHaveBeenCalled();
-    expect(mailerService.sendMail).not.toHaveBeenCalled();
+  it('does not crash when the AI fails', async () => {
+    ai.isEnabled = true;
+    content.generateProjectStory.mockRejectedValue(new Error('boom'));
+    await expect(
+      service.handleProjectCompletedEvent({ projectId: '7', projectTitle: 'Villa', notes: 'Done' }),
+    ).resolves.toBeUndefined();
   });
 });

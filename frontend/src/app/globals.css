@@ -23,6 +23,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+/* Seasonal accent colour (set by the seasonal theme, red by default) */
+.btn-accent {
+  background-color: var(--season-accent, #dc2626);
+}
+
+.btn-accent:hover {
+  background-color: var(--season-accent-dark, #b91c1c);
+}
+
 /* Hero video background */
 @keyframes hvfade {
   from {
